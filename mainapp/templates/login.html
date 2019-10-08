@@ -1,6 +1,6 @@
 <h1>Login</h1>
 
-<form method="post">
+<form method="post" action"{% url 'login' %}">
     {% csrf_token %}
     <ul>
         <li>
