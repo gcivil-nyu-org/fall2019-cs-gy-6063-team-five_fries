@@ -24,3 +24,10 @@ class LoginView(TemplateView):
 
 def index(request):
     return render(request, 'index.html')
+
+
+def account(request):
+    if request.user.is_authenticated:
+        return render(request, 'account.html')
+    else:
+        return HttpResponseRedirect(reverse('login'))
