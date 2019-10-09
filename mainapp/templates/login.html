@@ -1,8 +1,21 @@
-<h1>Login</h1>
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>Login</h2>
 
 <form method="post" action"{% url 'login' %}">
     {% csrf_token %}
-    <ul>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" class="form-control" id="username" placeholder="Enter your user name" required>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" class="form-control" id="password" placeholder="Password" required>
+    </div>
+    <!--<ul>
         <li>
             <label for="username">Username</label>
             <input type="text" name="username" id="username" required>
@@ -11,6 +24,7 @@
             <label for="password">Password</label>
             <input type="password" name="password" required>
         </li>
-    </ul>
-    <input type="submit" value="Login">
+    </ul>-->
+    <input type="submit" class="btn btn-primary" value="Login">
 </form>
+{% endblock %}
