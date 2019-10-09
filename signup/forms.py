@@ -9,14 +9,23 @@ class SignUpForm(forms.ModelForm):
     class Meta:
         model = SignUp
         fields = ['full_name', 'user_name', 'password', 'confirm_password', 'email', 'phone_number', 'current_location', 'work_location', 'user_type']
-        # fields = ['full_name', 'user_name']
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        # email_base, provider = email.split("@")
-        # domain, extension = provider.split(".")
-        # if not extension == "edu":
-        #     raise forms.ValidationError("Please use a valid .EDU email address!")
-        return email
+
+    def clean_user_name(self):
+        new_user_name = self.cleaned_data.get('user_name')
+        for old_user in SignUp.objects.all():
+            if old_user.user_name == new_user_name:
+                raise forms.ValidationError("The username entered already exists! Please try a different username.")
+
+        return new_user_name
+
+
+    # def clean_email(self):
+    #     email = self.cleaned_data.get('email')
+    #     # email_base, provider = email.split("@")
+    #     # domain, extension = provider.split(".")
+    #     # if not extension == "edu":
+    #     #     raise forms.ValidationError("Please use a valid .EDU email address!")
+    #     return email
 
 
     def clean_confirm_password(self):
@@ -27,3 +36,4 @@ class SignUpForm(forms.ModelForm):
             raise forms.ValidationError("The passwords entered do not match!")
 
         return pass2
+
