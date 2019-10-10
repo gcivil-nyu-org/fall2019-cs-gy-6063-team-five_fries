@@ -7,23 +7,6 @@ from .GetRentalHouse import getRentalHouse
 from .forms import SearchForm
 import json
 
-
-#class SearchView(TemplateView):
-#    template_name = "search/search.html"
-
-#    def post(self, request, *args, **kwargs):
-        #address = request.POST.get('address', False)
-        #cityStateZip = request.POST.get('cityStateZip', False)
-#        address = request.POST['address']
-#        cityStateZip = request.POST['cityStateZip']
-#        rentZestimate = "true"
-
-#        request.session['json'] = getRentalHouse(address, cityStateZip, rentZestimate)
-#        return render(request, 'result.html', {"json": json})
-
-#def index(request):
-#    return render(request,"templates/search.html", {})
-
 def search(request):
     if request.method == 'POST':
         form = SearchForm(request.POST)
