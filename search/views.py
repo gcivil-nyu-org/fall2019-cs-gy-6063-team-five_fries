@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from .getRentalHouse import getRentalHouse
+from .GetRentalHouse import getRentalHouse
 from .forms import SearchForm
 import json
 
