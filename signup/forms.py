@@ -19,15 +19,6 @@ class SignUpForm(forms.ModelForm):
         return new_user_name
 
 
-    # def clean_email(self):
-    #     email = self.cleaned_data.get('email')
-    #     # email_base, provider = email.split("@")
-    #     # domain, extension = provider.split(".")
-    #     # if not extension == "edu":
-    #     #     raise forms.ValidationError("Please use a valid .EDU email address!")
-    #     return email
-
-
     def clean_confirm_password(self):
         pass1 = self.cleaned_data.get('password')
         pass2 = self.cleaned_data.get('confirm_password')
