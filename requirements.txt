@@ -1,3 +1,6 @@
 gunicorn
 django-heroku
 django-crispy-forms
+django-phonenumber-field
+phonenumbers
+django-location-field
