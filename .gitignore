@@ -2,6 +2,8 @@
 .DS_Store
 
 .idea/
+# Secret File
+apiTest.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

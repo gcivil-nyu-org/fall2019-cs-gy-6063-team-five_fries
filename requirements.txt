@@ -1,6 +1,11 @@
+dj-database-url
+Django
 gunicorn
 django-heroku
 django-crispy-forms
 django-phonenumber-field
 phonenumbers
 django-location-field
+requests
+xmltodict
+

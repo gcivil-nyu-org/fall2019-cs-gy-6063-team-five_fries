@@ -1,0 +1,20 @@
+{% extends 'search/base.html' %}
+
+{% block content %}
+<h1>Result</h1>
+<ul>
+    {% for result in results %}
+        <li>Zpid: {{ result.zpid }}</li>
+        <li>Address:</li>
+            <li>Street: {{ result.address.street }}</li>
+            <li>ZIP code: {{ result.address.zipcode }}</li>
+        <li>Rent:</li>
+            <li>Price: {{ result.rentzestimate.amount.currency}} {{ result.rentzestimate.amount.text}}</li>
+            <li>Update-time: {{ result.rentzestimate.lastupdated }}</li>
+        <br></br>
+        
+    {% empty %}
+        <li>No house to rent in this area yet.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
