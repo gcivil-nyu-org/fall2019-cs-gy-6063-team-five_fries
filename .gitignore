@@ -3,7 +3,6 @@
 
 .idea/
 # Secret File
-secret.py
 apiTest.py
 
 # Byte-compiled / optimized / DLL files

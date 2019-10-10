@@ -2,7 +2,7 @@ import requests
 import json
 import xmltodict
 
-from .secret import getZwsId
+from secret import getZwsId
 
 def getRentalHouse(address, cityStateZip, rentZestimate):
 
