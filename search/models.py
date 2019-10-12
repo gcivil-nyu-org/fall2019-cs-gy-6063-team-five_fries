@@ -13,3 +13,6 @@ class CraigslistLocation(models.Model):
     has_map = models.BooleanField(default=False)
     lat = models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True)
     lon = models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
