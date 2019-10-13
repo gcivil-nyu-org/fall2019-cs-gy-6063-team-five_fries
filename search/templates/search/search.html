@@ -3,11 +3,17 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Search</h2>
+<h2>Search Zillow</h2>
 
 <form action="{% url 'search' %}" method="post">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-primary">Get Zillow Listings</button>>
 </form>
+
+<!--<form action="{% url 'search' %}" method="get">
+    <button type="submit" class="btn btn-primary">Get Cragislist Listings</button>
+</form>-->
+
+
 {% endblock %}

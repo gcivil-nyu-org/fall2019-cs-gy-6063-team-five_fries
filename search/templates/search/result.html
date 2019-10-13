@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% if z_results %}
 <h1>Result</h1>
 <ul>
-    {% for result in results %}
+    {% for result in z_results %}
         <li>Zpid: {{ result.zpid }}</li>
         <li>Address:</li>
             <li>Street: {{ result.address.street }}</li>
@@ -17,4 +18,8 @@
         <li>No house to rent in this area yet.</li>
     {% endfor %}
 </ul>
+{% endif %}
+{% if cl_results %}
+
+{% endif %}
 {% endblock %}
