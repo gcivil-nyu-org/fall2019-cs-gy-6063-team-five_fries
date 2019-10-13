@@ -12,3 +12,6 @@ django-location-field
 requests
 xmltodict
 python-craigslist
+djangorestframework
+markdown
+django-filter

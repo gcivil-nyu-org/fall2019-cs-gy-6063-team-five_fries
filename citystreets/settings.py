@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "location_field.apps.DefaultConfig",
     "signup.apps.SignupConfig",
+    "rest_framework"
 ]
 
 MIDDLEWARE = [
