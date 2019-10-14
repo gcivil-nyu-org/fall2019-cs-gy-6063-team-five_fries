@@ -10,26 +10,24 @@ class LoginView(TemplateView):
     template_name = "login.html"
 
     def post(self, request, *args, **kwargs):
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST["username"]
+        password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse("index"))
 
         else:
-            return HttpResponseRedirect(reverse('login'))
+            return HttpResponseRedirect(reverse("login"))
 
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, "index.html")
 
 
 def account(request):
     if request.user.is_authenticated:
-        return render(request, 'account.html', {
-            'user': request.user,
-        })
+        return render(request, "account.html", {"user": request.user})
     else:
-        return HttpResponseRedirect(reverse('login'))
+        return HttpResponseRedirect(reverse("login"))
