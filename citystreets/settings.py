@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+<<<<<<< HEAD
     "mainapp.apps.MainappConfig",
     "search.apps.SearchConfig",
     "django.contrib.admin",
@@ -46,6 +47,21 @@ INSTALLED_APPS = [
     "location_field.apps.DefaultConfig",
     "signup.apps.SignupConfig",
     "rest_framework"
+=======
+    'mainapp.apps.MainappConfig',
+    'search.apps.SearchConfig',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'crispy_forms',
+    'phonenumber_field',
+    'location_field.apps.DefaultConfig',
+    'signup.apps.SignupConfig',
+    'rest_framework'
+>>>>>>> retrieve craigslist results
 ]
 
 MIDDLEWARE = [

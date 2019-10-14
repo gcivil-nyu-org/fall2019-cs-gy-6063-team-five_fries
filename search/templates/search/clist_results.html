@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h2>Craigslistings</h2>
+{% if clist_results %}
+<table class="table">
+    <thead>
+        {% for key in keys %}
+                <th scope="col">{{ key }}</th>
+        {% endfor %}
+    </thead>
+    <tbody>
+        {% for item in clist_results %}
+            <tr>
+                {% for key, value in item %}
+                    <td>value</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Error: No results Returned</p>
+{% endif %}
+
+{% endblock %}
