@@ -1,3 +1,4 @@
+black
 dj-database-url
 Django
 gunicorn
@@ -8,4 +9,3 @@ phonenumbers
 django-location-field
 requests
 xmltodict
-
