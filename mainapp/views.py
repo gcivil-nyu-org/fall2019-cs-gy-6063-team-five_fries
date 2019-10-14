@@ -1,7 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.views.generic import TemplateView
-from django.http import Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
 

@@ -1,8 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.http import Http404, HttpResponseRedirect
-from django.urls import reverse
-from django.views.generic.base import TemplateView
 from .GetRentalHouse import getRentalHouse
 from .forms import SearchForm
 import json
@@ -27,7 +24,7 @@ def search(request):
         return render(request, "search/search.html", {"form": form})
 
 
-## TODO: Display data beautifully
+# TODO: Display data beautifully
 def result(request):
     return HttpResponse("Result Page")
 
