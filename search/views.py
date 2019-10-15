@@ -61,7 +61,7 @@ def clist_results(request):
     results = []
     if (doUpdate is True):
         cl_h = CraigslistHousing(
-            site="newyork", category="apa", filters={"max_price": 2000}
+            site="newyork", category="apa", area="brk", filters={"max_price": 2000}
         )
         results = cl_h.get_results()
 
