@@ -1,21 +1,42 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
         <title>NYC CityStreets</title>
     </head>
     <body>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <h1 class="mt-2">NYC CityStreets</h1>
-                    <hr class="mt-0 mb-4">
-                    {% block content %}
-                    {% endblock %}
+        <!--<header>-->
+            <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
+                <div class="navbar-brand"><span>NYCityStreets</span></div>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav mr-auto">
+                        {% block navcontent %}
+                        {% endblock %}
+                    </ul>
+                </div>
+            </nav>
+        <!--</header>-->
+        <main role="main" class="container">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-8">
+                        <!--<h1 class="mt-2">NYC CityStreets</h1>-->
+                        <hr class="mt-0 mb-4">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
+        <footer class="footer">
+            <div class="container">
+                <span class="text-muted">NYCityStreets</span>
+            </div>
+        </footer>
     </body>
 </html>
