@@ -43,19 +43,6 @@ def create_c_location(
         lat=lat,
         lon=lon,
     )
-    """return CraigslistLocation.objects.create(
-        c_id=("1234" if (id is None) else id),
-        name=("A cool place to live!" if (name is None) else name),
-        url=("http://a-url.com" if (url is None) else url),
-        date_time=time,
-        price=("$3.50" if (price is None) else price),
-        where=("Sunnyside Heights" if (where is None) else where),
-        has_image=(False if (has_image is None) else has_image),
-        has_map=(False if (has_map is None) else has_map),
-        # coordinates for some random spot in Central Park
-        lat=(40.772480 if (lat is None) else lat),
-        lon=(-73.972580 if (lon is None) else lon),
-    )"""
 
 
 def create_last_pulled(days, model):

@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.http import Http404, HttpResponseRedirect
-from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 
@@ -11,7 +9,6 @@ from .GetRentalHouse import getRentalHouse
 from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
 import json
-import datetime
 
 
 class CraigslistIndexView(generic.ListView):
@@ -33,7 +30,7 @@ def search(request):
             ]
             return render(request, "search/result.html", {"z_results": results})
     else:
-        ## render an error
+        # render an error
         form = ZillowSearchForm()
         return render(request, "search/search.html", {"form": form})
 
