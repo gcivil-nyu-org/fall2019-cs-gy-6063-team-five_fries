@@ -47,8 +47,7 @@ def error(request):
 def clist_results(request):
     doUpdate = False
     last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
-    # if LastRetrievedData.objects.filter(model="CraigslistLocation").exists():
-    #   last = LastRetrievedData.objects.get(model="CraigslistLocation")
+
     if created:
         doUpdate = True
     elif last.should_retrieve():
