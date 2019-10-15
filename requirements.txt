@@ -1,5 +1,8 @@
+black
+coverage
 dj-database-url
 Django
+flake8
 gunicorn
 django-heroku
 django-crispy-forms
