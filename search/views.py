@@ -52,20 +52,21 @@ def clist_results(request):
     doUpdate = False
     if LastRetrievedData.objects.filter(model="CraigslistLocation").exists():
         last = LastRetrievedData.objects.get(model="CraigslistLocation")
-        timediff = timezone.make_aware(datetime.datetime.now()) - last.time
-        if timediff.days > 2:
+        
+        if (last.should_retrieve()):
             doUpdate = True
+            # update the timezone so we don't pull again for another day
             last.time = timezone.now()
             last.save()
     results = []
-    if doUpdate is True:
+    if (doUpdate is True):
         cl_h = CraigslistHousing(
             site="newyork", category="apa", filters={"max_price": 2000}
         )
         results = cl_h.get_results()
 
     for r in results:
-        if not CraigslistLocation.objects.filter(c_id=r["id"]).exists():
+        if (not CraigslistLocation.objects.filter(c_id=r["id"]).exists()):
             q = CraigslistLocation(
                 c_id=r["id"],
                 name=r["name"],

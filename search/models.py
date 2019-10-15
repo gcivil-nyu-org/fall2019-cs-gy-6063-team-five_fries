@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+import datetime
 
 # Create your models here.
 
@@ -17,12 +19,16 @@ class CraigslistLocation(models.Model):
     lon = models.DecimalField(max_digits=22, decimal_places=16, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.c_id} - {self.name}"
 
 
 class LastRetrievedData(models.Model):
     model = models.CharField(max_length=200, unique=True)
-    time = models.DateTimeField()
+    time = models.DateTimeField("last retrieval")
 
     def __str__(self):
         return self.model
+    
+    def should_retrieve(self):
+        now = timezone.now()
+        return now - datetime.timedelta(days=1) > self.time <= now
