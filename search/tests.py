@@ -10,7 +10,17 @@ from .models import CraigslistLocation, LastRetrievedData
 
 
 def create_c_location(
-    id, name, url, date_time, days, price, where, has_image, has_map, lat, lon
+    id,
+    date_time, 
+    name="A cool place to live", 
+    url="http://a-url.com", 
+    days=0, 
+    price="$3.50", 
+    where="Sunnyside Heights", 
+    has_image=False, 
+    has_map=False, 
+    lat=40.772480, 
+    lon=-73.972580
 ):
     """
     Creates a CraigslistLocation with the given values
@@ -18,11 +28,22 @@ def create_c_location(
     (negative for times in the past, positive for times in
     the future)
     """
-    timediff = 0 if (days is None) else days
-    time = timezone.now() + datetime.timedelta(days=timediff)
+    time = timezone.now() + datetime.timedelta(days=days)
     # Used ternary so it's not necessary to fill in every field
     # each time a location is created.
     return CraigslistLocation.objects.create(
+        c_id=id,
+        name=name,
+        url=url,
+        date_time=time,
+        price=price,
+        where=where,
+        has_image=has_image,
+        has_map=has_map,
+        lat=lat,
+        lon=lon
+    )
+    '''return CraigslistLocation.objects.create(
         c_id=("1234" if (id is None) else id),
         name=("A cool place to live!" if (name is None) else name),
         url=("http://a-url.com" if (url is None) else url),
@@ -34,7 +55,7 @@ def create_c_location(
         # coordinates for some random spot in Central Park
         lat=(40.772480 if (lat is None) else lat),
         lon=(-73.972580 if (lon is None) else lon),
-    )
+    )'''
 
 def create_last_pulled(days, model):
     time = timezone.now() + datetime.timedelta(days=days)

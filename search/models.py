@@ -24,7 +24,7 @@ class CraigslistLocation(models.Model):
 
 class LastRetrievedData(models.Model):
     model = models.CharField(max_length=200, unique=True)
-    time = models.DateTimeField("last retrieval")
+    time = models.DateTimeField("last retrieval", default=datetime.datetime.now)
 
     def __str__(self):
         return self.model

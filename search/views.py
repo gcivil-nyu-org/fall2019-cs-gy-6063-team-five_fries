@@ -5,7 +5,6 @@ from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
 
-# from craigslist import CraigslistHousing
 from craigslist import CraigslistHousing
 
 from .GetRentalHouse import getRentalHouse
@@ -50,17 +49,14 @@ def error(request):
 
 def clist_results(request):
     doUpdate = False
-    if LastRetrievedData.objects.filter(model="CraigslistLocation").exists():
-        last = LastRetrievedData.objects.get(model="CraigslistLocation")
-        
-        if (last.should_retrieve()):
-            doUpdate = True
-            # update the timezone so we don't pull again for another day
-            last.time = timezone.now()
-            last.save()
-    else:
+    last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
+    #if LastRetrievedData.objects.filter(model="CraigslistLocation").exists():
+     #   last = LastRetrievedData.objects.get(model="CraigslistLocation")
+    if created:
+        doUpdate = True
+    elif last.should_retrieve():
         doUpdate = True 
-        last = LastRetrievedData(time=timezone.now(), model="CraigslistLocation")
+        last.time = timezone.now()
         last.save()
 
     results = []
