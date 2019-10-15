@@ -1,3 +1,12 @@
-# from django.contrib import admin
+from django.contrib import admin
 
-# Register your models here.
+from signup.forms import SignUpForm
+from .models import Profile
+
+
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "timestamp", "updated"]
+    form = SignUpForm
+
+
+admin.site.register(Profile, ProfileAdmin)
