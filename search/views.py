@@ -58,15 +58,26 @@ def clist_results(request):
             # update the timezone so we don't pull again for another day
             last.time = timezone.now()
             last.save()
+    else:
+        doUpdate = True 
+        last = LastRetrievedData(time=timezone.now(), model="CraigslistLocation")
+        last.save()
+
     results = []
     if (doUpdate is True):
         cl_h = CraigslistHousing(
             site="newyork", category="apa", area="brk", filters={"max_price": 2000}
         )
-        results = cl_h.get_results()
+        results = cl_h.get_results(geotagged=True)
 
     for r in results:
         if (not CraigslistLocation.objects.filter(c_id=r["id"]).exists()):
+            lat = None 
+            lon = None
+            if (r["geotag"] is not None):
+                lat = r["geotag"][0]
+                lon = r["geotag"][1]
+
             q = CraigslistLocation(
                 c_id=r["id"],
                 name=r["name"],
@@ -75,6 +86,8 @@ def clist_results(request):
                 price=r["price"],
                 where=(r["where"] if r["where"] is not None else ""),
                 has_image=r["has_image"],
+                lat=lat,
+                lon=lon
             )
             q.save()
     result_list = CraigslistLocation.objects.all()
