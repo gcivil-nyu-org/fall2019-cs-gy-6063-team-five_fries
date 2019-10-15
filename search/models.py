@@ -1,6 +1,7 @@
-# from django.db import models
+from django.db import models
 
 # Create your models here.
+
 
 class CraigslistLocation(models.Model):
     c_id = models.CharField(max_length=200)
@@ -8,6 +9,7 @@ class CraigslistLocation(models.Model):
     url = models.CharField(max_length=200)
     date_time = models.DateTimeField()
     url = models.URLField()
+    price = models.CharField(max_length=200)
     where = models.CharField(max_length=200)
     has_image = models.BooleanField(default=False)
     has_map = models.BooleanField(default=False)
@@ -16,3 +18,11 @@ class CraigslistLocation(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class LastRetrievedData(models.Model):
+    model = models.CharField(max_length=200, unique=True)
+    time = models.DateTimeField()
+
+    def __str__(self):
+        return self.model
