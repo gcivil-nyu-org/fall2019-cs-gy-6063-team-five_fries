@@ -50,27 +50,27 @@ def error(request):
 def clist_results(request):
     doUpdate = False
     last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
-    #if LastRetrievedData.objects.filter(model="CraigslistLocation").exists():
-     #   last = LastRetrievedData.objects.get(model="CraigslistLocation")
+    # if LastRetrievedData.objects.filter(model="CraigslistLocation").exists():
+    #   last = LastRetrievedData.objects.get(model="CraigslistLocation")
     if created:
         doUpdate = True
     elif last.should_retrieve():
-        doUpdate = True 
+        doUpdate = True
         last.time = timezone.now()
         last.save()
 
     results = []
-    if (doUpdate is True):
+    if doUpdate is True:
         cl_h = CraigslistHousing(
             site="newyork", category="apa", area="brk", filters={"max_price": 2000}
         )
         results = cl_h.get_results(geotagged=True)
 
     for r in results:
-        if (not CraigslistLocation.objects.filter(c_id=r["id"]).exists()):
-            lat = None 
+        if not CraigslistLocation.objects.filter(c_id=r["id"]).exists():
+            lat = None
             lon = None
-            if (r["geotag"] is not None):
+            if r["geotag"] is not None:
                 lat = r["geotag"][0]
                 lon = r["geotag"][1]
 
@@ -83,7 +83,7 @@ def clist_results(request):
                 where=(r["where"] if r["where"] is not None else ""),
                 has_image=r["has_image"],
                 lat=lat,
-                lon=lon
+                lon=lon,
             )
             q.save()
     result_list = CraigslistLocation.objects.all()

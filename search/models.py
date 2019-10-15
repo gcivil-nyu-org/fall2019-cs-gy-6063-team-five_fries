@@ -28,7 +28,7 @@ class LastRetrievedData(models.Model):
 
     def __str__(self):
         return self.model
-    
+
     def should_retrieve(self):
         now = timezone.now()
         return now - datetime.timedelta(days=1) > self.time <= now

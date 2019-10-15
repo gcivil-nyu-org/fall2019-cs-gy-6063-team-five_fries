@@ -11,16 +11,16 @@ from .models import CraigslistLocation, LastRetrievedData
 
 def create_c_location(
     id,
-    date_time, 
-    name="A cool place to live", 
-    url="http://a-url.com", 
-    days=0, 
-    price="$3.50", 
-    where="Sunnyside Heights", 
-    has_image=False, 
-    has_map=False, 
-    lat=40.772480, 
-    lon=-73.972580
+    date_time,
+    name="A cool place to live",
+    url="http://a-url.com",
+    days=0,
+    price="$3.50",
+    where="Sunnyside Heights",
+    has_image=False,
+    has_map=False,
+    lat=40.772480,
+    lon=-73.972580,
 ):
     """
     Creates a CraigslistLocation with the given values
@@ -41,9 +41,9 @@ def create_c_location(
         has_image=has_image,
         has_map=has_map,
         lat=lat,
-        lon=lon
+        lon=lon,
     )
-    '''return CraigslistLocation.objects.create(
+    """return CraigslistLocation.objects.create(
         c_id=("1234" if (id is None) else id),
         name=("A cool place to live!" if (name is None) else name),
         url=("http://a-url.com" if (url is None) else url),
@@ -55,50 +55,50 @@ def create_c_location(
         # coordinates for some random spot in Central Park
         lat=(40.772480 if (lat is None) else lat),
         lon=(-73.972580 if (lon is None) else lon),
-    )'''
+    )"""
+
 
 def create_last_pulled(days, model):
     time = timezone.now() + datetime.timedelta(days=days)
     return LastRetrievedData.objects.create(time=time, model=model)
 
+
 class LastRetrieveDataModelTests(TestCase):
     def test_future_date(self):
-        '''
+        """
         was_retrieved_recently() returns False for Retrieval
         whose time was in the future
-        '''
+        """
         time = timezone.now() + datetime.timedelta(days=1, seconds=1)
         future_retrieval = LastRetrievedData(time=time)
         self.assertIs(future_retrieval.should_retrieve(), False)
-    
+
     def test_with_current(self):
-        '''
+        """
         was_retrieved_recently() should return False for Retrievals
         within the past day
-        '''
+        """
         time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
         old_retrieval = LastRetrievedData(time=time)
         self.assertIs(old_retrieval.should_retrieve(), False)
-    
+
     def test_with_past(self):
-        '''
+        """
         was_retrieved_recently() should return True for Retrievals
         older than 1 day
-        '''
+        """
         time = timezone.now() - datetime.timedelta(days=1, seconds=1)
         old_retrieval = LastRetrievedData(time=time)
         self.assertIs(old_retrieval.should_retrieve(), True)
 
 
 class SearchIndexViewTests(TestCase):
-
     def test_search_index(self):
-        '''
+        """
         Tests the index page, insuring the navigational buttons
         are rendered
-        '''
+        """
         response = self.client.get(reverse("search"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Get Zillow Listings")
         self.assertContains(response, "Get Craigslist Listings")
-
