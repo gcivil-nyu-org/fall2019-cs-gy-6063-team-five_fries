@@ -8,4 +8,4 @@ phonenumbers
 django-location-field
 requests
 xmltodict
-
+sodapy
