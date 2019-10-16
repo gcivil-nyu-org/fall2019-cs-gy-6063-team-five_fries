@@ -3,14 +3,13 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2 class="form-signin-heading">311 Data</h2>
+<h2 class="form-signin-heading">311 Data Query</h2>
 
 
-<form action="{% url 'data' %}" method="POST" class="form-signin">
+<form action="{% url 'data_311' %}" method="POST" class="form-signin">
     {% csrf_token %}
     Zip Code (5 digits): <input type="text" id="zip_code" name="zip_code" minlength="5" maxlength="5" required pattern="\d*">
     <p></p>
-{#    {{ form|crispy }}#}
     <input type="submit" class="btn btn-primary" value="Submit">
 </form>
 {% endblock %}

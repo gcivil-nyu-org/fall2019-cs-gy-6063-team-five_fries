@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .GetRentalHouse import getRentalHouse
 from .forms import SearchForm
 import json
-
+from data_311.get_311_data import get_311_data
 
 def search(request):
     if request.method == "POST":
@@ -32,20 +32,13 @@ def result(request):
 def error(request):
     return HttpResponse("This is index of Error")
 
-def data(request):
+def data_311(request):
     if request.method == "POST":
-        # form = SearchForm(request.POST)
-        if form.is_valid():
-            address = request.POST["address"]
-            cityStateZip = request.POST["cityStateZip"]
-            rentZestimate = "true"
+        zip_code = request.POST["zip_code"]
+        results, error = get_311_data(str(zip_code))
 
-            jsonData = json.loads(getRentalHouse(address, cityStateZip, rentZestimate))
-            results = jsonData["SearchResults:searchresults"]["response"]["results"][
-                "result"
-            ]
-            return render(request, "search/result.html", {"results": results})
+        return render(request, "search/results_311.html", {"results" : results, "error" : error})
 
     else:
         # form = SearchForm()
-        return render(request, "search/data.html", {})
+        return render(request, "search/data_311.html", {})

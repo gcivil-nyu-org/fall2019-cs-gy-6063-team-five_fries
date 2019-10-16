@@ -1,0 +1,33 @@
+{% extends 'search/base.html' %}
+
+{% block content %}
+<h2 class="form-signin-heading">311 Data Results</h2><hr>
+
+    {% for result in results %}
+        <h5>Apartment Results</h5>
+        <ul>
+        <li>Date Created: {{ result.created_date }}</li>
+        <li>Incident Address</li>
+            <ul>
+            <li>Street Address: {{ result.incident_address }}</li>
+            <li>ZIP Code: {{ result.incident_zip }}</li>
+            <li>City: {{ result.city }}</li>
+            </ul>
+
+        <li>Complaint</li>
+            <ul>
+            <li>Complaint Type: {{ result.complaint_type }}</li>
+            <li>Description: {{ result.descriptor }}</li>
+            <li>Status: {{ result.status }}</li>
+            </ul>
+        </ul>
+        <hr>
+
+    {% endfor %}
+
+    {% if error %}
+        <p style="color:red">Timeout occurred.</p>
+    {% endif %}
+
+
+{% endblock %}
