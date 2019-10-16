@@ -1,6 +1,8 @@
 # Mac
 .DS_Store
 
+# IDE Related configuration
+.vscode/
 .idea/
 # Secret File
 apiTest.py

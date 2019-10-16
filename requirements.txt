@@ -11,3 +11,6 @@ phonenumbers
 django-location-field
 requests
 xmltodict
+python-craigslist>=1.0.3
+markdown
+django-filter
