@@ -5,7 +5,7 @@ class CityStreetSpot(models.Model):
 
     title = models.CharField(max_length=256)
     description = models.TextField()
-    picture = models.ImageField()
+    picture = models.ImageField(upload_to='./map/static/map')
     geom = PointField()
 
     def __unicode__(self):
