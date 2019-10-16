@@ -37,10 +37,10 @@ def error(request):
 def data_311(request):
     if request.method == "POST":
         zip_code = request.POST["zip_code"]
-        results, error = get_311_data(str(zip_code))
+        query_results, timeout, no_matches = get_311_data(str(zip_code))
 
         return render(
-            request, "search/results_311.html", {"results": results, "error": error}
+            request, "search/results_311.html", {"results": query_results, "timeout": timeout, "no_matches" : no_matches}
         )
 
     else:

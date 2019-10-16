@@ -25,8 +25,12 @@
 
     {% endfor %}
 
-    {% if error %}
+    {% if timeout %}
         <p style="color:red">Timeout occurred.</p>
+    {% endif %}
+
+    {% if no_matches %}
+        <p style="color:red">No matches were found.</p>
     {% endif %}
 
 
