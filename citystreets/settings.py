@@ -134,8 +134,8 @@ django_heroku.settings(locals())
 
 # Map Initial Config
 LEAFLET_CONFIG = {
-    'DEFAULT_CENTER': (40.69354, -73.9857),
-    'DEFAULT_ZOOM': 16,
-    'MIN_ZOOM': 3,
-    'MAX_ZOOM': 18,
+    "DEFAULT_CENTER": (40.69354, -73.9857),
+    "DEFAULT_ZOOM": 16,
+    "MIN_ZOOM": 3,
+    "MAX_ZOOM": 18,
 }

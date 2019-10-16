@@ -6,5 +6,11 @@ from .models import CityStreetSpot
 
 urlpatterns = [
     path("", views.mapview, name="mapview"),
-    url(r'^data.geojson$', GeoJSONLayerView.as_view(model=CityStreetSpot, properties=('title', 'description', 'picture_url')), name='data')
+    url(
+        r"^data.geojson$",
+        GeoJSONLayerView.as_view(
+            model=CityStreetSpot, properties=("title", "description", "picture_url")
+        ),
+        name="data",
+    ),
 ]

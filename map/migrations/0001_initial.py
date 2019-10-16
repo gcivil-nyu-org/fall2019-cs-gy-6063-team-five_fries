@@ -8,18 +8,25 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='CityStreetSpot',
+            name="CityStreetSpot",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=256)),
-                ('description', models.TextField()),
-                ('picture', models.ImageField(upload_to='')),
-                ('geom', djgeojson.fields.PolygonField(default=dict)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=256)),
+                ("description", models.TextField()),
+                ("picture", models.ImageField(upload_to="")),
+                ("geom", djgeojson.fields.PolygonField(default=dict)),
             ],
-        ),
+        )
     ]

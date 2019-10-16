@@ -6,14 +6,12 @@ import djgeojson.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('map', '0001_initial'),
-    ]
+    dependencies = [("map", "0001_initial")]
 
     operations = [
         migrations.AlterField(
-            model_name='citystreetspot',
-            name='geom',
+            model_name="citystreetspot",
+            name="geom",
             field=djgeojson.fields.PolygonField(),
-        ),
+        )
     ]

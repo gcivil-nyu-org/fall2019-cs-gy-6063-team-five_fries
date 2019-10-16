@@ -6,14 +6,12 @@ import djgeojson.fields
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('map', '0002_auto_20191015_2024'),
-    ]
+    dependencies = [("map", "0002_auto_20191015_2024")]
 
     operations = [
         migrations.AlterField(
-            model_name='citystreetspot',
-            name='geom',
+            model_name="citystreetspot",
+            name="geom",
             field=djgeojson.fields.PointField(),
-        ),
+        )
     ]
