@@ -5,6 +5,7 @@ from .forms import SearchForm
 import json
 from data_311.get_311_data import get_311_data
 
+
 def search(request):
     if request.method == "POST":
         form = SearchForm(request.POST)
@@ -32,12 +33,15 @@ def result(request):
 def error(request):
     return HttpResponse("This is index of Error")
 
+
 def data_311(request):
     if request.method == "POST":
         zip_code = request.POST["zip_code"]
         results, error = get_311_data(str(zip_code))
 
-        return render(request, "search/results_311.html", {"results" : results, "error" : error})
+        return render(
+            request, "search/results_311.html", {"results": results, "error": error}
+        )
 
     else:
         # form = SearchForm()
