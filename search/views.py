@@ -58,6 +58,8 @@ def data_311(request):
 
     else:
         return render(request, "search/data_311.html", {})
+
+
 def clist_results(request):
     doUpdate = False
     last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
