@@ -1,6 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <h1>Account</h1>
 <ul>
     <li>Username: {{ user.username }}</li>
-    <!-- TODO: show another fields in Profile -->
-    <!-- <li>Location: {{ user.profile.location }}</li> -->
+    <li>Name: {{ user.first_name }} {{user.last_name}}</li>
+    <li>Email: {{ user.email }}</li>
+    <li>Phone number: {{ user.profile.phone_number }}</li>
+    <li>Current location: {{ user.profile.current_location }}</li>
+    <li>Work location: {{ user.profile.work_location }}</li>
+    <li>User type: {{ user.profile.user_type }}</li>
 </ul>
+{% endblock %}
