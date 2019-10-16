@@ -1,13 +1,10 @@
 # Mac
 .DS_Store
 
-<<<<<<< HEAD
 # IDE Related configuration
-=======
-# IDE config files
->>>>>>> removed comment from css and updated .gitignore
 .vscode/
 .idea/
+
 # Secret File
 apiTest.py
 
