@@ -10,17 +10,41 @@
         <title>NYC CityStreets</title>
     </head>
     <body>
-        <!--<header>-->
-            <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
+        <header>
+            <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
                 <div class="navbar-brand"><span>NYCityStreets</span></div>
                 <div class="collapse navbar-collapse" id="navbarCollapse">
                     <ul class="navbar-nav mr-auto">
                         {% block navcontent %}
                         {% endblock %}
-                    </ul>
+                        <!--Below is some suggested HTML for filling in the navcontent-->
+                        <!--Just include something similar to what is below between the navcontent-->
+                        <!--Tags in the template you use that extends base.html-->
+                        <!--See https://getbootstrap.com/docs/4.1/examples/sticky-footer-navbar/ and-->
+                        <!--https://getbootstrap.com/docs/4.3/components/navbar/ for formatting/styling options-->
+                        <!-- <li class="nav-item active">
+                            <a class="nav-link" href="#">
+                                Home
+                                <span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Link</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#">Disabled</a>
+                        </li>
+                    </ul>-->
+                    {% block navformcontent %}
+                    {% endblock %}
+                    <!-- example navformcontent -->
+                    <!--<form class="form-inline mt-2 mt-md-0">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+                    </form>-->
                 </div>
             </nav>
-        <!--</header>-->
+        </header>
         <main role="main" class="container">
             <div class="container">
                 <div class="row justify-content-center">
@@ -33,7 +57,7 @@
                 </div>
             </div>
         </main>
-        <footer class="footer">
+        <footer class="footer fixed-bottom">
             <div class="container">
                 <span class="text-muted">NYCityStreets</span>
             </div>
