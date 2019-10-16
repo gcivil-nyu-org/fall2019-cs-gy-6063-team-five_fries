@@ -3,4 +3,4 @@ from leaflet.admin import LeafletGeoAdmin
 from .models import CityStreetSpot
 
 admin.site.register(CityStreetSpot)
-# Register your models here.
+#admin.site.register(CityStreetSpot, LeafletGeoAdmin) enable-drag-drop marker in admin page
