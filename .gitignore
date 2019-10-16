@@ -1,6 +1,12 @@
 # Mac
 .DS_Store
 
+<<<<<<< HEAD
+# IDE Related configuration
+=======
+# IDE config files
+>>>>>>> removed comment from css and updated .gitignore
+.vscode/
 .idea/
 # Secret File
 apiTest.py
@@ -62,6 +68,7 @@ coverage.xml
 *.log
 local_settings.py
 db.sqlite3
+/staticfiles
 
 # Flask stuff:
 instance/

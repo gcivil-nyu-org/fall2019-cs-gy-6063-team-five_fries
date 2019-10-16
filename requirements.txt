@@ -12,3 +12,6 @@ django-location-field
 requests
 xmltodict
 sodapy
+python-craigslist>=1.0.3
+markdown
+django-filter
