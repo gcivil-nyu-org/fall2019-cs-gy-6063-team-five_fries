@@ -4,11 +4,14 @@
 
 {% block content %}
 <h2 class="form-signin-heading">{{ title }}</h2>
-
-<form method="POST" action="" class="form-signin">
-    {%  csrf_token %}
-    {{ form|crispy }}
-    <input type="submit" class="btn btn-primary" value="Sign Up">
-</form>
+    {% if form %}
+        <form method="POST" action="" class="form-signin">
+            {%  csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-primary" value="Sign Up">
+        </form>
+    {% else %}
+        <a href="/"><button class="btn btn-primary">Home</button></a>
+    {% endif %}
 
 {% endblock %}
