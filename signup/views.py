@@ -1,17 +1,12 @@
-from django.shortcuts import render
 from .forms import SignUpForm
+from django.views.generic.edit import FormView
 
-def index(request):
-    title = "Sign Up"
-    form = SignUpForm(request.POST or None)
-    context = {
-        "title": title,
-        "form": form
-    }
 
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.save()
-        context = {"title": "Thank you!"}
+class IndexView(FormView):
+    template_name = "signup/index.html"
+    form_class = SignUpForm
+    success_url = "/"
 
-    return render(request, "signup/index.html", context)
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
