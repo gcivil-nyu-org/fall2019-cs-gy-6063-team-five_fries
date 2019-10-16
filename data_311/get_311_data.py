@@ -3,7 +3,8 @@ from sodapy import Socrata
 import requests
 
 def get_311_data(zip):
-
+    '''Returns results based on a zip code. Validation for the zip code is done on the front-end.
+    Timeout exception is raised if timeout period expires. Default timeout period is 10 seconds.'''
     nyc_311_dataset_domain = 'data.cityofnewyork.us'
     nyc_311_dataset_identifier = 'fhrw-4uyv'
     # nyc_311_dataset_token = None
