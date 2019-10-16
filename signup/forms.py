@@ -9,7 +9,8 @@ class SignUpForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput())
     email = forms.EmailField()
-    full_name = forms.CharField(max_length=120)
+    first_name = forms.CharField(max_length=30)
+    last_name = forms.CharField(max_length=150)
 
     class Meta:
         model = Profile
@@ -18,7 +19,8 @@ class SignUpForm(forms.ModelForm):
             "password",
             "confirm_password",
             "email",
-            "full_name",
+            "first_name",
+            "last_name",
             "phone_number",
             "current_location",
             "work_location",
@@ -50,7 +52,8 @@ class SignUpForm(forms.ModelForm):
             username=self.cleaned_data["username"],
             password=self.cleaned_data["password"],
             email=self.cleaned_data["email"],
-            last_name=self.cleaned_data["full_name"],
+            first_name=self.cleaned_data["first_name"],
+            last_name=self.cleaned_data["last_name"],
         )
 
         user.profile.phone_number = self.cleaned_data["phone_number"]
