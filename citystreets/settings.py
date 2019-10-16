@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     "phonenumber_field",
     "location_field.apps.DefaultConfig",
     "signup.apps.SignupConfig",
+    "map.apps.MapConfig",
+    "leaflet",
+    "djgeojson",
 ]
 
 MIDDLEWARE = [
@@ -128,3 +131,11 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # Activating Django Heroku
 
 django_heroku.settings(locals())
+
+# Map Initial Config
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (40.69354, -73.9857),
+    'DEFAULT_ZOOM': 16,
+    'MIN_ZOOM': 3,
+    'MAX_ZOOM': 18,
+}

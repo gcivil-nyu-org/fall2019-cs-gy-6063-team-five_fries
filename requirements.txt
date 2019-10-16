@@ -16,3 +16,7 @@ python-craigslist>=1.0.3
 markdown
 django-filter
 pandas
+django-leaflet
+django-geojson
+jsonfield
+Pillow

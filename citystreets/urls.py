@@ -22,4 +22,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("mainapp.urls")),
     path("search/", include("search.urls")),
+    path("map/", include("map.urls")),
 ]
