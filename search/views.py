@@ -44,5 +44,4 @@ def data_311(request):
         )
 
     else:
-        # form = SearchForm()
         return render(request, "search/data_311.html", {})
