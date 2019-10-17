@@ -3,7 +3,7 @@ import os
 
 # should add the environmental varible ZWSID
 # e.g. export ZWSID = "abcdefg"
-def getZwsId():
+def get_zws_id():
     return os.environ["ZWSID"]
 
 
