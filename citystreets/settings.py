@@ -129,8 +129,7 @@ STATIC_URL = "/static/"
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Activating Django Heroku
-
-django_heroku.settings(locals())
+django_heroku.settings(locals(), test_runner=False)
 
 # Map Initial Config
 LEAFLET_CONFIG = {
