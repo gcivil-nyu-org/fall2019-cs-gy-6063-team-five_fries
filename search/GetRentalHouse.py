@@ -2,28 +2,28 @@ import requests
 import json
 import xmltodict
 
-from secret import getZwsId
+from secret import get_zws_id
 
 
-def getRentalHouse(address, cityStateZip, rentZestimate):
+def get_rental_house(address, city_state_zip, rent_z_estimate):
 
-    GET_SEARCH_RESULTS = "https://www.zillow.com/webservice/GetSearchResults.htm"
-    ZWSID = getZwsId()
-    if not ZWSID:
-        print("ZWSID is empty")
-    elif not cityStateZip:
+    get_search_results = "https://www.zillow.com/webservice/GetSearchResults.htm"
+    zwsid = get_zws_id()
+    if not zwsid:
+        print("zwsid is empty")
+    elif not city_state_zip:
         print("citystateZip is empty")
     else:
-        xmlResponse = requests.get(
-            GET_SEARCH_RESULTS,
+        xml_response = requests.get(
+            get_search_results,
             params={
-                "zws-id": ZWSID,
+                "zws-id": zwsid,
                 "address": address,
-                "citystatezip": cityStateZip,
-                "rentzestimate": rentZestimate,
+                "citystatezip": city_state_zip,
+                "rentzestimate": rent_z_estimate,
             },
         )
-        str = json.dumps(xmltodict.parse(xmlResponse.content))
+        str = json.dumps(xmltodict.parse(xml_response.content))
         replacestr = ["-", "#", "@"]  # replace special character in response
         for i in replacestr:
             str = str.replace(i, "")
@@ -32,7 +32,7 @@ def getRentalHouse(address, cityStateZip, rentZestimate):
 
 # Run this part while local testing
 if __name__ == "__main__":
-    data = json.loads(getRentalHouse("3rd Ave", "Brooklyn, NY", "true"))
+    data = json.loads(get_rental_house("3rd Ave", "Brooklyn, NY", "true"))
 
     for result in data["SearchResults:searchresults"]["response"]["results"]["result"]:
         print("--- The Next Result ---")
