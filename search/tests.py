@@ -11,7 +11,6 @@ from .models import CraigslistLocation, LastRetrievedData
 
 def create_c_location(
     id,
-    date_time,
     name="A cool place to live",
     url="http://a-url.com",
     days=0,
@@ -51,6 +50,13 @@ def create_last_pulled(days, model):
 
 
 class LastRetrieveDataModelTests(TestCase):
+    def test_str_method(self):
+        """
+        tests the __str__ method to insure it returns the correct value
+        """
+        q = create_last_pulled(days=0, model="TestModel")
+        self.assertEqual(str(q), q.model)
+
     def test_future_date(self):
         """
         was_retrieved_recently() returns False for Retrieval
@@ -77,6 +83,16 @@ class LastRetrieveDataModelTests(TestCase):
         time = timezone.now() - datetime.timedelta(days=1, seconds=1)
         old_retrieval = LastRetrievedData(time=time)
         self.assertIs(old_retrieval.should_retrieve(), True)
+
+
+class CraigslistLocationTests(TestCase):
+    def test_loc_name(self):
+        """
+        tests the name of a craigslistLocation to insure that the __self__
+        method is returning correctly
+        """
+        q = create_c_location(id="123", name="Test_Loc")
+        self.assertEqual(str(q), "123 - Test_Loc")
 
 
 class SearchIndexViewTests(TestCase):
