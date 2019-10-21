@@ -123,14 +123,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Crispy_Forms settings
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Activating Django Heroku
-
-django_heroku.settings(locals())
+django_heroku.settings(locals(), test_runner=False)
 
 # Map Initial Config
 LEAFLET_CONFIG = {

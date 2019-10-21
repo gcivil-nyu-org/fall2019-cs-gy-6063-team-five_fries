@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from craigslist import CraigslistHousing
 
-from .GetRentalHouse import getRentalHouse
+from .GetRentalHouse import get_rental_house
 from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
 import json
@@ -22,11 +22,13 @@ def search(request):
         form = ZillowSearchForm(request.POST)
         if form.is_valid():
             address = request.POST["address"]
-            cityStateZip = request.POST["cityStateZip"]
-            rentZestimate = "true"
+            city_state_zip = request.POST["city_state_zip"]
+            rent_z_estimate = "true"
 
-            jsonData = json.loads(getRentalHouse(address, cityStateZip, rentZestimate))
-            results = jsonData["SearchResults:searchresults"]["response"]["results"][
+            json_data = json.loads(
+                get_rental_house(address, city_state_zip, rent_z_estimate)
+            )
+            results = json_data["SearchResults:searchresults"]["response"]["results"][
                 "result"
             ]
             return render(request, "search/result.html", {"z_results": results})
@@ -61,18 +63,18 @@ def data_311(request):
 
 
 def clist_results(request):
-    doUpdate = False
+    do_update = False
     last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
 
     if created:
-        doUpdate = True
+        do_update = True
     elif last.should_retrieve():
-        doUpdate = True
+        do_update = True
         last.time = timezone.now()
         last.save()
 
     results = []
-    if doUpdate is True:
+    if do_update is True:
         cl_h = CraigslistHousing(
             site="newyork", category="apa", area="brk", filters={"max_price": 2000}
         )

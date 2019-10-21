@@ -20,3 +20,4 @@ django-leaflet
 django-geojson
 jsonfield
 Pillow
+pep8-naming
