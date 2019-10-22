@@ -13,7 +13,7 @@ def mapview(request):
             description = data.price + "\n" + str(data.date_time) + "\n" + data.url
 
             # TODO: fetch img from data.url
-            image_url = "no_apa_pic.png"
+            image_url = "no_apa_pic.jpg"
 
             geom = dict({"type": "Point", "coordinates": [data.lon, data.lat]})
 
@@ -31,7 +31,7 @@ def mapview(request):
             description = data.price + "\n" + str(data.date_time) + "\n" + data.url
 
             # TODO: fetch img from data.url
-            image_url = "no_apa_pic.png"
+            image_url = "no_apa_pic.jpg"
 
             geom = dict({"type": "Point", "coordinates": [data.lon, data.lat]})
 
