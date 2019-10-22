@@ -130,6 +130,6 @@ def restraunts(request):
         print(text)
 
     jprint(data_restraunts.json())
-    data_restraunts = data_restraunts.text
+    data_restraunts = data_restraunts.json()
     return render(request, "search/data_restraunts.html", {})
 
