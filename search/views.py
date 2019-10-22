@@ -13,7 +13,6 @@ from data_311.get_311_data import get_311_data
 from data_311.get_311_statistics import get_311_statistics
 
 
-
 class CraigslistIndexView(generic.ListView):
     template_name = "search/clist_results.html"
     context_object_name = "cl_results"
@@ -48,6 +47,7 @@ def result(request):
 def error(request):
     return HttpResponse("This is index of Error")
 
+
 def data_311(request):
     if request.method == "POST" and "data" in request.POST:
         zip_code = request.POST["zip_code"]
@@ -66,7 +66,12 @@ def data_311(request):
         return render(
             request,
             "search/statistics_311.html",
-            {"zip" : zip_code, "results" : complaint_results, "timeout" : timeout, "no_matches" : no_matches},
+            {
+                "zip": zip_code,
+                "results": complaint_results,
+                "timeout": timeout,
+                "no_matches": no_matches,
+            },
         )
 
     else:
