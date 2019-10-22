@@ -3,20 +3,26 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2>Search Zillow</h2>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <h2>Search Zillow</h2>
 
-<form action="{% url 'search' %}" method="post">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <button type="submit" class="btn btn-primary" name="zillow">Get Zillow Listings</button>
-</form>
-<hr class="mt-0 mb-4 mt-4">
-<h2>Search Craigslist</h2>
-<hr class="mt-0 mb-4">
-<form action="{% url 'clist_results' %}" method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-primary" name="craigslist">Get Craigslist Listings</button>
-</form>
+            <form action="{% url 'search' %}" method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary" name="zillow">Get Zillow Listings</button>
+            </form>
+            <hr class="mt-0 mb-4 mt-4">
+            <h2>Search Craigslist</h2>
+            <hr class="mt-0 mb-4">
+            <form action="{% url 'clist_results' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" name="craigslist">Get Craigslist Listings</button>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}
