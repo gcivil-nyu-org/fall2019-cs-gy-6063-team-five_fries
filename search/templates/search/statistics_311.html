@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>311 Data Statistics</h2><hr>
+
+    {% if timeout %}
+        <p style="color:red">Timeout occurred.</p>
+    {% elif no_matches %}
+        <p style="color:red">No matches were found.</p>
+    {% else %}
+
+
+        {% for result in results %}
+
+            <h5>{{ result.6 }} Complaints for Zip Code: {{ zip }}</h5>
+            <ul>
+                {% if result.0 == 0 or result.0 == 1 %}
+                    <li style="color:green">{{ result.6 }} Level (0 - 5): {{ result.0 }}</li>
+
+                {% elif result.0 == 2 or result.0 == 3 %}
+                    <li style="color:orange">{{ result.6 }} Level (0 - 5): {{ result.0 }}</li>
+
+                {% elif result.0 == 4 or result.0 == 5 %}
+                    <li style="color:red">{{ result.6 }} Level (0 - 5): {{ result.0 }}</li>
+
+                {% else %}
+                    <li>{{ result.6 }} Level (0 - 5): Invalid {{ result.6 }} Level</li>
+                {% endif %}
+
+                <li>Total {{ result.6 }} Complaints: {{ result.1 }}</li>
+                <li>Closed {{ result.6 }} Complaints: {{ result.2 }}</li>
+                <li>Percentage {{ result.6 }} Complaints Closed: {{ result.3 }}%</li>
+                <li>Most {{ result.6 }} Violations in Neighborhood: {{ result.5 }} ({{ result.4 }} complaints)</li>
+            </ul>
+
+        {% endfor %}
+    {% endif %}
+
+
+{% endblock %}
