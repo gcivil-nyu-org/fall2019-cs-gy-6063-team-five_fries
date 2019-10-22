@@ -5,3 +5,9 @@
 ## Heroku instance
 - [production](http://master-branch.herokuapp.com/)
 - [integration](https://develop-branch.herokuapp.com)
+
+## Set up
+### Environment variables
+- `ZWSID`: Zillow API key
+- `KEY_311`: NYC 311 dataset token
+- `COVERALLS_REPO_TOKEN`: Coveralls token (set this variable on travis)
