@@ -8,9 +8,10 @@ def mapview(request):
     citystreet_obj = CityStreetSpot.objects
 
     for data in craigslist_datas:
+        # TODO: set CityStreetSpot.c_id as a foreignkey from CraigslistLocation
         if not citystreet_obj.filter(c_id=data.c_id).exists():
             title = data.name
-            url = '<a href="' + data.url + '">' + data.url + "</a>"
+            url = '<a href="' + data.url + '" target="_blank">' + data.url + "</a>"
             description = data.price + "\n" + str(data.date_time) + "\n" + url
 
             # TODO: fetch img from data.url
