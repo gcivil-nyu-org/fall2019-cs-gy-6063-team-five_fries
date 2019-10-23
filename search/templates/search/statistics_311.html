@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>311 Data Statistics</h2><hr>
+
+    {% if timeout %}
+        <p style="color:red">Timeout occurred.</p>
+    {% elif no_matches %}
+        <p style="color:red">No matches were found.</p>
+    {% else %}
+
+
+        {% for result in results %}
+
+            <h5>{{ result.complaint_type }} Complaints for Zip Code: {{ zip }}</h5>
+            <ul>
+{#                complaint levels are displayed in different colors depending on the complaint level#}
+{#                0-1 (low complaints) -- green, 2-3 (medium complaints) -- orange, 4-5 (high complaints) -- red#}
+                {% if result.complaint_level == 0 or result.complaint_level == 1 %}
+                    <li style="color:green">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
+
+                {% elif result.complaint_level == 2 or result.complaint_level == 3 %}
+                    <li style="color:orange">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
+
+                {% elif result.complaint_level == 4 or result.complaint_level == 5 %}
+                    <li style="color:red">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
+
+                {% else %}
+                    <li>{{ result.complaint_type }} Level (0 - 5): Invalid {{ result.complaint_type }} Level</li>
+                {% endif %}
+
+                <li>Total {{ result.complaint_type }} Complaints: {{ result.total_complaints_query_zip }}</li>
+                <li>Closed {{ result.complaint_type }} Complaints: {{ result.closed_complaints_query_zip }}</li>
+                <li>Percentage {{ result.complaint_type }} Complaints Closed: {{ result.percentage_complaints_closed }}%</li>
+                <li>Most {{ result.complaint_type }} Violations in Neighborhood: {{ result.max_complaints_zip }} ({{ result.max_complaints }} complaints)</li>
+            </ul>
+
+        {% endfor %}
+    {% endif %}
+
+
+{% endblock %}

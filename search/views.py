@@ -10,6 +10,7 @@ from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
 import json
 from data_311.get_311_data import get_311_data
+from data_311.get_311_statistics import get_311_statistics
 
 
 class CraigslistIndexView(generic.ListView):
@@ -48,7 +49,7 @@ def error(request):
 
 
 def data_311(request):
-    if request.method == "POST":
+    if request.method == "POST" and "data" in request.POST:
         zip_code = request.POST["zip_code"]
         query_results, timeout, no_matches = get_311_data(str(zip_code))
 
@@ -56,6 +57,21 @@ def data_311(request):
             request,
             "search/results_311.html",
             {"results": query_results, "timeout": timeout, "no_matches": no_matches},
+        )
+
+    elif request.method == "POST" and "statistics" in request.POST:
+        zip_code = request.POST["zip_code"]
+        complaint_results, timeout, no_matches = get_311_statistics(str(zip_code))
+
+        return render(
+            request,
+            "search/statistics_311.html",
+            {
+                "zip": zip_code,
+                "results": complaint_results,
+                "timeout": timeout,
+                "no_matches": no_matches,
+            },
         )
 
     else:
