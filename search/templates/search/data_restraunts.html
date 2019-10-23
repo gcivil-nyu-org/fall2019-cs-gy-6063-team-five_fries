@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-{% extends 'base.html' %}
 <html>
     <head>
         <title>
@@ -8,11 +7,7 @@
     </head>
     <body>
         <button onclick="location.href= '{% url 'restraunts' %}' " > Restraunts Results </button><hr>
-        {% if data %}
-
-        {{data_restraunts}}
-
-        {% endif %}
+        <p>{{data_restraunts}}</p>
     </body>
 </html>
 

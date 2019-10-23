@@ -31,6 +31,6 @@ def account(request):
     else:
         return HttpResponseRedirect(reverse("login"))
 
+
 def search(request):
     return render(request, "search.html")
-

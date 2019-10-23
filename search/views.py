@@ -121,9 +121,11 @@ def clist_results(request):
     return render(request, "search/clist_results.html", context)
 
 
-
 def restraunts(request):
-    data_restraunts= requests.get("https://data.cityofnewyork.us/resource/43nn-pn8j.json?grade=A")
+    data_restraunts = requests.get(
+        "https://data.cityofnewyork.us/resource/43nn-pn8j.json?grade=A"
+    )
+
     def jprint(obj):
         # create a formatted string of the Python JSON object
         text = json.dumps(obj, sort_keys=True, indent=4)
@@ -131,5 +133,6 @@ def restraunts(request):
 
     jprint(data_restraunts.json())
     data_restraunts = data_restraunts.json()
-    return render(request, "search/data_restraunts.html", {})
-
+    return render(
+        request, "search/data_restraunts.html", {"data_restraunts": data_restraunts}
+    )
