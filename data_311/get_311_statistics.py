@@ -133,7 +133,6 @@ def get_311_statistics(query_zip, num_entries_to_search=10000, t_out=10):
     except requests.exceptions.Timeout:
         timeout = True
 
-    print(complaint_results)
     return complaint_results, timeout, no_matches
 
 
