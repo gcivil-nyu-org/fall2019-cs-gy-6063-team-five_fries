@@ -7,6 +7,7 @@ from secret import get_311_socrata_key
 def get_311_data(zip, max_query_results=5, num_entries_to_search=10000, t_out=10):
     """Returns results based on a zip code. Validation for the zip code is done on the front-end.
     Timeout exception is raised if timeout period expires. Default timeout period is 10 seconds."""
+
     nyc_311_dataset_domain = "data.cityofnewyork.us"
     nyc_311_dataset_identifier = "fhrw-4uyv"
     try:
@@ -20,7 +21,7 @@ def get_311_data(zip, max_query_results=5, num_entries_to_search=10000, t_out=10
 
     client.timeout = t_out
 
-    results = None
+    query_results = None
     timeout = False
     no_matches = True
 

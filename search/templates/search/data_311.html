@@ -10,6 +10,9 @@
     {% csrf_token %}
     Zip Code (5 digits): <input type="text" id="zip_code" name="zip_code" minlength="5" maxlength="5" required pattern="\d*">
     <p></p>
-    <input type="submit" class="btn btn-primary" value="Submit">
+    <input type="submit" class="btn btn-primary" name = "data" value="Display Complaints">
+    <input type="submit" class="btn btn-primary" name = "statistics" value="Statistics">
 </form>
+
+
 {% endblock %}

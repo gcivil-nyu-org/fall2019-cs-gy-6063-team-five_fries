@@ -21,3 +21,5 @@ django-geojson
 jsonfield
 Pillow
 pep8-naming
+bs4
+
