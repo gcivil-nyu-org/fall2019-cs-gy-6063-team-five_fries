@@ -30,3 +30,7 @@ def account(request):
         return render(request, "account.html", {"user": request.user})
     else:
         return HttpResponseRedirect(reverse("login"))
+
+def search(request):
+    return render (search, "search.html")
+   
