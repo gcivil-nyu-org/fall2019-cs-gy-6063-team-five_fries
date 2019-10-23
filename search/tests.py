@@ -105,3 +105,12 @@ class SearchIndexViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Get Zillow Listings")
         self.assertContains(response, "Get Craigslist Listings")
+
+
+class SearchCraigsTests(TestCase):
+    def test_search_clist_results(self):
+        """
+        Tests the craigslist result page
+        """
+        response = self.client.get(reverse("clist_results"))
+        self.assertEqual(response.status_code, 200)
