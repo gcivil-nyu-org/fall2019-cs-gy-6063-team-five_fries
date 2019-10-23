@@ -120,16 +120,15 @@ def get_311_statistics(query_zip, num_entries_to_search=10000, t_out=10):
                 complaint_level = 0
 
             tmp = {
-                "complaint_type" : complaint_types_queried[idx],
-                "complaint_level" : complaint_level,
-                "total_complaints_query_zip" : total_complaints_query_zip,
-                "closed_complaints_query_zip" : closed_complaints_query_zip,
-                "percentage_complaints_closed" : percentage_complaints_closed,
-                "max_complaints" : max_complaints,
-                "max_complaints_zip" : max_complaints_zip
+                "complaint_type": complaint_types_queried[idx],
+                "complaint_level": complaint_level,
+                "total_complaints_query_zip": total_complaints_query_zip,
+                "closed_complaints_query_zip": closed_complaints_query_zip,
+                "percentage_complaints_closed": percentage_complaints_closed,
+                "max_complaints": max_complaints,
+                "max_complaints_zip": max_complaints_zip,
             }
             complaint_results.append(tmp)
-
 
     except requests.exceptions.Timeout:
         timeout = True
