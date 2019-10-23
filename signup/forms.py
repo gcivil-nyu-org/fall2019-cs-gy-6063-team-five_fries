@@ -1,10 +1,37 @@
 from django import forms
 
 from mainapp.models import Profile
-from django.contrib.auth.models import User
+
+# from django.contrib.auth.models import User
 
 
+class SignupForm(forms.Form):
+    # username = forms.CharField(max_length=150, strip=True)
+    # password = forms.CharField(widget=forms.PasswordInput())
+    # confirm_password = forms.CharField(widget=forms.PasswordInput())
+    # email = forms.EmailField()
+    # first_name = forms.CharField(max_length=30)
+    # last_name = forms.CharField(max_length=150)
+    phone_number = forms.CharField(max_length=30)
+    current_location = forms.CharField(max_length=30)
+    work_location = forms.CharField(max_length=30)
+    use_type = forms.ChoiceField(
+        chocies=tuple([(k, v) for k, v in Profile.user_type_string_map.iteritems()])
+    )
+
+    def signup(self, request, user):
+        data = self.cleaned_data
+        user.phone_number = data.get("phone_number")
+        user.current_location = data.get("current_location")
+        user.work_location = data.get("work_location")
+        user.user_type = data.get("user_type")
+        user.save()
+        return user
+
+
+"""
 class SignUpForm(forms.ModelForm):
+#class SignUpForm(forms.Form):
     username = forms.CharField(max_length=150, strip=True)
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput())
@@ -46,6 +73,13 @@ class SignUpForm(forms.ModelForm):
 
         return pass2
 
+    def signup(self, request, user):
+        phone_number = self.cleaned_data.get("phone_number")
+        current_location = self.cleaned_data.get("current_location")
+        work_loccation = self.cleaned_data.get("work_location")
+        user_type = self.cleaned_data.get("user_type")
+"""
+"""
     # https://stackoverflow.com/a/13550897
     def save(self, commit=True):
         user = User.objects.create_user(
@@ -64,3 +98,4 @@ class SignUpForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+"""

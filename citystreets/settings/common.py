@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
     # allauth
-
     "search.apps.SearchConfig",
     "django.contrib.auth",
     # more allauth
@@ -66,7 +65,7 @@ SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    "allauth.account.auth_backends.AuthenticationBackend"
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"
@@ -74,6 +73,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 LOGIN_REDIRECT_URL = "/"
+ACCOUNT_FORMS = {"signup": "signup.forms.SignupForm"}
+ACCOUNT_SIGNUP_FORM_CLASS = "signup.forms.SignupForm"
 # end allauth settings
 
 ROOT_URLCONF = "citystreets.urls"
@@ -88,7 +89,7 @@ TEMPLATES = [
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages"
+                "django.contrib.messages.context_processors.messages",
             ]
         },
     }

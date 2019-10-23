@@ -20,8 +20,10 @@ class LoginView(TemplateView):
         else:
             return HttpResponseRedirect(reverse("login"))
 
+
 class HomeView(TemplateView):
     template_name = "index.html"
+
 
 def index(request):
     if request.user.is_authenticated:

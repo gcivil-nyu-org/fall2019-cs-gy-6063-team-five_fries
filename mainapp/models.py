@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
+
+# from django.db.models.signals import post_save
+# from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -29,7 +30,7 @@ class Profile(models.Model):
 
 
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html
-@receiver(post_save, sender=User)
+"""@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
@@ -38,3 +39,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+"""
