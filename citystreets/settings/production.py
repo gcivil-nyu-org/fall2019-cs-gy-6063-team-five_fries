@@ -1,4 +1,4 @@
-from citystreets.settings.common import *  # noqa: F403
+from citystreets.settings.common import *  # noqa: F403 F401
 
 DEBUG = False
 
