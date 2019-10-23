@@ -7,7 +7,7 @@ from .GetRentalHouse import get_rental_house
 from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
 import json
-import requests
+
 
 from data_311.get_311_data import get_311_data
 from data_311.get_311_statistics import get_311_statistics
@@ -119,20 +119,3 @@ def clist_results(request):
     result_list = CraigslistLocation.objects.all()
     context = {"clist_results": result_list}
     return render(request, "search/clist_results.html", context)
-
-
-def restraunts(request):
-    data_restraunts = requests.get(
-        "https://data.cityofnewyork.us/resource/43nn-pn8j.json?grade=A"
-    )
-
-    def jprint(obj):
-        # create a formatted string of the Python JSON object
-        text = json.dumps(obj, sort_keys=True, indent=4)
-        print(text)
-
-    jprint(data_restraunts.json())
-    data_restraunts = data_restraunts.json()
-    return render(
-        request, "search/data_restraunts.html", {"data_restraunts": data_restraunts}
-    )
