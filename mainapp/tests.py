@@ -6,9 +6,6 @@ from .models import SiteUser
 from bs4 import BeautifulSoup
 
 
-# def create_site_user()
-
-
 class BaseTemplateTestCase(TestCase):
     def setUp(self):
         pass
@@ -29,42 +26,16 @@ class BaseTemplateTestCase(TestCase):
         self.assertIn("Log In", nav.text)
 
 
-"""
-class LoginViewTestCase(TestCase):
-    def test_get_login_view(self):
-        response = self.client.get(reverse("login"))
-        self.assertEqual(response.status_code, 200)
-
-    def test_login_success(self):
-        username = "username"
-        password = "password"
-
-        SiteUser.objects.create_user(username, password=password)
-        response = self.client.post(
-            reverse("account_login"), {"username": username, "password": password}
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/")
-
-    def test_login_failure(self):
-        response = self.client.post(
-            reverse("account_login"), {"username": "invalid", "password": "invalid"}
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/login")
-"""
-"""
 class AccountViewTestCase(TestCase):
     def test_redirect_user_if_not_logged_in(self):
         response = self.client.get(reverse("account"))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/login")
+        self.assertEqual(response.url, "/accounts/login/?next=/account")
 
     def test_show_account_view_if_logged_in(self):
-        self.client.force_login(User.objects.get_or_create(username="testuser")[0])
+        self.client.force_login(SiteUser.objects.get_or_create(username="testuser")[0])
         response = self.client.get(reverse("account"))
         self.assertEqual(response.status_code, 200)
-"""
 
 
 class MainIndexViewTestCase(TestCase):
