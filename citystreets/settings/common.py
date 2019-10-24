@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
+    # "allauth.socialaccount.providers.google",
     # allauth
     "search.apps.SearchConfig",
     "django.contrib.auth",
@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "phonenumber_field",
     "location_field.apps.DefaultConfig",
-    "signup.apps.SignupConfig",
+    # "signup.apps.SignupConfig",
     "map.apps.MapConfig",
     "leaflet",
     "djgeojson",
@@ -70,11 +70,16 @@ AUTHENTICATION_BACKENDS = [
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_EMAIL_REQUIRED = True
-
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 LOGIN_REDIRECT_URL = "/"
-ACCOUNT_FORMS = {"signup": "signup.forms.SignupForm"}
-ACCOUNT_SIGNUP_FORM_CLASS = "signup.forms.SignupForm"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"
+ACCOUNT_FORMS = {"signup": "mainapp.forms.SiteUserSignupForm"}
+# ACCOUNT_SIGNUP_FORM_CLASS = "mainapp.forms.SiteUserSignupForm"
+
+AUTH_USER_MODEL = "mainapp.SiteUser"
 # end allauth settings
 
 ROOT_URLCONF = "citystreets.urls"
