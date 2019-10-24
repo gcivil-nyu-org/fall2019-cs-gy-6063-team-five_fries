@@ -16,7 +16,7 @@ class SignupForm(forms.Form):
     current_location = forms.CharField(max_length=30)
     work_location = forms.CharField(max_length=30)
     use_type = forms.ChoiceField(
-        chocies=tuple([(k, v) for k, v in Profile.user_type_string_map.iteritems()])
+        choices=tuple([(k, v) for k, v in Profile.user_type_string_map.items()])
     )
 
     def signup(self, request, user):
@@ -29,9 +29,8 @@ class SignupForm(forms.Form):
         return user
 
 
-"""
 class SignUpForm(forms.ModelForm):
-#class SignUpForm(forms.Form):
+    # class SignUpForm(forms.Form):
     username = forms.CharField(max_length=150, strip=True)
     password = forms.CharField(widget=forms.PasswordInput())
     confirm_password = forms.CharField(widget=forms.PasswordInput())
@@ -78,7 +77,8 @@ class SignUpForm(forms.ModelForm):
         current_location = self.cleaned_data.get("current_location")
         work_loccation = self.cleaned_data.get("work_location")
         user_type = self.cleaned_data.get("user_type")
-"""
+
+
 """
     # https://stackoverflow.com/a/13550897
     def save(self, commit=True):

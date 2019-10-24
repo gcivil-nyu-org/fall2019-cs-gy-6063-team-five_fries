@@ -1,4 +1,4 @@
-from .forms import SignUpForm
+from .forms import SignupForm, SignUpForm
 from django.views.generic.edit import FormView
 
 
