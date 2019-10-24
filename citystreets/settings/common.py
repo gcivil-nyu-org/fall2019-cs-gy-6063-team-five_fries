@@ -26,17 +26,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 INSTALLED_APPS = [
     "django.contrib.admin",
     "mainapp.apps.MainappConfig",
-    # allauth
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
-    # "allauth.socialaccount.providers.google",
-    # allauth
     "search.apps.SearchConfig",
     "django.contrib.auth",
-    # more allauth
     "django.contrib.sites",
-    # more allauth
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -44,7 +39,6 @@ INSTALLED_APPS = [
     "crispy_forms",
     "phonenumber_field",
     "location_field.apps.DefaultConfig",
-    # "signup.apps.SignupConfig",
     "map.apps.MapConfig",
     "leaflet",
     "djgeojson",
@@ -77,7 +71,6 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 LOGIN_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_FORMS = {"signup": "mainapp.forms.SiteUserSignupForm"}
-# ACCOUNT_SIGNUP_FORM_CLASS = "mainapp.forms.SiteUserSignupForm"
 
 AUTH_USER_MODEL = "mainapp.SiteUser"
 # end allauth settings
