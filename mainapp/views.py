@@ -11,10 +11,7 @@ def index(request):
 
 @login_required
 def account(request):
-    if request.user.is_authenticated:
-        return render(request, "account.html", {"user": request.user})
-    else:
-        return HttpResponseRedirect(reverse("login"))
+    return render(request, "account.html", {"user": request.user})
 
 
 def search(request):
