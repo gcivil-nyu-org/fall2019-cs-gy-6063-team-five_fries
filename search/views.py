@@ -2,13 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from django.utils import timezone
-
 from craigslist import CraigslistHousing
-
 from .GetRentalHouse import get_rental_house
 from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
 import json
+
+
 from data_311.get_311_data import get_311_data
 from data_311.get_311_statistics import get_311_statistics
 
