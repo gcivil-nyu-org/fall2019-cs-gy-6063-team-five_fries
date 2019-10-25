@@ -3,6 +3,7 @@ from djgeojson.fields import PointField
 
 from search.models import CraigslistLocation
 
+
 class CityStreetSpot(models.Model):
 
     c_id = models.ForeignKey(CraigslistLocation, on_delete=models.CASCADE)

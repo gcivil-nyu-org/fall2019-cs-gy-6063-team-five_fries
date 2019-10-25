@@ -5,7 +5,6 @@ from map.models import CityStreetSpot
 
 def mapview(request):
     craigslist_datas = CraigslistLocation.objects.all()
-    citystreet_obj = CityStreetSpot.objects
 
     for data in craigslist_datas:
         # TODO: set CityStreetSpot.c_id as a foreignkey from CraigslistLocation
@@ -20,7 +19,7 @@ def mapview(request):
         geom = dict({"type": "Point", "coordinates": [data.lon, data.lat]})
 
         q = CityStreetSpot(
-            c_id=CraigslistLocation.objects.only('c_id').get(c_id = data.c_id),
+            c_id=CraigslistLocation.objects.only("c_id").get(c_id=data.c_id),
             title=title,
             description=description,
             last_update=data.date_time,
