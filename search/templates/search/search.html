@@ -3,25 +3,43 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-6">
-            <h2>Search Zillow</h2>
-
-            <form action="{% url 'search' %}" method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <button type="submit" class="btn btn-primary" name="zillow">Get Zillow Listings</button>
-            </form>
-            <hr class="mt-0 mb-4 mt-4">
-            <h2>Search Craigslist</h2>
-            <hr class="mt-0 mb-4">
-            <form action="{% url 'clist_results' %}" method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary" name="craigslist">Get Craigslist Listings</button>
-            </form>
+<div class="container h-100">
+    <div class="row justify-content-center h-30">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-4">
+                    <!--zip search form will go here-->
+                </div>
+                <div class="col-8">
+                    <h2>Search Zillow</h2>
+                    <form action="{% url 'search' %}" method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="btn btn-primary" name="zillow">Get Zillow Listings</button>
+                    </form>
+                    <hr class="mt-0 mb-2 mt-2">
+                    <h2>Search Craigslist</h2>
+                    <hr class="mt-0 mb-2">
+                    <form action="{% url 'clist_results' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary" name="craigslist">Get Craigslist Listings</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+    {% if search_data.locations %}
+    <hr class="mt-0 mb-2 mt-2">
+    <div class="row h-65">
+        <p>some content here</p>
+    </div>
+    {% endif %}
+    {% if search_data.stats %}
+    <hr class="mt-0 mb-2 mt-2">
+    <div class="row h-35">
+        <p>some content here</p>
+    </div>
+    {% endif %}
 </div>
 
 
