@@ -6,7 +6,7 @@ import datetime
 
 
 class CraigslistLocation(models.Model):
-    c_id = models.CharField(max_length=200)
+    c_id = models.CharField(max_length=200, primary_key = True)
     name = models.CharField(max_length=200)
     url = models.CharField(max_length=200)
     date_time = models.DateTimeField()

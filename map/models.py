@@ -1,10 +1,11 @@
 from django.db import models
 from djgeojson.fields import PointField
 
+from search.models import CraigslistLocation
 
 class CityStreetSpot(models.Model):
 
-    c_id = models.CharField(max_length=200)
+    c_id = models.ForeignKey(CraigslistLocation, on_delete=models.CASCADE)
     title = models.CharField(max_length=256)
     description = models.TextField()
     last_update = models.DateTimeField()
