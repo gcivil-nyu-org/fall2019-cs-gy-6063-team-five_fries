@@ -7,7 +7,7 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]  # noqa: F405
 ALLOWED_HOSTS = [
     "develop-branch.herokuapp.com",
     "master-branch.herokuapp.com",
-    "ab7289-test.herokuapp.com"
+    "ab7289-test.herokuapp.com",
 ]
 
 # Email information
