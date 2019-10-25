@@ -8,6 +8,7 @@ ALLOWED_HOSTS = [
     "develop-branch.herokuapp.com",
     "master-branch.herokuapp.com",
     "ab7289-test.herokuapp.com",
+    "sleepy-eyrie-14402.herokuapp.com"
 ]
 
 # Email information
