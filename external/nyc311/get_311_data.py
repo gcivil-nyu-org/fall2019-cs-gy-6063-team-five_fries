@@ -3,12 +3,12 @@ import requests
 import pandas as pd
 from secret import get_311_socrata_key
 from .models import NYC311Complaint
-from typing import List
+from typing import List, Dict
 
 
-def fetch_311_data_as_dataframe(
+def fetch_311_data(
     zip, max_query_results=None, num_entries_to_search=10000, t_out=10
-) -> pd.DataFrame:
+) -> Dict[str, any]:
     nyc_311_dataset_domain = "data.cityofnewyork.us"
     nyc_311_dataset_identifier = "fhrw-4uyv"
     try:
@@ -23,7 +23,7 @@ def fetch_311_data_as_dataframe(
     client.timeout = t_out
 
     try:
-        results = client.get(
+        return client.get(
             nyc_311_dataset_identifier,
             select="created_date, incident_zip, incident_address, city, complaint_type, descriptor, status",
             # q=str(zip), #uncomment if want to query directly on the server side (may lead to timeout)
@@ -33,7 +33,11 @@ def fetch_311_data_as_dataframe(
     except requests.exceptions.Timeout:
         raise TimeoutError
 
-    # results converted to Pandas dataframe for further processing
+
+def fetch_311_data_as_dataframe(
+    zip, max_query_results=None, num_entries_to_search=10000, t_out=10
+) -> pd.DataFrame:
+    results = fetch_311_data(zip, max_query_results, num_entries_to_search, t_out)
     return pd.DataFrame.from_records(results)
 
 
