@@ -1,6 +1,6 @@
 import math
 import pandas as pd
-from .get_311_data import fetch_311_data_as_dataframe
+from .fetch import fetch_311_data_as_dataframe
 from .models import NYC311Statistics
 from typing import List
 

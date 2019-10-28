@@ -9,8 +9,7 @@ from .models import CraigslistLocation, LastRetrievedData
 import json
 
 
-from external.nyc311.get_311_data import get_311_data
-from external.nyc311.get_311_statistics import get_311_statistics
+from external.nyc311 import get_311_data, get_311_statistics
 
 
 class CraigslistIndexView(generic.ListView):

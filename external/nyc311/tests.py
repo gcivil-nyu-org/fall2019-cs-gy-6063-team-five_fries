@@ -1,11 +1,12 @@
 from django.test import TestCase
-from .get_311_statistics import get_311_statistics
 from unittest import mock
+
+from .stat import get_311_statistics
 from .stub import fetch_311_data
 from .models import NYC311Statistics
 
 
-@mock.patch("external.nyc311.get_311_data.fetch_311_data", fetch_311_data)
+@mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
 class NYC311StatiscticsTests(TestCase):
     def test_statistics_returns(self):
         try:
