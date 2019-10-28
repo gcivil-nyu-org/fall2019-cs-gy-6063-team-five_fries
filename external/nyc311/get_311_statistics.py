@@ -1,9 +1,13 @@
 import math
 import pandas as pd
 from .get_311_data import fetch_311_data_as_dataframe
+from .models import NYC311Statistics
+from typing import List
 
 
-def get_311_statistics(query_zip, num_entries_to_search=10000, t_out=10):
+def get_311_statistics(
+    query_zip, num_entries_to_search=10000, t_out=10
+) -> List[NYC311Statistics]:
     """Returns noise and illegal parking statistics based on a zip code.
     Validation for the zip code is done on the front-end.
     Timeout exception is raised if timeout period expires.
@@ -80,16 +84,17 @@ def get_311_statistics(query_zip, num_entries_to_search=10000, t_out=10):
             percentage_complaints_closed = 0
             complaint_level = 0
 
-        tmp = {
-            "complaint_type": complaint_types_queried[idx],
-            "complaint_level": complaint_level,
-            "total_complaints_query_zip": total_complaints_query_zip,
-            "closed_complaints_query_zip": closed_complaints_query_zip,
-            "percentage_complaints_closed": percentage_complaints_closed,
-            "max_complaints": max_complaints,
-            "max_complaints_zip": max_complaints_zip,
-        }
-        complaint_results.append(tmp)
+        complaint_results.append(
+            NYC311Statistics(
+                complaint_type=complaint_types_queried[idx],
+                complaint_level=complaint_level,
+                total_complaints_query_zip=total_complaints_query_zip,
+                closed_complaints_query_zip=closed_complaints_query_zip,
+                percentage_complaints_closed=percentage_complaints_closed,
+                max_complaints=max_complaints,
+                max_complaints_zip=max_complaints_zip,
+            )
+        )
 
     return complaint_results
 
