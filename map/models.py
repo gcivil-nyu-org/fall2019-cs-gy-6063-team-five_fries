@@ -6,7 +6,7 @@ from search.models import CraigslistLocation
 
 class CityStreetSpot(models.Model):
 
-    c_id = models.ForeignKey(CraigslistLocation, on_delete=models.CASCADE)
+    c_id = models.OneToOneField(CraigslistLocation, on_delete=models.CASCADE, primary_key=True)
     title = models.CharField(max_length=256)
     description = models.TextField()
     last_update = models.DateTimeField()
