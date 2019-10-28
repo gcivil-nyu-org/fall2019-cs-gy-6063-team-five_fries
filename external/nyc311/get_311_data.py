@@ -2,6 +2,8 @@ from sodapy import Socrata
 import requests
 import pandas as pd
 from secret import get_311_socrata_key
+from .models import NYC311Complaint
+from typing import List
 
 
 def fetch_311_data_as_dataframe(
@@ -35,7 +37,9 @@ def fetch_311_data_as_dataframe(
     return pd.DataFrame.from_records(results)
 
 
-def get_311_data(zip, max_query_results=None, num_entries_to_search=10000, t_out=10):
+def get_311_data(
+    zip, max_query_results=None, num_entries_to_search=10000, t_out=10
+) -> List[NYC311Complaint]:
     """Returns results based on a zip code. Validation for the zip code is done on the front-end.
     Timeout exception is raised if timeout period expires. Default timeout period is 10 seconds."""
 
@@ -44,9 +48,12 @@ def get_311_data(zip, max_query_results=None, num_entries_to_search=10000, t_out
         zip, max_query_results, num_entries_to_search, t_out
     )
     results_df = results_df.loc[results_df["incident_zip"] == str(zip)]
+
     if max_query_results and len(results_df) > max_query_results:
         results_df = results_df[:max_query_results]
-    query_results = results_df.to_dict("records")
+
+    query_results = [NYC311Complaint(**dic) for dic in results_df.to_dict("records")]
+
     return query_results
 
 
