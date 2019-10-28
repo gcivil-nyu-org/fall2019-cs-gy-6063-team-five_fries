@@ -64,17 +64,15 @@ def data_311(request):
 
     elif request.method == "POST" and "statistics" in request.POST:
         zip_code = request.POST["zip_code"]
-        complaint_results, timeout, no_matches = get_311_statistics(str(zip_code))
+        try:
+            results = get_311_statistics(str(zip_code))
+        except TimeoutError:
+            return render(request, "search/statistics_311.htm", {"timeout": True})
 
         return render(
             request,
             "search/statistics_311.html",
-            {
-                "zip": zip_code,
-                "results": complaint_results,
-                "timeout": timeout,
-                "no_matches": no_matches,
-            },
+            {"zip": zip_code, "results": results, "no_matches": len(results) == 0},
         )
 
     else:
