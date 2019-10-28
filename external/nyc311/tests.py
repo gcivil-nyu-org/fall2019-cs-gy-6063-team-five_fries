@@ -21,7 +21,7 @@ class FetchNYC311ConstraintsTests(TestCase):
             self.assertTrue(isinstance(complaint, NYC311Complaint))
 
     @mock.patch("external.nyc311.fetch.Socrata")
-    def test_fetch_311_data(self, MockSocrata):
+    def test_fetch_311_data(self, MockSocrata):  # noqa: N803
         fetch_311_data("11201")
 
         MockSocrata.assert_called_once()
