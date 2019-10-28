@@ -1,12 +1,35 @@
 from django.test import TestCase
 from unittest import mock
+import pandas as pd
 
 from .stat import get_311_statistics
-from .stub import fetch_311_data
-from .models import NYC311Statistics
+from .fetch import fetch_311_data, fetch_311_data_as_dataframe, get_311_data
+from .stub import fetch_311_data as fetch_311_data_stub
+from .models import NYC311Statistics, NYC311Complaint
 
 
-@mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+class FetchNYC311ConstraintsTests(TestCase):
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
+    def test_fetch_311_data_as_dataframe(self):
+        df = fetch_311_data_as_dataframe("11201")
+        self.assertTrue(isinstance(df, pd.DataFrame))
+
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
+    def test_get_311_data(self):
+        results = get_311_data("11201")
+        for complaint in results:
+            self.assertTrue(isinstance(complaint, NYC311Complaint))
+
+    @mock.patch("external.nyc311.fetch.Socrata")
+    def test_fetch_311_data(self, MockSocrata):
+        fetch_311_data("11201")
+
+        MockSocrata.assert_called_once()
+        client = MockSocrata()
+        client.get.assert_called_once()
+
+
+@mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
 class NYC311StatiscticsTests(TestCase):
     def test_statistics_returns(self):
         try:
