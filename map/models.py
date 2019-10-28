@@ -10,7 +10,7 @@ class CityStreetSpot(models.Model):
     title = models.CharField(max_length=256)
     description = models.TextField()
     last_update = models.DateTimeField()
-    picture = models.ImageField(upload_to="./map/static/map")
+    picture = models.ImageField()
     geom = PointField()
 
     def __unicode__(self):
@@ -18,4 +18,4 @@ class CityStreetSpot(models.Model):
 
     @property
     def picture_url(self):
-        return "/static/map/" + self.picture.url
+        return self.picture.url
