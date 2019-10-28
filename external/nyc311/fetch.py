@@ -59,21 +59,3 @@ def get_311_data(
     query_results = [NYC311Complaint(**dic) for dic in results_df.to_dict("records")]
 
     return query_results
-
-
-if __name__ == "__main__":
-    try:
-        query_results = get_311_data(10009, 5)  # valid zip code
-        print(type(query_results))
-        print("No match?", len(query_results) == 0)
-        print(query_results)
-    except requests.exceptions.Timeout:
-        print("timeout")
-
-    try:
-        query_results = get_311_data(100099, 5)  # valid zip code
-        print(type(query_results))
-        print("No match?", len(query_results) == 0)
-        print(query_results)
-    except requests.exceptions.Timeout:
-        print("timeout")
