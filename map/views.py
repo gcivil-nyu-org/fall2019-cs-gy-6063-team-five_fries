@@ -44,7 +44,7 @@ def mapview(request):
 
             geom = dict({"type": "Point", "coordinates": [data.lon, data.lat]})
 
-            CityStreetSpot.filter(c_id = data.c_id).update(
+            CityStreetSpot.filter(c_id=data.c_id).update(
                 title=title,
                 description=description,
                 last_update=data.date_time,
@@ -53,11 +53,12 @@ def mapview(request):
             )
     return render(request, "map.html")
 
+
 def get_img_url(url):
     result = requests.get(url)
     if result.status_code == 200:
         soup = BeautifulSoup(result.content, "html.parser")
-        img_tag = soup.find_all('a', {'class': 'thumb'})
+        img_tag = soup.find_all("a", {"class": "thumb"})
         # For now, get the first fullsize imgage.
         # Get the image id by imgtag[n].get('data-imgid')
         # Get the thumbnail image by imgtag[n].get('src')
@@ -66,6 +67,6 @@ def get_img_url(url):
         if len(img_tag) == 0:
             return "../static/map/no_apa_pic.jpg"
         else:
-            return str(img_tag[0].get('href'))
+            return str(img_tag[0].get("href"))
     else:
         return "../static/map/no_apa_pic.jpg"

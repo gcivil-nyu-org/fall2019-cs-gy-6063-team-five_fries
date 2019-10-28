@@ -15,9 +15,10 @@ class CityStreetSpotTestCase(TestCase):
                 c_id="0000000000000000000"
             ),
             last_update="2019-10-23 11:21",
-            picture="image.jpg",
+            picture="../static/map/image.jpg",  # modify the model: Add "upload_to", Delete prefix of self.picture.url
+            geom={"type": "Point", "coordinates": [-73.9563, 40.7095]},
         )
-        self.assertEqual(spot.picture_url, "/static/map/image.jpg")
+        self.assertEqual(spot.picture_url, "../static/map/image.jpg")
 
 
 class MapIndexViewTestcase(TestCase):
