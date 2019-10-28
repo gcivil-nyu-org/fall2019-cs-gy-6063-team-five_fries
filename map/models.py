@@ -6,11 +6,13 @@ from search.models import CraigslistLocation
 
 class CityStreetSpot(models.Model):
 
-    c_id = models.OneToOneField(CraigslistLocation, on_delete=models.CASCADE, primary_key=True)
+    c_id = models.OneToOneField(
+        CraigslistLocation, on_delete=models.CASCADE, primary_key=True
+    )
     title = models.CharField(max_length=256)
     description = models.TextField()
     last_update = models.DateTimeField()
-    picture = models.ImageField()
+    picture = models.ImageField(upload_to="./map/static/map")
     geom = PointField()
 
     def __unicode__(self):
