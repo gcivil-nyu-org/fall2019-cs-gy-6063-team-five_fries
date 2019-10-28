@@ -51,12 +51,15 @@ def error(request):
 def data_311(request):
     if request.method == "POST" and "data" in request.POST:
         zip_code = request.POST["zip_code"]
-        query_results, timeout, no_matches = get_311_data(str(zip_code))
+        try:
+            results = get_311_data(str(zip_code))
+        except TimeoutError:
+            return render(request, "search/results_311.html", {"timeout": True})
 
         return render(
             request,
             "search/results_311.html",
-            {"results": query_results, "timeout": timeout, "no_matches": no_matches},
+            {"results": results, "no_matches": len(results) == 0},
         )
 
     elif request.method == "POST" and "statistics" in request.POST:
