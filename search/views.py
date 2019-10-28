@@ -2,7 +2,6 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from django.utils import timezone
-from craigslist import CraigslistHousing
 from .GetRentalHouse import get_rental_house
 from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
@@ -10,6 +9,7 @@ import json
 
 
 from external.nyc311 import get_311_data, get_311_statistics
+from external.craigslist import fetch_craigslist_housing
 
 
 class CraigslistIndexView(generic.ListView):
@@ -91,10 +91,13 @@ def clist_results(request):
 
     results = []
     if do_update is True:
-        cl_h = CraigslistHousing(
-            site="newyork", category="apa", area="brk", filters={"max_price": 2000}
+        results = fetch_craigslist_housing(
+            limit=100,  # FIXME: temporarily limit the results up to 100 for the fast response
+            site="newyork",
+            category="apa",
+            area="brk",
+            filters={"max_price": 2000},
         )
-        results = cl_h.get_results(geotagged=True)
 
     for r in results:
         if not CraigslistLocation.objects.filter(c_id=r["id"]).exists():
