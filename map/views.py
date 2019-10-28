@@ -1,4 +1,7 @@
 from django.shortcuts import render
+import requests
+from bs4 import BeautifulSoup
+
 from search.models import CraigslistLocation
 from map.models import CityStreetSpot
 
@@ -12,7 +15,7 @@ def mapview(request):
         description = data.price + "\n" + str(data.date_time) + "\n" + url
 
         # TODO: fetch img from data.url
-        image_url = "no_apa_pic.jpg"
+        image_url = "../static/map/no_apa_pic.jpg"
 
         geom = dict({"type": "Point", "coordinates": [data.lon, data.lat]})
 
@@ -25,5 +28,21 @@ def mapview(request):
             geom=geom,
         )
         q.save()
-
     return render(request, "map.html")
+
+def get_img_url(url):
+    result = requests.get(url)
+    if result.status_code == 200:
+        soup = BeautifulSoup(result.content, "html.parser")
+        img_tag = soup.find_all('a', {'class': 'thumb'})
+        # For now, get the first fullsize imgage.
+        # Get the image id by imgtag[n].get('data-imgid')
+        # Get the thumbnail image by imgtag[n].get('src')
+        # edit map.model to be more flexible //TODO: fix the image display for outer source
+
+        if len(img_tag) == 0:
+            return "../static/map/no_apa_pic.jpg"
+        else:
+            return str(img_tag[0].get('href'))
+    else:
+        return "../static/map/no_apa_pic.jpg"
