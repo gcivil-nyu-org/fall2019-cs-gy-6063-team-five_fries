@@ -1,4 +1,4 @@
-black
+black==19.3b0
 coverage
 coveralls
 dj-database-url
@@ -23,4 +23,3 @@ jsonfield
 Pillow
 pep8-naming
 bs4
-
