@@ -18,8 +18,8 @@ def get_311_statistics(query_zip, num_entries_to_search=10000, t_out=10):
         nyc_311_dataset_token = get_311_socrata_key()
     except KeyError:
         nyc_311_dataset_token = (
-            None
-        )  # works with None but lower number of requests can be made
+            None  # works with None but lower number of requests can be made
+        )
 
     client = Socrata(nyc_311_dataset_domain, nyc_311_dataset_token)
 

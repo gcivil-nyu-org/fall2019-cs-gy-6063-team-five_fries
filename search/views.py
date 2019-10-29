@@ -144,17 +144,11 @@ def search(request):
                     "geotag": [40.695314, -73.956289],
                     "bedrooms": "1",
                     "area": "",
-                }
+                },
             ]
         }
         return render(
-            request,
-            "search/search.html",
-            {
-                "search_data": search_data,
-                "zip": zip_code,
-
-            }
+            request, "search/search.html", {"search_data": search_data, "zip": zip_code}
         )
     else:
         # render an error
