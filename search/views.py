@@ -19,6 +19,7 @@ class CraigslistIndexView(generic.ListView):
 
 
 def search(request):
+    # zillow form POST
     if request.method == "POST" and "zillow" in request.POST:
         form = ZillowSearchForm(request.POST)
         if form.is_valid():
@@ -33,6 +34,128 @@ def search(request):
                 "result"
             ]
             return render(request, "search/result.html", {"z_results": results})
+    # generic zip code form post
+    elif request.method == "POST" and "zipcode" in request.POST:
+        zip_code = request.POST.get("zip_code")
+        # TODO: call API to get generic search results, for now we will just
+        # mock our own
+        search_data = {
+            "locations": [
+                {
+                    "id": "7008914031",
+                    "name": "No Fee brand new Studio for rent ASAP",
+                    "datetime": "2019-10-28 15:39",
+                    "last_updated": "2019-10-28 15:39",
+                    "price": "$1850",
+                    "where": "Flatbush, Brookyn",
+                    "has_image": True,
+                    "geotag": [40.648495, -73.957932],
+                    "bedrooms": "1",
+                    "area": "",
+                },
+                {
+                    "id": "7008913592",
+                    "repost_of": "",
+                    "name": "***CLOSE TO THE PRATT INSTITUTE***GREAT PRICE***NO FEES***",
+                    "url": "https://newyork.craigslist.org/brk/apa/d/brooklyn-close-to-the-pratt/7008913592.html",
+                    "datetime": "2019-10-28 15:38",
+                    "last_updated": "2019-10-28 15:38",
+                    "price": "$1950",
+                    "where": "Clinton Hill/BedStuy",
+                    "has_image": True,
+                    "geotag": [40.695314, -73.956289],
+                    "bedrooms": "1",
+                    "area": "",
+                },
+                {
+                    "id": "7008914031",
+                    "name": "No Fee brand new Studio for rent ASAP",
+                    "datetime": "2019-10-28 15:39",
+                    "last_updated": "2019-10-28 15:39",
+                    "price": "$1850",
+                    "where": "Flatbush, Brookyn",
+                    "has_image": True,
+                    "geotag": [40.648495, -73.957932],
+                    "bedrooms": "1",
+                    "area": "",
+                },
+                {
+                    "id": "7008913592",
+                    "repost_of": "",
+                    "name": "***CLOSE TO THE PRATT INSTITUTE***GREAT PRICE***NO FEES***",
+                    "url": "https://newyork.craigslist.org/brk/apa/d/brooklyn-close-to-the-pratt/7008913592.html",
+                    "datetime": "2019-10-28 15:38",
+                    "last_updated": "2019-10-28 15:38",
+                    "price": "$1950",
+                    "where": "Clinton Hill/BedStuy",
+                    "has_image": True,
+                    "geotag": [40.695314, -73.956289],
+                    "bedrooms": "1",
+                    "area": "",
+                },
+                {
+                    "id": "7008914031",
+                    "name": "No Fee brand new Studio for rent ASAP",
+                    "datetime": "2019-10-28 15:39",
+                    "last_updated": "2019-10-28 15:39",
+                    "price": "$1850",
+                    "where": "Flatbush, Brookyn",
+                    "has_image": True,
+                    "geotag": [40.648495, -73.957932],
+                    "bedrooms": "1",
+                    "area": "",
+                },
+                {
+                    "id": "7008913592",
+                    "repost_of": "",
+                    "name": "***CLOSE TO THE PRATT INSTITUTE***GREAT PRICE***NO FEES***",
+                    "url": "https://newyork.craigslist.org/brk/apa/d/brooklyn-close-to-the-pratt/7008913592.html",
+                    "datetime": "2019-10-28 15:38",
+                    "last_updated": "2019-10-28 15:38",
+                    "price": "$1950",
+                    "where": "Clinton Hill/BedStuy",
+                    "has_image": True,
+                    "geotag": [40.695314, -73.956289],
+                    "bedrooms": "1",
+                    "area": "",
+                },
+                {
+                    "id": "7008914031",
+                    "name": "No Fee brand new Studio for rent ASAP",
+                    "datetime": "2019-10-28 15:39",
+                    "last_updated": "2019-10-28 15:39",
+                    "price": "$1850",
+                    "where": "Flatbush, Brookyn",
+                    "has_image": True,
+                    "geotag": [40.648495, -73.957932],
+                    "bedrooms": "1",
+                    "area": "",
+                },
+                {
+                    "id": "7008913592",
+                    "repost_of": "",
+                    "name": "***CLOSE TO THE PRATT INSTITUTE***GREAT PRICE***NO FEES***",
+                    "url": "https://newyork.craigslist.org/brk/apa/d/brooklyn-close-to-the-pratt/7008913592.html",
+                    "datetime": "2019-10-28 15:38",
+                    "last_updated": "2019-10-28 15:38",
+                    "price": "$1950",
+                    "where": "Clinton Hill/BedStuy",
+                    "has_image": True,
+                    "geotag": [40.695314, -73.956289],
+                    "bedrooms": "1",
+                    "area": "",
+                }
+            ]
+        }
+        return render(
+            request,
+            "search/search.html",
+            {
+                "search_data": search_data,
+                "zip": zip_code,
+
+            }
+        )
     else:
         # render an error
         form = ZillowSearchForm()

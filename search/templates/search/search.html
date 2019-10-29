@@ -7,10 +7,17 @@
     <div class="row justify-content-center h-30">
         <div class="col-12">
             <div class="row">
-                <div class="col-4">
-                    <!--zip search form will go here-->
+                <div class="col-5">
+                    <h2>Search All Locations</h2>
+                    <form action="{% url 'search' %}" method="POST">
+                        {% csrf_token %}
+                        Zip Code (5 digits): <input type="text" id="zip_code" name="zipcode" minlength="5" maxlength="5"
+                            required pattern="\d*">
+                        <p></p>
+                        <input type="submit" class="btn btn-primary" value="Go">
+                    </form>
                 </div>
-                <div class="col-8">
+                <div class="col-7">
                     <h2>Search Zillow</h2>
                     <form action="{% url 'search' %}" method="post">
                         {% csrf_token %}
@@ -31,7 +38,30 @@
     {% if search_data.locations %}
     <hr class="mt-0 mb-2 mt-2">
     <div class="row h-65">
-        <p>some content here</p>
+        <div class="col">
+            <table class="table table-striped table-bordered table-hover table-sm results-table" width="100%">
+                <thead>
+                    <tr>
+                        <th scope="col" class="th-sm">ID</th>
+                        <th scope="col" class="th-sm">Price</th>
+                        <th scope="col" class="th-sm">Where</th>
+                        <th scope="col" class="th-sm">Bedrooms</th>
+                        <th scope="col" class="th-sm">Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in search_data.locations %}
+                    <tr>
+                        <td scope="row">{{ item.id }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.where }}</td>
+                        <td>{{ item.bedrooms }}</td>
+                        <td><button class="btn seccondaryAction">See More</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% endif %}
     {% if search_data.stats %}
