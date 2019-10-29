@@ -6,7 +6,12 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-6">
-            <h2>Login</h2>
+            <h2>Login <button onclick="goBack()">Back</button></h2>
+            <script>
+                function goBack() {
+                window.history.back();
+                }
+            </script>
 
             <form method="post" action"{% url 'login' %}">
                 {% csrf_token %}
