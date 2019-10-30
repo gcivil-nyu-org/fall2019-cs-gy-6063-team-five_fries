@@ -1,6 +1,7 @@
 import sys
+import os
 
-sys.path.append("..")
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from external.nyc311 import get_311_data  # noqa: E402
 
