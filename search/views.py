@@ -1,14 +1,13 @@
 from django.shortcuts import render
 from django.views import generic
 from django.utils import timezone
-from .GetRentalHouse import get_rental_house
 from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
-import json
 
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
+from external.zillow import get_zillow_housing
 
 
 class CraigslistIndexView(generic.ListView):
@@ -18,19 +17,14 @@ class CraigslistIndexView(generic.ListView):
 
 def search(request):
     if request.method == "POST" and "zillow" in request.POST:
-        form = ZillowSearchForm(request.POST)
-        if form.is_valid():
-            address = request.POST["address"]
-            city_state_zip = request.POST["city_state_zip"]
-            rent_z_estimate = "true"
+        # Because we don't have a form for Zillow anymore, temporarily hardcode address and city_state_zip
+        address = "Jay st"
+        city_state_zip = "11201"
 
-            json_data = json.loads(
-                get_rental_house(address, city_state_zip, rent_z_estimate)
-            )
-            results = json_data["SearchResults:searchresults"]["response"]["results"][
-                "result"
-            ]
-            return render(request, "search/result.html", {"z_results": results})
+        results = get_zillow_housing(
+            address=address, zipcode=city_state_zip, show_rent_z_estimate=True
+        )
+        return render(request, "search/result.html", {"z_results": results})
     # generic zip code form post
     elif request.method == "GET":
         timeout = False

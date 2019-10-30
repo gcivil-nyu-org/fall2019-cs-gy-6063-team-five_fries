@@ -38,3 +38,7 @@ class ZillowHousing(object):
             estimated_rent_price_currency=rent_estimate.get("@currency"),
             last_estimated=dic["rentzestimate"]["last-updated"],
         )
+
+    @property
+    def estimated_rent_price_for_display(self):
+        return f"{self.estimated_rent_price_currency} {self.estimated_rent_price}"
