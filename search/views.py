@@ -2,15 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from django.utils import timezone
-from craigslist import CraigslistHousing
 from .GetRentalHouse import get_rental_house
 from .forms import ZillowSearchForm
 from .models import CraigslistLocation, LastRetrievedData
 import json
 
 
-from data_311.get_311_data import get_311_data
-from data_311.get_311_statistics import get_311_statistics
+from external.nyc311 import get_311_data, get_311_statistics
+from external.craigslist import fetch_craigslist_housing
 
 
 class CraigslistIndexView(generic.ListView):
@@ -51,27 +50,28 @@ def error(request):
 def data_311(request):
     if request.method == "POST" and "data" in request.POST:
         zip_code = request.POST["zip_code"]
-        query_results, timeout, no_matches = get_311_data(str(zip_code))
+        try:
+            results = get_311_data(str(zip_code))
+        except TimeoutError:
+            return render(request, "search/results_311.html", {"timeout": True})
 
         return render(
             request,
             "search/results_311.html",
-            {"results": query_results, "timeout": timeout, "no_matches": no_matches},
+            {"results": results, "no_matches": len(results) == 0},
         )
 
     elif request.method == "POST" and "statistics" in request.POST:
         zip_code = request.POST["zip_code"]
-        complaint_results, timeout, no_matches = get_311_statistics(str(zip_code))
+        try:
+            results = get_311_statistics(str(zip_code))
+        except TimeoutError:
+            return render(request, "search/statistics_311.htm", {"timeout": True})
 
         return render(
             request,
             "search/statistics_311.html",
-            {
-                "zip": zip_code,
-                "results": complaint_results,
-                "timeout": timeout,
-                "no_matches": no_matches,
-            },
+            {"zip": zip_code, "results": results, "no_matches": len(results) == 0},
         )
 
     else:
@@ -91,10 +91,13 @@ def clist_results(request):
 
     results = []
     if do_update is True:
-        cl_h = CraigslistHousing(
-            site="newyork", category="apa", area="brk", filters={"max_price": 2000}
+        results = fetch_craigslist_housing(
+            limit=100,  # FIXME: temporarily limit the results up to 100 for the fast response
+            site="newyork",
+            category="apa",
+            area="brk",
+            filters={"max_price": 2000},
         )
-        results = cl_h.get_results(geotagged=True)
 
     for r in results:
         if not CraigslistLocation.objects.filter(c_id=r["id"]).exists():

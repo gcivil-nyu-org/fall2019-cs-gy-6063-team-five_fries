@@ -1,12 +1,11 @@
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
+from unittest import mock
 
 import datetime
 from .models import CraigslistLocation, LastRetrievedData
-
-
-# Create your tests here.
+from external.craigslist.stub import fetch_craigslist_housing
 
 
 def create_c_location(
@@ -108,11 +107,11 @@ class SearchIndexViewTests(TestCase):
 
 
 class SearchCraigsTests(TestCase):
+    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     def test_search_clist_results(self):
         """
         Tests the craigslist result page
         """
         pass
-        # TODO: uncomment it after we mock the craigslist API
-        # response = self.client.get(reverse("clist_results"))
-        # self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse("clist_results"))
+        self.assertEqual(response.status_code, 200)

@@ -1,0 +1,53 @@
+[
+    {
+        "id": "7008914031",
+        "repost_of": "7003639290",
+        "name": "No Fee brand new Studio for rent ASAP",
+        "url": "https://newyork.craigslist.org/brk/apa/d/brooklyn-no-fee-brand-new-studio-for/7008914031.html",
+        "datetime": "2019-10-28 15:39",
+        "last_updated": "2019-10-28 15:39",
+        "price": "$1850",
+        "where": "Flatbush, Brookyn",
+        "has_image": true,
+        "geotag": [
+            40.648495,
+            -73.957932
+        ],
+        "bedrooms": "1",
+        "area": null
+    },
+    {
+        "id": "7008913592",
+        "repost_of": null,
+        "name": "***CLOSE TO THE PRATT INSTITUTE***GREAT PRICE***NO FEES***",
+        "url": "https://newyork.craigslist.org/brk/apa/d/brooklyn-close-to-the-pratt/7008913592.html",
+        "datetime": "2019-10-28 15:38",
+        "last_updated": "2019-10-28 15:38",
+        "price": "$1950",
+        "where": "Clinton Hill/BedStuy",
+        "has_image": true,
+        "geotag": [
+            40.695314,
+            -73.956289
+        ],
+        "bedrooms": "1",
+        "area": null
+    },
+    {
+        "id": "7008903144",
+        "repost_of": null,
+        "name": "***HOT DEAL***SUPER LOCATION***GREAT PRICE***NO FEES***",
+        "url": "https://newyork.craigslist.org/brk/apa/d/brooklyn-hot-dealsuper-locationgreat/7008903144.html",
+        "datetime": "2019-10-28 15:26",
+        "last_updated": "2019-10-28 15:26",
+        "price": "$1795",
+        "where": "Bushwick",
+        "has_image": true,
+        "geotag": [
+            40.692088,
+            -73.921937
+        ],
+        "bedrooms": "1",
+        "area": null
+    }
+]
