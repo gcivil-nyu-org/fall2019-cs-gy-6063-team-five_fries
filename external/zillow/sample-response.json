@@ -1,0 +1,244 @@
+[
+    {
+        "zpid": "2094141487",
+        "links": {
+            "homedetails": "https://www.zillow.com/homedetails/33-Bond-St-Brooklyn-NY-11201/2094141487_zpid/",
+            "mapthishome": "http://www.zillow.com/homes/2094141487_zpid/",
+            "comparables": "http://www.zillow.com/homes/comps/2094141487_zpid/"
+        },
+        "address": {
+            "street": "33 Bond St",
+            "zipcode": "11201",
+            "city": "Brooklyn",
+            "state": "NY",
+            "latitude": "40.688563",
+            "longitude": "-73.983519"
+        },
+        "zestimate": {
+            "amount": {
+                "@currency": "USD",
+                "#text": "489000"
+            },
+            "last-updated": "10/29/2019",
+            "oneWeekChange": {
+                "@deprecated": "true"
+            },
+            "valueChange": {
+                "@duration": "30",
+                "@currency": "USD",
+                "#text": "-6843"
+            },
+            "valuationRange": {
+                "low": {
+                    "@currency": "USD",
+                    "#text": "444990"
+                },
+                "high": {
+                    "@currency": "USD",
+                    "#text": "542790"
+                }
+            },
+            "percentile": "0"
+        },
+        "rentzestimate": {
+            "amount": {
+                "@currency": "USD",
+                "#text": "2865"
+            },
+            "last-updated": "10/28/2019",
+            "oneWeekChange": {
+                "@deprecated": "true"
+            },
+            "valueChange": {
+                "@duration": "30",
+                "@currency": "USD",
+                "#text": "237"
+            },
+            "valuationRange": {
+                "low": {
+                    "@currency": "USD",
+                    "#text": "2263"
+                },
+                "high": {
+                    "@currency": "USD",
+                    "#text": "3266"
+                }
+            }
+        },
+        "localRealEstate": {
+            "region": {
+                "@name": "Downtown",
+                "@id": "270825",
+                "@type": "neighborhood",
+                "zindexValue": "926,500",
+                "links": {
+                    "overview": "http://www.zillow.com/local-info/NY-New-York/Downtown/r_270825/",
+                    "forSaleByOwner": "http://www.zillow.com/downtown-brooklyn-new-york-ny/fsbo/",
+                    "forSale": "http://www.zillow.com/downtown-brooklyn-new-york-ny/"
+                }
+            }
+        }
+    },
+    {
+        "zpid": "300079009",
+        "links": {
+            "homedetails": "https://www.zillow.com/homedetails/33-Bond-St-Brooklyn-NY-11201/300079009_zpid/",
+            "graphsanddata": "http://www.zillow.com/homedetails/33-Bond-St-Brooklyn-NY-11201/300079009_zpid/#charts-and-data",
+            "mapthishome": "http://www.zillow.com/homes/300079009_zpid/",
+            "comparables": "http://www.zillow.com/homes/comps/300079009_zpid/"
+        },
+        "address": {
+            "street": "33 Bond St",
+            "zipcode": "11201",
+            "city": "Brooklyn",
+            "state": "NY",
+            "latitude": "40.68849",
+            "longitude": "-73.983569"
+        },
+        "zestimate": {
+            "amount": {
+                "@currency": "USD",
+                "#text": "803266"
+            },
+            "last-updated": "10/29/2019",
+            "oneWeekChange": {
+                "@deprecated": "true"
+            },
+            "valueChange": {
+                "@duration": "30",
+                "@currency": "USD",
+                "#text": "-323832"
+            },
+            "valuationRange": {
+                "low": {
+                    "@currency": "USD",
+                    "#text": "714907"
+                },
+                "high": {
+                    "@currency": "USD",
+                    "#text": "931789"
+                }
+            },
+            "percentile": "0"
+        },
+        "rentzestimate": {
+            "amount": {
+                "@currency": "USD",
+                "#text": "12000"
+            },
+            "last-updated": "10/28/2019",
+            "oneWeekChange": {
+                "@deprecated": "true"
+            },
+            "valueChange": {
+                "@duration": "30",
+                "@currency": "USD",
+                "#text": "2242"
+            },
+            "valuationRange": {
+                "low": {
+                    "@currency": "USD",
+                    "#text": "4800"
+                },
+                "high": {
+                    "@currency": "USD",
+                    "#text": "15000"
+                }
+            }
+        },
+        "localRealEstate": {
+            "region": {
+                "@name": "Downtown",
+                "@id": "270825",
+                "@type": "neighborhood",
+                "zindexValue": "926,500",
+                "links": {
+                    "overview": "http://www.zillow.com/local-info/NY-New-York/Downtown/r_270825/",
+                    "forSaleByOwner": "http://www.zillow.com/downtown-brooklyn-new-york-ny/fsbo/",
+                    "forSale": "http://www.zillow.com/downtown-brooklyn-new-york-ny/"
+                }
+            }
+        }
+    },
+    {
+        "zpid": "300080881",
+        "links": {
+            "homedetails": "https://www.zillow.com/homedetails/33-Bond-St-Brooklyn-NY-11201/300080881_zpid/",
+            "graphsanddata": "http://www.zillow.com/homedetails/33-Bond-St-Brooklyn-NY-11201/300080881_zpid/#charts-and-data",
+            "mapthishome": "http://www.zillow.com/homes/300080881_zpid/",
+            "comparables": "http://www.zillow.com/homes/comps/300080881_zpid/"
+        },
+        "address": {
+            "street": "33 Bond St",
+            "zipcode": "11201",
+            "city": "Brooklyn",
+            "state": "NY",
+            "latitude": "40.68849",
+            "longitude": "-73.983569"
+        },
+        "zestimate": {
+            "amount": {
+                "@currency": "USD",
+                "#text": "810381"
+            },
+            "last-updated": "10/29/2019",
+            "oneWeekChange": {
+                "@deprecated": "true"
+            },
+            "valueChange": {
+                "@duration": "30",
+                "@currency": "USD",
+                "#text": "-320577"
+            },
+            "valuationRange": {
+                "low": {
+                    "@currency": "USD",
+                    "#text": "721239"
+                },
+                "high": {
+                    "@currency": "USD",
+                    "#text": "948146"
+                }
+            },
+            "percentile": "0"
+        },
+        "rentzestimate": {
+            "amount": {
+                "@currency": "USD",
+                "#text": "12000"
+            },
+            "last-updated": "10/28/2019",
+            "oneWeekChange": {
+                "@deprecated": "true"
+            },
+            "valueChange": {
+                "@duration": "30",
+                "@currency": "USD",
+                "#text": "2242"
+            },
+            "valuationRange": {
+                "low": {
+                    "@currency": "USD",
+                    "#text": "4800"
+                },
+                "high": {
+                    "@currency": "USD",
+                    "#text": "15000"
+                }
+            }
+        },
+        "localRealEstate": {
+            "region": {
+                "@name": "Downtown",
+                "@id": "270825",
+                "@type": "neighborhood",
+                "zindexValue": "926,500",
+                "links": {
+                    "overview": "http://www.zillow.com/local-info/NY-New-York/Downtown/r_270825/",
+                    "forSaleByOwner": "http://www.zillow.com/downtown-brooklyn-new-york-ny/fsbo/",
+                    "forSale": "http://www.zillow.com/downtown-brooklyn-new-york-ny/"
+                }
+            }
+        }
+    }
+]
