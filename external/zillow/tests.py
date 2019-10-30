@@ -11,8 +11,7 @@ class ZillowTests(TestCase):
     def test_fetch_zillow_housing(self, mock_requests):
         mock_requests.get().content = get_zillow_response()
         fetch_zillow_housing(
-            zwsid="dummy",
-            address="Jay St", zipcode="11201", show_rent_z_estimate=True
+            zwsid="dummy", address="Jay St", zipcode="11201", show_rent_z_estimate=True
         )
         mock_requests.get.assert_called()
 
