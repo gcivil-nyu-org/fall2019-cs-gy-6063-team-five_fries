@@ -22,7 +22,10 @@ class LoginView(TemplateView):
 
 
 def index(request):
-    return render(request, "index.html")
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("search"))
+    else:
+        return render(request, "index.html")
 
 
 def account(request):
