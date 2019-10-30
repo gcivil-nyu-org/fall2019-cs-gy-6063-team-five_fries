@@ -105,6 +105,24 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Get Zillow Listings")
         self.assertContains(response, "Get Craigslist Listings")
 
+    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
+    def test_search_index_with_zip(self):
+        """
+        Tests the search page being retrieved with a zip code
+        passed in
+        """
+        response = self.client.get("/search/?zipcode=10000")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Zip Code:")
+
+    def test_search_index_no_zip(self):
+        """
+        tests the search page with an incomplete zip passed in
+        """
+        response = self.client.get("/search/?zipcode=")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Zip Code:")
+
 
 class SearchCraigsTests(TestCase):
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)

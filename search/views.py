@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.views import generic
 from django.utils import timezone
 from .GetRentalHouse import get_rental_house
@@ -32,19 +31,33 @@ def search(request):
                 "result"
             ]
             return render(request, "search/result.html", {"z_results": results})
+    # generic zip code form post
+    elif request.method == "GET":
+        zip_code = request.GET.get("zipcode")
+        search_data = {}
+        if zip_code:
+            search_data["locations"] = fetch_craigslist_housing(
+                limit=25,  # FIXME: temporarily limit the results up to 25 for the fast response
+                site="newyork",
+                category="apa",
+                filters={"zip_code": str(zip_code)},
+            )
+        # TODO add 311 statistics
+        """
+        try:
+            search_data['stats'] = get_311_statistics(str(zip_code))
+        except TimeoutError:
+            return render(request, "search/statistics_311.htm", {"timeout": True})
+        """
+        return render(
+            request,
+            "search/search.html",
+            {"search_data": search_data, "zip": str(zip_code)},
+        )
     else:
         # render an error
         form = ZillowSearchForm()
         return render(request, "search/search.html", {"form": form})
-
-
-# TODO: Display data beautifully
-def result(request):
-    return HttpResponse("Result Page")
-
-
-def error(request):
-    return HttpResponse("This is index of Error")
 
 
 def data_311(request):
