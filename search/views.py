@@ -33,6 +33,7 @@ def search(request):
             return render(request, "search/result.html", {"z_results": results})
     # generic zip code form post
     elif request.method == "GET":
+        timeout = False
         zip_code = request.GET.get("zipcode")
         search_data = {}
         if zip_code:
@@ -42,17 +43,25 @@ def search(request):
                 category="apa",
                 filters={"zip_code": str(zip_code)},
             )
-        # TODO add 311 statistics
-        """
-        try:
-            search_data['stats'] = get_311_statistics(str(zip_code))
-        except TimeoutError:
-            return render(request, "search/statistics_311.htm", {"timeout": True})
-        """
+
+            # Get 311 statistics
+            try:
+                search_data['stats'] = get_311_statistics(str(zip_code))
+            except TimeoutError:
+                timeout = True
+
+            # Get 311 raw complaints
+            try:
+                search_data['complaints'] = get_311_data(str(zip_code))
+                no_matches = len(search_data['complaints']) == 0
+            except TimeoutError:
+                timeout = True
+
+
         return render(
             request,
             "search/search.html",
-            {"search_data": search_data, "zip": str(zip_code)},
+            {"search_data": search_data, "zip": str(zip_code), "timeout": timeout, "no_matches": no_matches},
         )
     else:
         # render an error
@@ -79,7 +88,7 @@ def data_311(request):
         try:
             results = get_311_statistics(str(zip_code))
         except TimeoutError:
-            return render(request, "search/statistics_311.htm", {"timeout": True})
+            return render(request, "search/statistics_311.html", {"timeout": True})
 
         return render(
             request,
