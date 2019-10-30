@@ -6,9 +6,9 @@ from .models import ZillowHousing
 
 
 def fetch_zillow_housing(
-    *, address, city_state=None, zipcode=None, show_rent_z_estimate
+    *, zwsid=None, address, city_state=None, zipcode=None, show_rent_z_estimate
 ) -> List[Dict[str, any]]:
-    zwsid = get_zws_id()
+    zwsid = zwsid or get_zws_id()
     if not zwsid:
         raise Exception("No ZWSID")
 
