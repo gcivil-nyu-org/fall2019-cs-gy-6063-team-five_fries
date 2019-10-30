@@ -11,7 +11,7 @@ class BaseTemplateTestCase(TestCase):
     def test_my_account_on_header(self):
         """If a user has been logged in, My Account should be shown in the header"""
         self.client.force_login(User.objects.get_or_create(username="testuser")[0])
-        response = self.client.get(reverse("index"))
+        response = self.client.get(reverse("search"))
         soup = BeautifulSoup(response.content, "html.parser")
         nav = soup.find("nav", class_="navbar")
         self.assertIn("My Account", nav.text)
