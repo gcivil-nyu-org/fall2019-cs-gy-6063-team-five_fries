@@ -2,6 +2,16 @@
 
 {% load crispy_forms_tags %}
 
+{%  block script %}
+<script>
+$(document).ready(function(){
+  $("#complaints_button").click(function(){
+    $("#complaints").toggle();
+  });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container h-100">
     <div class="row justify-content-center h-30">
@@ -80,8 +90,8 @@
                 <br>
                 <li><h5>{{ result.complaint_type }} Complaints</h5></li>
                 <ul>
-    {#                complaint levels are displayed in different colors depending on the complaint level#}
-    {#                0-1 (low complaints) -- green, 2-3 (medium complaints) -- orange, 4-5 (high complaints) -- red#}
+                    <!-- complaint levels are displayed in different colors depending on the complaint level -->
+                    <!-- 0-1 (low complaints) -- green, 2-3 (medium complaints) -- orange, 4-5 (high complaints) -- red -->
                     {% if result.complaint_level == 0 or result.complaint_level == 1 %}
                         <li style="color:green">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
 

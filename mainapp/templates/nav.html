@@ -9,13 +9,8 @@
         <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
         <title>NYC CityStreets</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script>
-        $(document).ready(function(){
-          $("#complaints_button").click(function(){
-            $("#complaints").toggle();
-          });
-        });
-        </script>
+        {% block script %}
+        {% endblock %}
     </head>
     <body>
         <header>
