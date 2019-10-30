@@ -30,3 +30,7 @@ footer {
 .results-table tbody tr {
     width: 100%
 }
+
+.hidden{
+    display: none;
+}
