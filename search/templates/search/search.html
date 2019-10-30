@@ -20,11 +20,13 @@ $(document).ready(function(){
                 <div class="col-5">
                     <h2>Search All Locations</h2>
                     <form action="{% url 'search' %}" method="GET">
-
-                        Zip Code (5 digits): <input type="text" id="zip_code" name="zipcode" minlength="5" maxlength="5"
-                            required pattern="\d*">
-                        <p></p>
-                        <input type="submit" class="btn btn-primary" value="Go">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Zip Code (5 digits)" id="zip_code" name="zipcode"
+                                minlength="5" maxlength="5" required pattern="\d*">
+                            <div class="input-group-append">
+                                <input type="submit" class="btn btn-primary" value="Go">
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
