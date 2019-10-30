@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.views import generic
 from django.utils import timezone
 from .GetRentalHouse import get_rental_house
@@ -59,15 +58,6 @@ def search(request):
         # render an error
         form = ZillowSearchForm()
         return render(request, "search/search.html", {"form": form})
-
-
-# TODO: Display data beautifully
-def result(request):
-    return HttpResponse("Result Page")
-
-
-def error(request):
-    return HttpResponse("This is index of Error")
 
 
 def data_311(request):
