@@ -27,21 +27,6 @@ $(document).ready(function(){
                         <input type="submit" class="btn btn-primary" value="Go">
                     </form>
                 </div>
-                <div class="col-7">
-                    <h2>Search Zillow</h2>
-                    <form action="{% url 'search' %}" method="post">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <button type="submit" class="btn btn-primary" name="zillow">Get Zillow Listings</button>
-                    </form>
-                    <hr class="mt-0 mb-2 mt-2">
-                    <h2>Search Craigslist</h2>
-                    <hr class="mt-0 mb-2">
-                    <form action="{% url 'clist_results' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary" name="craigslist">Get Craigslist Listings</button>
-                    </form>
-                </div>
             </div>
         </div>
     </div>

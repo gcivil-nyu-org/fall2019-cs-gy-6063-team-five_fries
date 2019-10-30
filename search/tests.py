@@ -102,8 +102,9 @@ class SearchIndexViewTests(TestCase):
         """
         response = self.client.get(reverse("search"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Get Zillow Listings")
-        self.assertContains(response, "Get Craigslist Listings")
+        self.assertContains(response, "Search All Locations")
+        self.assertContains(response, "Zip Code")
+        self.assertContains(response, "Go")
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     def test_search_index_with_zip(self):
