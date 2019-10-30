@@ -5,15 +5,23 @@
 <h1>Result</h1>
 <ul>
     {% for result in z_results %}
+    <li>
+    <ul>
         <li>Zpid: {{ result.zpid }}</li>
-        <li>Address:</li>
-            <li>Street: {{ result.address.street }}</li>
-            <li>ZIP code: {{ result.address.zipcode }}</li>
-        <li>Rent:</li>
-            <li>Price: {{ result.rentzestimate.amount.currency}} {{ result.rentzestimate.amount.text}}</li>
-            <li>Update-time: {{ result.rentzestimate.lastupdated }}</li>
-        <br></br>
-        
+        <li>Address:
+            <ul>
+                <li>Street: {{ result.address.street }}</li>
+                <li>ZIP code: {{ result.address.zipcode }}</li>
+            </ul>
+        </li>
+        <li>Rent:
+            <ul>
+                <li>Price: {{ result.estimated_rent_price_for_display}}</li>
+                <li>Update-time: {{ result.last_estimated }}</li>
+            </ul>
+        </li>
+    </ul>
+    </li>
     {% empty %}
         <li>No house to rent in this area yet.</li>
     {% endfor %}
