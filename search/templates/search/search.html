@@ -2,27 +2,31 @@
 
 {% load crispy_forms_tags %}
 
+{%  block script %}
+<script>
+$(document).ready(function(){
+  $("#complaints_button").click(function(){
+    $("#complaints").toggle();
+  });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container h-100">
     <div class="row justify-content-center h-30">
         <div class="col-12">
             <div class="row">
-                <div class="col-4">
-                    <!--zip search form will go here-->
-                </div>
-                <div class="col-8">
-                    <h2>Search Zillow</h2>
-                    <form action="{% url 'search' %}" method="post">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <button type="submit" class="btn btn-primary" name="zillow">Get Zillow Listings</button>
-                    </form>
-                    <hr class="mt-0 mb-2 mt-2">
-                    <h2>Search Craigslist</h2>
-                    <hr class="mt-0 mb-2">
-                    <form action="{% url 'clist_results' %}" method="post">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary" name="craigslist">Get Craigslist Listings</button>
+                <div class="col-5">
+                    <h2>Search All Locations</h2>
+                    <form action="{% url 'search' %}" method="GET">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Zip Code (5 digits)" id="zip_code" name="zipcode"
+                                minlength="5" maxlength="5" required pattern="\d*">
+                            <div class="input-group-append">
+                                <input type="submit" class="btn btn-primary" value="Go">
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -31,16 +35,111 @@
     {% if search_data.locations %}
     <hr class="mt-0 mb-2 mt-2">
     <div class="row h-65">
-        <p>some content here</p>
+        <div class="col">
+            <p><strong>Zip Code:</strong> {{ zip }}</p>
+            <table class="table table-striped table-bordered table-hover table-sm results-table" width="100%">
+                <thead>
+                    <tr>
+                        <th scope="col" class="th-sm">ID</th>
+                        <th scope="col" class="th-sm">Price</th>
+                        <th scope="col" class="th-sm">Where</th>
+                        <th scope="col" class="th-sm">Bedrooms</th>
+                        <th scope="col" class="th-sm">Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in search_data.locations %}
+                    <tr>
+                        <td scope="row">{{ item.id }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.where }}</td>
+                        <td>{{ item.bedrooms }}</td>
+                        <td>
+                            <div class="text-center">
+                                <button class="btn seccondaryAction btn-outline-primary">More Details</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     {% endif %}
     {% if search_data.stats %}
+        <hr class="mt-0 mb-2 mt-2">
+        {% if timeout %}
+            <p style="color:red">Timeout occurred.</p>
+        {% else %}
+            <h5>311 Data Statistics for Zip Code: {{ zip }}</h5>
+            <ol>
+            {% for result in search_data.stats %}
+                <br>
+                <li><h5>{{ result.complaint_type }} Complaints</h5></li>
+                <ul>
+                    <!-- complaint levels are displayed in different colors depending on the complaint level -->
+                    <!-- 0-1 (low complaints) -- green, 2-3 (medium complaints) -- orange, 4-5 (high complaints) -- red -->
+                    {% if result.complaint_level == 0 or result.complaint_level == 1 %}
+                        <li style="color:green">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
+
+                    {% elif result.complaint_level == 2 or result.complaint_level == 3 %}
+                        <li style="color:orange">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
+
+                    {% elif result.complaint_level == 4 or result.complaint_level == 5 %}
+                        <li style="color:red">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
+
+                    {% else %}
+                        <li>{{ result.complaint_type }} Level (0 - 5): Invalid {{ result.complaint_type }} Level</li>
+                    {% endif %}
+
+                    <li>Total {{ result.complaint_type }} Complaints: {{ result.total_complaints_query_zip }}</li>
+                    <li>Closed {{ result.complaint_type }} Complaints: {{ result.closed_complaints_query_zip }}</li>
+                    <li>Percentage {{ result.complaint_type }} Complaints Closed: {{ result.percentage_complaints_closed }}%</li>
+                    <li>Most {{ result.complaint_type }} Violations in Neighborhood: {{ result.max_complaints_zip }} ({{ result.max_complaints }} complaints)</li>
+                </ul>
+
+            {% endfor %}
+            </ol>
+        {% endif %}
+    {% endif %}
+
     <hr class="mt-0 mb-2 mt-2">
-    <div class="row h-35">
-        <p>some content here</p>
-    </div>
+
+
+    {% if search_data.complaints %}
+        <button class="btn btn-primary" id="complaints_button">Display/Hide Complaints</button>
+        <div id="complaints" class="hidden">
+        <hr class="mt-0 mb-2 mt-2">
+        {% if timeout %}
+            <p style="color:red">Timeout occurred.</p>
+
+        {% else %}
+            <h5>311 Data Complaints for Zip Code: {{ zip }}</h5>
+            <ol>
+            {% for result in search_data.complaints %}
+                <li><h5>Complaint Results</h5></li>
+                <ul>
+                <li>Date Created: {{ result.created_date }}</li>
+                <li>Incident Address</li>
+                    <ul>
+                    <li>Street Address: {{ result.incident_address }}</li>
+                    <li>ZIP Code: {{ result.incident_zip }}</li>
+                    <li>City: {{ result.city }}</li>
+                    </ul>
+
+                <li>Complaint</li>
+                    <ul>
+                    <li>Complaint Type: {{ result.complaint_type }}</li>
+                    <li>Description: {{ result.descriptor }}</li>
+                    <li>Status: {{ result.status }}</li>
+                    </ul>
+                </ul>
+                <hr class="mt-0 mb-2 mt-2">
+            {% endfor %}
+            </ol>
+        {% endif %}
+        </div>
     {% endif %}
 </div>
-
 
 {% endblock %}

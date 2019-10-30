@@ -1,12 +1,11 @@
 from django.test import TestCase
 from django.utils import timezone
 from django.urls import reverse
+from unittest import mock
 
 import datetime
 from .models import CraigslistLocation, LastRetrievedData
-
-
-# Create your tests here.
+from external.craigslist.stub import fetch_craigslist_housing
 
 
 def create_c_location(
@@ -103,16 +102,35 @@ class SearchIndexViewTests(TestCase):
         """
         response = self.client.get(reverse("search"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Get Zillow Listings")
-        self.assertContains(response, "Get Craigslist Listings")
+        self.assertContains(response, "Search All Locations")
+        self.assertContains(response, "Zip Code")
+        self.assertContains(response, "Go")
+
+    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
+    def test_search_index_with_zip(self):
+        """
+        Tests the search page being retrieved with a zip code
+        passed in
+        """
+        response = self.client.get("/search/?zipcode=10000")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Zip Code:")
+
+    def test_search_index_no_zip(self):
+        """
+        tests the search page with an incomplete zip passed in
+        """
+        response = self.client.get("/search/?zipcode=")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Zip Code:")
 
 
 class SearchCraigsTests(TestCase):
+    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     def test_search_clist_results(self):
         """
         Tests the craigslist result page
         """
         pass
-        # TODO: uncomment it after we mock the craigslist API
-        # response = self.client.get(reverse("clist_results"))
-        # self.assertEqual(response.status_code, 200)
+        response = self.client.get(reverse("clist_results"))
+        self.assertEqual(response.status_code, 200)

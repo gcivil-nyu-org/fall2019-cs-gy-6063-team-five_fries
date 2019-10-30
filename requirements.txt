@@ -23,3 +23,4 @@ jsonfield
 Pillow
 pep8-naming
 bs4
+attrs
