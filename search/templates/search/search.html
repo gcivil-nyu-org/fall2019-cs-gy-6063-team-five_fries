@@ -107,10 +107,11 @@
     {% endif %}
 
     <hr class="mt-0 mb-2 mt-2">
-    <button class="btn btn-primary" id="complaints_button">Display/Hide Complaints</button>
 
-    <div id="complaints" class="hidden">
+
     {% if search_data.complaints %}
+        <button class="btn btn-primary" id="complaints_button">Display/Hide Complaints</button>
+        <div id="complaints" class="hidden">
         <hr class="mt-0 mb-2 mt-2">
         {% if timeout %}
             <p style="color:red">Timeout occurred.</p>
@@ -140,10 +141,8 @@
             {% endfor %}
             </ol>
         {% endif %}
-    {% elif no_matches %}
-        <p style="color:red">No matches were found.</p>
+        </div>
     {% endif %}
-    </div>
 </div>
 
 {% endblock %}
