@@ -5,10 +5,10 @@ from django.contrib.auth.decorators import login_required
 
 
 def index(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("search"))
-    else:
-        return render(request, "index.html")
+    # if request.user.is_authenticated:
+    #    return HttpResponseRedirect(reverse("search"))
+    # else:
+    return render(request, "mainapp/index.html")
 
 
 @login_required
