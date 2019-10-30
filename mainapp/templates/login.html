@@ -6,13 +6,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-6">
-            <h2>Login <button onclick="goBack()">Back</button></h2>
-            <script>
-                function goBack() {
-                window.history.back();
-                }
-            </script>
-
+            <h2>Login</h2>
             <form method="post" action"{% url 'login' %}">
                 {% csrf_token %}
                 <div class="form-group">
@@ -26,6 +20,13 @@
                         required>
                 </div>
                 <input type="submit" class="btn btn-primary" value="Login">
+                <a>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</a>
+                <button class="btn btn-primary" onclick="goBack()">Back</button>
+                <script>
+                function goBack() {
+                window.history.back();
+                }
+                </script>
             </form>
         </div>
     </div>
