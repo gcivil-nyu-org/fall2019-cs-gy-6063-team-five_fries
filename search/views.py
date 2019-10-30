@@ -46,22 +46,26 @@ def search(request):
 
             # Get 311 statistics
             try:
-                search_data['stats'] = get_311_statistics(str(zip_code))
+                search_data["stats"] = get_311_statistics(str(zip_code))
             except TimeoutError:
                 timeout = True
 
             # Get 311 raw complaints
             try:
-                search_data['complaints'] = get_311_data(str(zip_code))
-                no_matches = len(search_data['complaints']) == 0
+                search_data["complaints"] = get_311_data(str(zip_code))
+                no_matches = len(search_data["complaints"]) == 0
             except TimeoutError:
                 timeout = True
-
 
         return render(
             request,
             "search/search.html",
-            {"search_data": search_data, "zip": str(zip_code), "timeout": timeout, "no_matches": no_matches},
+            {
+                "search_data": search_data,
+                "zip": str(zip_code),
+                "timeout": timeout,
+                "no_matches": no_matches,
+            },
         )
     else:
         # render an error
