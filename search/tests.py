@@ -119,7 +119,7 @@ class SearchIndexViewTests(TestCase):
         """
         tests the search page with an incomplete zip passed in
         """
-        response = self.client.get("/search/?sipcode=")
+        response = self.client.get("/search/?zipcode=")
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "Zip Code:")
 
