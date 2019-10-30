@@ -25,6 +25,3 @@ class MapIndexViewTestcase(TestCase):
     def test_map_index(self):
         response = self.client.get(reverse("mapview"))
         self.assertEqual(response.status_code, 200)
-
-
-class GetImgURLTestCase(TestCase):
