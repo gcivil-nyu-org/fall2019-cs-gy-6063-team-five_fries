@@ -113,7 +113,15 @@ class SearchIndexViewTests(TestCase):
         """
         response = self.client.get("/search/?zipcode=10000")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Zip Code")
+        self.assertContains(response, "Zip Code:")
+
+    def test_search_index_no_zip(self):
+        '''
+        tests the search page with an incomplete zip passed in
+        '''
+        response = self.client.get("/search/?sipcode=")
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "Zip Code:")
 
 
 class SearchCraigsTests(TestCase):
