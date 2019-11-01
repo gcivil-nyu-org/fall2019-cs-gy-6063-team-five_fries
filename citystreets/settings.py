@@ -15,7 +15,13 @@ import django_heroku
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = "&fnx8u(w_wkn$by1)@z233)w)vg5u(@bmt=aaom^i6(dxvt_!4"
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
 
 # Quick-start development settings - unsuitable for production
@@ -73,6 +79,15 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_FORMS = {"signup": "mainapp.forms.SiteUserSignupForm"}
 
 AUTH_USER_MODEL = "mainapp.SiteUser"
+
+# Email information
+EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.gmail.com"
+# EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]  # noqa: F405
+EMAIL_HOST_USER = "team.five.fries@gmail.com"
+# EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]  # noqa: F405
+EMAIL_HOST_PASSWORD = "90d#C0Yx4EHxh4!mN4er1Z7"
+EMAIL_PORT = 587
 # end allauth settings
 
 ROOT_URLCONF = "citystreets.urls"
