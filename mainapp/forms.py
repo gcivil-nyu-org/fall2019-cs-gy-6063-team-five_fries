@@ -7,6 +7,7 @@ from phonenumber_field.formfields import PhoneNumberField
 
 
 class SiteUserSignupForm(SignupForm):
+    email = forms.EmailField()
     full_name = forms.CharField(max_length=255, label="Full Name")
     current_location = forms.CharField(max_length=255, label="Current Location")
     work_location = forms.CharField(max_length=255, label="Work Location")
@@ -15,7 +16,6 @@ class SiteUserSignupForm(SignupForm):
         choices=tuple([(k, v) for k, v in SiteUser.user_type_string_map.items()]),
         label="Type",
     )
-    email = forms.EmailField()
 
     def save(self, request):
         user = super(SiteUserSignupForm, self).save(request)
