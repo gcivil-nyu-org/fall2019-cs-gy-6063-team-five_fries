@@ -6,7 +6,7 @@
         {% if request.user.is_authenticated %}
         <div class="col">
             <p>Welcome, {{ request.user.username }}</p>
-            <a href="{% url 'account_logout' %}" class="button secondaryAction">Logout</a>
+            <a href="{% url 'account_logout' %}">Logout</a>
         </div>
         <div class="col-sm text-center">
             <a href="{% url 'search' %}"><button class="btn btn-primary">Search</button></a>
