@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row ">
+        {% if request.user.is_authenticated %}
+        <p>Welcome, {{ request.user.username }}</p>
+        {% else %}
+        <div class="col-sm text-center">
+            <a href="search"><button class="btn btn-primary">Search</button></a>
+        </div>
+        <div class="col-sm text-center">
+            <a href="login"><button class="btn btn-primary">Sign In</button></a>
+        </div>
+        <div class="col-sm text-center">
+            <a href="signup"><button class="btn btn-primary">Sign Up</button></a>
+        </div>
+        {% endif %}
+    </div>
+    <div class="row">
+        <div class="col-sm text-center">
+            <form method="POST" action="{% url 'geo' %}">
+                {% csrf_token %}
+                <input type="text" id="geotext" name="geotext" required>
+                <input type="submit" class="btn btn-primary" value="Geo">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
