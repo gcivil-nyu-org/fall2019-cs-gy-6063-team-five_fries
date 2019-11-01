@@ -26,3 +26,5 @@ bs4
 attrs
 django-allauth
 django-localflavor
+pygeocoder
+googlemaps
