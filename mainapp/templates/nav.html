@@ -38,35 +38,36 @@
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#">Disabled</a>
                         </li>-->
-                    </ul>
-                    {% block navformcontent %}
-                    {% endblock %}
-                    <!-- example navformcontent -->
-                    <!--<form class="form-inline mt-2 mt-md-0">
+                </ul>
+                {% block navformcontent %}
+                {% endblock %}
+                <!-- example navformcontent -->
+                <!--<form class="form-inline mt-2 mt-md-0">
                         <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
                     </form>-->
-                    <ul class="navbar-nav ml-auto">
-                        <!-- right aligned items -->
-                        <li class="nav-item active">
-                            {% if request.user.is_authenticated %}
-                            <a class="nav-link"  href="{% url 'account' %}">My Account ({{ request.user.username}})</a>
-                            {% else %}
-                            <a class="nav-link"  href="{% url 'login' %}">Log In</a>
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            {% block header %}
-            {% endblock %}
-        </header>
-        {% block body %}
-        {% endblock %}
-        <footer class="footer fixed-bottom">
-            <div class="container">
-                <span class="text-muted">NYCityStreets</span>
+                <ul class="navbar-nav ml-auto">
+                    <!-- right aligned items -->
+                    <li class="nav-item active">
+                    {% if request.user.is_authenticated %}
+                        <a class="nav-link" href="/account">My Account ({{ request.user.username}})</a>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'account_login' %}">Log In</a>
+                    {% endif %}
+                    </li>
+                </ul>
             </div>
-        </footer>
-    </body>
+        </nav>
+        {% block header %}
+        {% endblock %}
+    </header>
+    {% block body %}
+    {% endblock %}
+    <footer class="footer fixed-bottom">
+        <div class="container">
+            <span class="text-muted">NYCityStreets</span>
+        </div>
+    </footer>
+</body>
+
 </html>

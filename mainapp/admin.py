@@ -1,10 +1,29 @@
 from django.contrib import admin
-
-from .models import Profile
-
-
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ["__str__", "timestamp", "updated"]
+from django.contrib.auth.admin import UserAdmin
+from .models import SiteUser
 
 
-admin.site.register(Profile, ProfileAdmin)
+class SiteUserAdmin(UserAdmin):
+    list_display = ["username", "email", "updated"]
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    # "id",
+                    "first_name",
+                    "last_name",
+                    "phone_number",
+                    "current_location",
+                    "work_location",
+                    "user_type",
+                )
+            },
+        ),
+    )
+
+    class Meta:
+        model = SiteUser
+
+
+admin.site.register(SiteUser, SiteUserAdmin)

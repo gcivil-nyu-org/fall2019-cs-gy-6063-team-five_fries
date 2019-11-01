@@ -24,3 +24,4 @@ Pillow
 pep8-naming
 bs4
 attrs
+django-allauth
