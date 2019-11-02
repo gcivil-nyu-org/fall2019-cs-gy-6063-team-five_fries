@@ -41,10 +41,11 @@ def search(request):
 def geo(request):
     req = request.POST.get("geotext")
 
-    result = fetch_geocode(str(req))
+    results = fetch_geocode(str(req))
 
-    pretty = json.dumps(result.__dict__, sort_keys=True, indent=4)
+    # obj = json.loads(results)
+    pretty = json.dumps(str(results), sort_keys=True, indent=4)
 
     return HttpResponse(
-        f"Your search was {req} and response was {result} and pretty: {pretty}"
+        f"Your search was {req} and response was {results} and pretty: {pretty}"
     )

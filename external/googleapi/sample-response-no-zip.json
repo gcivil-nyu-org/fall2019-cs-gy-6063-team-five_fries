@@ -9,13 +9,6 @@
             "types": ["route"]
         },
         {
-            "long_name": "11103",
-            "short_name": "11103",
-            "types": [
-                "postal_code"
-            ]
-        },
-        {
             "long_name": "Long Island City",
             "short_name": "LIC",
             "types": [
@@ -86,7 +79,7 @@
         }
     },
     "place_id": "ChIJPX80rBRfwokRcw53oIpf_Dc",
-    "postal": "11103",
+    "postal": "",
     "postcode_localities": [
         "Astoria",
         "Long Island City"

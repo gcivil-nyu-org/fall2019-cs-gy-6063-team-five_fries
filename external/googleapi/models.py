@@ -9,11 +9,15 @@ class GeocodeAddressComponent(object):
     types: List[str] = attr.ib(factory=list)
 
     @classmethod
+    def list_converter(cls, list):
+        return [GeocodeAddressComponent.get_converter(li) for li in list]
+
+    @classmethod
     def get_converter(cls, ob):
         if isinstance(ob, GeocodeAddressComponent):
-            return cls.from_obj
+            return cls.from_obj(ob)
         else:
-            return cls.from_dict
+            return cls.from_dict(ob)
 
     @classmethod
     def from_dict(cls, dic):
@@ -32,9 +36,9 @@ class GeocodeLocation(object):
     @classmethod
     def get_converter(cls, ob):
         if isinstance(ob, GeocodeLocation):
-            return cls.from_obj
+            return cls.from_obj(ob)
         else:
-            return cls.from_dict
+            return cls.from_dict(ob)
 
     @classmethod
     def from_dict(cls, dic):
@@ -53,9 +57,9 @@ class GeocodeViewport(object):
     @classmethod
     def get_converter(cls, ob):
         if isinstance(ob, GeocodeViewport):
-            return cls.from_obj
+            return cls.from_obj(ob)
         else:
-            return cls.from_dict
+            return cls.from_dict(ob)
 
     @classmethod
     def from_dict(cls, dic):
@@ -68,7 +72,7 @@ class GeocodeViewport(object):
 
 @attr.s
 class GeocodeGeometry(object):
-    # bounds: GeocodeViewport = attr.ib(converter=GeocodeViewport.get_converter)
+    bounds: GeocodeViewport = attr.ib(converter=GeocodeViewport.get_converter)
     location: GeocodeLocation = attr.ib(converter=GeocodeLocation.get_converter)
     location_type = attr.ib()
     viewport: GeocodeViewport = attr.ib(converter=GeocodeViewport.get_converter)
@@ -76,9 +80,9 @@ class GeocodeGeometry(object):
     @classmethod
     def get_converter(cls, ob):
         if isinstance(ob, GeocodeGeometry):
-            return cls.from_obj
+            return cls.from_obj(ob)
         else:
-            return cls.from_dict
+            return cls.from_dict(ob)
 
     @classmethod
     def from_dict(cls, dic):
@@ -87,7 +91,7 @@ class GeocodeGeometry(object):
     @classmethod
     def from_obj(cls, obj):
         return cls(
-            # bounds=obj.bounds,
+            bounds=obj.bounds,
             location=obj.location,
             location_type=obj.location_type,
             viewport=obj.viewport,
@@ -101,16 +105,17 @@ class GeocodeResponse(object):
     postal = attr.ib(converter=str)
     geometry: GeocodeGeometry = attr.ib(converter=GeocodeGeometry.get_converter)
     postcode_localities: List[str] = attr.ib(factory=list)
-    types: List[str] = attr.ib(factory=List)
-    address_components: List[GeocodeAddressComponent] = attr.ib(factory=list)
-    # plus_code: List[str] = attr.ib()
+    types: List[str] = attr.ib(factory=list)
+    address_components: List[GeocodeAddressComponent] = attr.ib(
+        converter=GeocodeAddressComponent.list_converter, factory=list
+    )
 
     @classmethod
     def get_converter(cls, ob):
         if isinstance(ob, GeocodeResponse):
-            return cls.from_obj
+            return cls.from_obj(ob)
         else:
-            return cls.from_dict
+            return cls.from_dict(ob)
 
     @classmethod
     def from_dict(cls, dict):
