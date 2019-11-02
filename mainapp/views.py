@@ -4,10 +4,7 @@ from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
-from secret import get_google_api_key
-
-from pygeocoder import Geocoder
-import googlemaps
+from external.googleapi.fetch import fetch_geocode
 
 import json
 
@@ -44,11 +41,7 @@ def search(request):
 def geo(request):
     req = request.POST.get("geotext")
 
-    # gmaps = googlemaps.Client(key=get_google_api_key())
-    coder = Geocoder(api_key=get_google_api_key())
-    result = coder.geocode(str(req))
-    # pyresult = dict(result)
-    # result = gmaps.geocode(str(req))
+    result = fetch_geocode(str(req))
 
     pretty = json.dumps(result.__dict__, sort_keys=True, indent=4)
 

@@ -3,6 +3,7 @@ from unittest import mock
 
 from .fetch import fetch_geocode
 from .stub import fetch_geocode as fetch_geocode_stub
+from .stub import fetch_geocode_response
 from .models import (
     GeocodeResponse,
     GeocodeAddressComponent,
@@ -12,14 +13,21 @@ from .models import (
 )
 
 
-@mock.patch("external.googleapi.fetch.fetch_geocode", fetch_geocode_stub)
 class GeocodeTests(TestCase):
+    @mock.patch("googlemaps.Client")
+    def test_geocode_request(self, mock_requests):
+        mock_requests.get().content = fetch_geocode_response()
+        fetch_geocode("11103")
+        mock_requests.get.assert_called()
+        mock_requests.get.assert_called_with()  # pretty sure this is incorrect
+
+    @mock.patch("external.googleapi.fetch.fetch_geocode", fetch_geocode_stub("11103"))
     def test_fetch_geocode(self):
         results = fetch_geocode("11103")
-        print(f"results: {results}")
         for result in results:
             self.assertTrue(isinstance(result, GeocodeResponse))
 
+    @mock.patch("external.googleapi.fetch.fetch_geocode", fetch_geocode_stub("11103"))
     def test_value(self):
 
         results = fetch_geocode("11103")
