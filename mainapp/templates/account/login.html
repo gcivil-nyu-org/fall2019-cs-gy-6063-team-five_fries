@@ -8,6 +8,9 @@
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
 {% block content %}
+<head>
+<style>a.indent {padding-left:23em}}</style></head>
+
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-7">
@@ -45,6 +48,9 @@
         {% endif %}
         <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
         <button class="btn btn-primary primaryAction" type="submit">{% trans "Sign In" %}</button>
+        <a class="indent">
+        <button class="btn btn-primary" onclick="goBack()">Back</button>
+        </a>
       </form>
     </div>
   </div>
