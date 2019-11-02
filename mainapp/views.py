@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.urls import reverse
 from secret import get_google_api_key
 
-# from pygeocoder import Geocoder
+from pygeocoder import Geocoder
 import googlemaps
 
 import json
@@ -29,7 +29,7 @@ class LoginView(TemplateView):
 
 
 def index(request):
-    return render(request, "mainapp/index.html")
+    return render(request, "index.html")
 
 
 @login_required
@@ -44,13 +44,13 @@ def search(request):
 def geo(request):
     req = request.POST.get("geotext")
 
-    gmaps = googlemaps.Client(key=get_google_api_key())
-    # coder = Geocoder(api_key=get_google_api_key())
-    # result = coder.geocode(str(req))
+    # gmaps = googlemaps.Client(key=get_google_api_key())
+    coder = Geocoder(api_key=get_google_api_key())
+    result = coder.geocode(str(req))
     # pyresult = dict(result)
-    result = gmaps.geocode(str(req))
+    # result = gmaps.geocode(str(req))
 
-    pretty = json.dumps(result, sort_keys=True, indent=4)
+    pretty = json.dumps(result.__dict__, sort_keys=True, indent=4)
 
     return HttpResponse(
         f"Your search was {req} and response was {result} and pretty: {pretty}"
