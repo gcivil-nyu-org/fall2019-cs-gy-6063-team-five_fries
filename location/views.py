@@ -1,3 +1,7 @@
-# from django.shortcuts import render
+from django.views import generic
+from .models import Location
 
-# Create your views here.
+
+class LocationView(generic.DetailView):
+    model = Location
+    template_name = "location.html"
