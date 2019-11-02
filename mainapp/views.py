@@ -29,7 +29,3 @@ def index(request):
 @login_required
 def account(request):
     return render(request, "account.html", {"user": request.user})
-
-
-def search(request):
-    return HttpResponseRedirect(reverse("search"))
