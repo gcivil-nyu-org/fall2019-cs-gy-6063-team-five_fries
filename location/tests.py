@@ -13,7 +13,6 @@ class LocationModelTests(TestCase):
 
     def test_google_map_url(self):
         loc = Location.objects.get(pk=1)
-        print(loc.google_map_url)
         self.assertTrue(
             "https://www.google.com/maps/search/?api=1&" in loc.google_map_url
         )
