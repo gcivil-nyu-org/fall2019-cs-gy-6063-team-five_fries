@@ -1,0 +1,62 @@
+[
+{
+    "model": "location.location",
+    "pk": 1,
+    "fields": {
+        "city": "Brooklyn",
+        "state": "NY",
+        "address": "6 MetroTech Center",
+        "zipcode": "11201",
+        "latitude": 40.694449,
+        "longitude": -73.986459
+    }
+},
+{
+    "model": "location.location",
+    "pk": 2,
+    "fields": {
+        "city": "Long Island City",
+        "state": "NY",
+        "address": "35-04 31st Ave",
+        "zipcode": "11106",
+        "latitude": 40.762716,
+        "longitude": -73.920231
+    }
+},
+{
+    "model": "location.location",
+    "pk": 3,
+    "fields": {
+        "city": "New York",
+        "state": "NY",
+        "address": "721 Broadway",
+        "zipcode": "10003",
+        "latitude": 40.729556,
+        "longitude": -73.993641
+    }
+},
+{
+    "model": "location.location",
+    "pk": 4,
+    "fields": {
+        "city": "The Bronx",
+        "state": "NY",
+        "address": "625 Burke Ave",
+        "zipcode": "10467",
+        "latitude": 40.871923,
+        "longitude": -73.869849
+    }
+},
+{
+    "model": "location.location",
+    "pk": 5,
+    "fields": {
+        "city": "Brooklyn",
+        "state": "NY",
+        "address": "279 83rd St",
+        "zipcode": "11209",
+        "latitude": 40.626118,
+        "longitude": -74.030419
+    }
+}
+]
