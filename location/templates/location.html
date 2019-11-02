@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block header %}
+{% load leaflet_tags %}
+{% load static %}
+{% leaflet_js %}
+{% leaflet_css %}
+
+<script type="text/javascript">
+  let latitude = {{ object.latitude }};
+  let longitude = {{ object.longitude }};
+  window.addEventListener("map:init", (event) => {
+    let zoomLevel = 13;
+    let map = event.detail.map.setView([latitude, longitude], zoomLevel);
+    L.marker([latitude, longitude])
+    .addTo(map)
+    .bindPopup(`<a target="_blank" href="{{object.google_map_url}}">Open Google Maps</a>`)
+    .openPopup();
+
+  });
+</script>
+{% endblock%}
+
+{% block content %}
+<h1>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h1>
+{% leaflet_map "leaflet_map_main" %}
+{% endblock %}

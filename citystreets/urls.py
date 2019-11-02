@@ -22,4 +22,5 @@ urlpatterns = [
     path("", include("mainapp.urls")),
     path("search/", include("search.urls")),
     path("map/", include("map.urls")),
+    path("location/", include("location.urls")),
 ]
