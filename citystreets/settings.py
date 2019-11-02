@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "map.apps.MapConfig",
     "leaflet",
     "djgeojson",
+    "localflavor",
 ]
 
 MIDDLEWARE = [
