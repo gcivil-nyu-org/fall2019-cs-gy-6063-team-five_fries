@@ -15,10 +15,12 @@ def mapview(request):
             url = '<a href="' + data.url + '" target="_blank">' + data.url + "</a>"
             description = data.price + "\n" + str(data.date_time) + "\n" + url
 
+            image_url = "../static/map/no_apa_pic.jpg"
             if data.has_image:
-                image_url = get_img_url(data.url)
-            else:
-                image_url = "../static/map/no_apa_pic.jpg"
+                try:
+                    image_url = get_img_url(data.url)
+                except requests.exceptions.ConnectionError:
+                    pass
 
             geom = dict({"type": "Point", "coordinates": [data.lon, data.lat]})
 
@@ -37,10 +39,12 @@ def mapview(request):
             url = '<a href="' + data.url + '" target="_blank">' + data.url + "</a>"
             description = data.price + "\n" + str(data.date_time) + "\n" + url
 
+            image_url = "../static/map/no_apa_pic.jpg"
             if data.has_image:
-                image_url = get_img_url(data.url)
-            else:
-                image_url = "../static/map/no_apa_pic.jpg"
+                try:
+                    image_url = get_img_url(data.url)
+                except requests.exceptions.ConnectionError:
+                    pass
 
             geom = dict({"type": "Point", "coordinates": [data.lon, data.lat]})
 
