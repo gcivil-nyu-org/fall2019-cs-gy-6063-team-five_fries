@@ -1,9 +1,10 @@
 from django.test import TestCase
 from unittest import mock
+import attr
 
 from .fetch import fetch_geocode
 from .stub import fetch_geocode as fetch_geocode_stub
-from .stub import fetch_geocode_response
+from .stub import fetch_geocode_response, MOCK_DATA
 from .models import (
     GeocodeResponse,
     GeocodeAddressComponent,
@@ -14,23 +15,38 @@ from .models import (
 
 
 class GeocodeTests(TestCase):
-    @mock.patch("googlemaps.Client")
-    def test_geocode_request(self, mock_requests):
-        mock_requests.get().content = fetch_geocode_response()
-        fetch_geocode("11103")
-        mock_requests.get.assert_called()
-        mock_requests.get.assert_called_with()  # pretty sure this is incorrect
+    @mock.patch("external.googleapi.fetch.googlemaps.Client")
+    def test_geocode_request(self, mock_client):
+        # mock_client.get().content = fetch_geocode_response()
+        mock_client().geocode = mock.MagicMock()
+        # mock_requests.geocode.assert_called_with(address="11103")
+        _ = fetch_geocode("11103")
+        # mock_client.get.assert_called()
+        mock_client().geocode.assert_called()
+        mock_client().geocode.assert_called_with(
+            address="11103"
+        )  # pretty sure this is incorrect
 
-    @mock.patch("external.googleapi.fetch.fetch_geocode", fetch_geocode_stub("11103"))
-    def test_fetch_geocode(self):
+    @mock.patch(
+        "external.googleapi.tests.fetch_geocode", side_effect=fetch_geocode_stub
+    )
+    def test_fetch_geocode(self, mock_geocode):
+        # mock_geocode.geocode = mock.MagicMock(return_value=MOCK_DATA)
         results = fetch_geocode("11103")
+        print(f"test_fetch_geocode RESULTS: {results}")
         for result in results:
-            self.assertTrue(isinstance(result, GeocodeResponse))
+            self.assertTrue(
+                isinstance(GeocodeResponse.from_dict(result), GeocodeResponse)
+            )
 
-    @mock.patch("external.googleapi.fetch.fetch_geocode", fetch_geocode_stub("11103"))
-    def test_value(self):
-
+    @mock.patch(
+        "external.googleapi.tests.fetch_geocode", side_effect=fetch_geocode_stub
+    )
+    def test_value(self, mock_geocode):
+        self.maxDiff = None
+        # mock_geocode.geocode = mock.MagicMock(return_value=MOCK_DATA)
         results = fetch_geocode("11103")
+
         precomputed_address1 = GeocodeAddressComponent(
             long_name="11103", short_name="11103", types=["postal_code"]
         )
@@ -63,6 +79,14 @@ class GeocodeTests(TestCase):
             long_name="United States", short_name="US", types=["country", "political"]
         )
 
+        precomputed_address7 = GeocodeAddressComponent(
+            long_name="28-15", short_name="28-15", types=["street_number"]
+        )
+
+        precomputed_address8 = GeocodeAddressComponent(
+            long_name="34th Street", short_name="34th St", types=["route"]
+        )
+
         precomputed_loc1 = GeocodeLocation(lat=40.771015, lng=-73.89322)
 
         precomputed_loc2 = GeocodeLocation(lat=40.753304, lng=-73.92283)
@@ -74,6 +98,7 @@ class GeocodeTests(TestCase):
         precomputed_loc3 = GeocodeLocation(lat=40.763374, lng=-73.910995)
 
         precomputed_geometry = GeocodeGeometry(
+            # bounds=precomputed_viewport,
             location=precomputed_loc3,
             location_type="APPROXIMATE",
             viewport=precomputed_viewport,
@@ -81,6 +106,8 @@ class GeocodeTests(TestCase):
 
         precomputed_response = GeocodeResponse(
             address_components=[
+                precomputed_address7,
+                precomputed_address8,
                 precomputed_address1,
                 precomputed_address2,
                 precomputed_address3,
@@ -88,13 +115,16 @@ class GeocodeTests(TestCase):
                 precomputed_address5,
                 precomputed_address6,
             ],
-            formatted_address="Long Island City, NY 11103, USA",
+            formatted_address="28-15 34th St, Long Island City, NY 11103, USA",
             geometry=precomputed_geometry,
-            place_id="ChIJPX80rBRfwokRcw53oIpf_Dc",
+            place_id="ChIJ_eoztkBfwokRJZ8i8DXMYfI",
             postal="11103",
             postcode_localities=["Astoria", "Long Island City"],
             types=["postal_code"],
         )
-        print(results)
 
-        self.assertEqual(results[0], precomputed_response)
+        print(f"results[0]: {results[0]}")
+        print(f"precomputed: {attr.asdict(precomputed_response)}")
+        self.assertDictEqual(results[0], attr.asdict(precomputed_response))
+        # resp = GeocodeResponse.from_dict(results[0])
+        # self.assertEqual(resp, precomputed_response)
