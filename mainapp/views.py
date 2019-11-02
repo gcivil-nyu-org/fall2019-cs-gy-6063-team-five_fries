@@ -1,12 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.urls import reverse
-from external.googleapi.fetch import fetch_geocode
-
-import json
 
 
 class LoginView(TemplateView):
@@ -36,16 +33,3 @@ def account(request):
 
 def search(request):
     return HttpResponseRedirect(reverse("search"))
-
-
-def geo(request):
-    req = request.POST.get("geotext")
-
-    results = fetch_geocode(str(req))
-
-    # obj = json.loads(results)
-    pretty = json.dumps(str(results), sort_keys=True, indent=4)
-
-    return HttpResponse(
-        f"Your search was {req} and response was {results} and pretty: {pretty}"
-    )

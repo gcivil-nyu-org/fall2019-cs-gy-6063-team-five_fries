@@ -14,9 +14,11 @@ from .models import (
 )
 
 
+@mock.patch("secret.get_google_api_key", mock.MagicMock(return_value="1111"))
 class GeocodeTests(TestCase):
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_geocode_request(self, mock_client):
+        # mock_secret = mock.MagicMock(return_value="1111")
         mock_client().geocode = mock.MagicMock()
         _ = fetch_geocode("11103")
 
@@ -25,6 +27,7 @@ class GeocodeTests(TestCase):
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_fetch_geocode(self, mock_client):
+        # mock_secret = mock.MagicMock(return_value="1111")
         mock_client().geocode = mock.MagicMock(return_value=fetch_geocode_stub("11103"))
         results = fetch_geocode("11103")
 
@@ -35,6 +38,7 @@ class GeocodeTests(TestCase):
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_value(self, mock_client):
+        # mock_secret = mock.MagicMock(return_value="1111")
         self.maxDiff = None
         mock_client().geocode = mock.MagicMock(return_value=fetch_geocode_stub("11103"))
         results = fetch_geocode("11103")
@@ -124,6 +128,7 @@ class GeocodeTests(TestCase):
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_value_no_zip(self, mock_client):
+        # mock_secret = mock.MagicMock(return_value="1111")
         self.maxDiff = None
 
         mock_client().geocode = mock.MagicMock(
