@@ -14,7 +14,7 @@ from .models import (
 )
 
 
-@mock.patch("secret.get_google_api_key", mock.MagicMock(return_value="1111"))
+@mock.patch("external.googleapi.fetch.get_google_api_key", mock.MagicMock(return_value="1111"))
 class GeocodeTests(TestCase):
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_geocode_request(self, mock_client):
