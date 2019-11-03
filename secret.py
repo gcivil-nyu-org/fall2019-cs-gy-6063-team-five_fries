@@ -9,3 +9,7 @@ def get_zws_id():
 
 def get_311_socrata_key():
     return os.environ["KEY_311"]
+
+
+def get_google_api_key():
+    return os.environ["GOOGLE_API_KEY"]

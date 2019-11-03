@@ -1,0 +1,97 @@
+[{
+    "address_components": [{
+            "long_name": "28-15",
+            "short_name": "28-15",
+            "types": ["street_number"]
+        }, {
+            "long_name": "34th Street",
+            "short_name": "34th St",
+            "types": ["route"]
+        },
+        {
+            "long_name": "11103",
+            "short_name": "11103",
+            "types": [
+                "postal_code"
+            ]
+        },
+        {
+            "long_name": "Long Island City",
+            "short_name": "LIC",
+            "types": [
+                "neighborhood",
+                "political"
+            ]
+        },
+        {
+            "long_name": "Queens",
+            "short_name": "Queens",
+            "types": [
+                "political",
+                "sublocality",
+                "sublocality_level_1"
+            ]
+        },
+        {
+            "long_name": "Queens County",
+            "short_name": "Queens County",
+            "types": [
+                "administrative_area_level_2",
+                "political"
+            ]
+        },
+        {
+            "long_name": "New York",
+            "short_name": "NY",
+            "types": [
+                "administrative_area_level_1",
+                "political"
+            ]
+        },
+        {
+            "long_name": "United States",
+            "short_name": "US",
+            "types": [
+                "country",
+                "political"
+            ]
+        }
+    ],
+    "formatted_address": "28-15 34th St, Long Island City, NY 11103, USA",
+    "geometry": {
+        "bounds": {
+            "northeast": {
+                "lat": 40.771015,
+                "lng": -73.89322
+            },
+            "southwest": {
+                "lat": 40.753304,
+                "lng": -73.92283
+            }
+        },
+        "location": {
+            "lat": 40.763374,
+            "lng": -73.910995
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+            "northeast": {
+                "lat": 40.771015,
+                "lng": -73.89322
+            },
+            "southwest": {
+                "lat": 40.753304,
+                "lng": -73.92283
+            }
+        }
+    },
+    "place_id": "ChIJPX80rBRfwokRcw53oIpf_Dc",
+    "postal": "11103",
+    "postcode_localities": [
+        "Astoria",
+        "Long Island City"
+    ],
+    "types": [
+        "postal_code"
+    ]
+}]
