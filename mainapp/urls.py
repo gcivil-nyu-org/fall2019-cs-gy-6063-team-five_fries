@@ -6,4 +6,5 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("accounts/", include("allauth.urls")),
     path("account", views.account, name="account"),
+    path("favlist", views.favlist, name="favlist"),
 ]
