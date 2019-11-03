@@ -49,21 +49,17 @@
 
 <form action="{% url 'location' object.id %}" method="GET">
 {#{% csrf_token %}#}
+<form action="{% url 'favorite' object.id %}" method="POST">
+{% csrf_token %}
 <button type="submit" class="btn secondaryAction btn-outline-primary">Favorite</button>
 </form>
 
-{% if favorited %}
-    <p>This apartment was added to your favorites.</p>
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li style="color:green" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+  {% endfor %}
+</ul>
 {% endif %}
 
-
-{#<form action="{% url 'search' %}" method="GET">#}
-{#    <div class="input-group">#}
-{#        <input type="text" class="form-control" placeholder="Zip Code (5 digits)" id="zip_code" name="zipcode"#}
-{#            minlength="5" maxlength="5" required pattern="\d*">#}
-{#        <div class="input-group-append">#}
-{#            <input type="submit" class="btn btn-primary" value="Go">#}
-{#        </div>#}
-{#    </div>#}
-{#</form>#}
 {% endblock %}

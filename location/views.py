@@ -17,7 +17,7 @@ class LocationView(generic.DetailView):
         obj = super().get_object()
         refresh_zillow_housing_if_needed(obj)
         return obj
-    
+
 @login_required
 def favorites(request, pk):
     apartment = get_object_or_404(Location, pk = pk)
