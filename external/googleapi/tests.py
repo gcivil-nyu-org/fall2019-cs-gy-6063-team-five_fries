@@ -21,7 +21,7 @@ from .models import (
 class GeocodeTests(TestCase):
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_geocode_request(self, mock_client):
-        # mock_secret = mock.MagicMock(return_value="1111")
+        
         mock_client().geocode = mock.MagicMock()
         _ = fetch_geocode("11103")
 
@@ -30,18 +30,18 @@ class GeocodeTests(TestCase):
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_fetch_geocode(self, mock_client):
-        # mock_secret = mock.MagicMock(return_value="1111")
+        
         mock_client().geocode = mock.MagicMock(return_value=fetch_geocode_stub("11103"))
         results = fetch_geocode("11103")
 
         for result in results:
             self.assertTrue(
-                isinstance(GeocodeResponse.get_converter(result), GeocodeResponse)
+                isinstance(GeocodeResponse.from_any(result), GeocodeResponse)
             )
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_value(self, mock_client):
-        # mock_secret = mock.MagicMock(return_value="1111")
+        
         self.maxDiff = None
         mock_client().geocode = mock.MagicMock(return_value=fetch_geocode_stub("11103"))
         results = fetch_geocode("11103")
@@ -126,12 +126,12 @@ class GeocodeTests(TestCase):
         self.assertDictEqual(results[0], attr.asdict(precomputed_response))
         self.assertEqual(
             GeocodeResponse(**results[0]),
-            GeocodeResponse.get_converter(precomputed_response),
+            GeocodeResponse.from_any(precomputed_response),
         )
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_value_no_zip(self, mock_client):
-        # mock_secret = mock.MagicMock(return_value="1111")
+        
         self.maxDiff = None
 
         mock_client().geocode = mock.MagicMock(
@@ -214,7 +214,7 @@ class GeocodeTests(TestCase):
         self.assertDictEqual(results[0], attr.asdict(precomputed_response))
         self.assertEqual(
             GeocodeResponse(**results[0]),
-            GeocodeResponse.get_converter(precomputed_response),
+            GeocodeResponse.from_any(precomputed_response),
         )
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
@@ -238,7 +238,7 @@ class GeocodeTests(TestCase):
 
         for result in results:
             self.assertTrue(
-                isinstance(GeocodeResponse.get_converter(result), GeocodeResponse)
+                isinstance(GeocodeResponse.from_any(result), GeocodeResponse)
             )
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
@@ -330,7 +330,7 @@ class GeocodeTests(TestCase):
         self.assertDictEqual(results[0], attr.asdict(precomputed_response))
         self.assertEqual(
             GeocodeResponse(**results[0]),
-            GeocodeResponse.get_converter(precomputed_response),
+            GeocodeResponse.from_any(precomputed_response),
         )
 
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
@@ -418,5 +418,5 @@ class GeocodeTests(TestCase):
         self.assertDictEqual(results[0], attr.asdict(precomputed_response))
         self.assertEqual(
             GeocodeResponse(**results[0]),
-            GeocodeResponse.get_converter(precomputed_response),
+            GeocodeResponse.from_any(precomputed_response),
         )

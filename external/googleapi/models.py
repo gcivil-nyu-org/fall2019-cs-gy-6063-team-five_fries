@@ -4,16 +4,17 @@ from typing import List
 
 @attr.s
 class GeocodeAddressComponent(object):
+
     long_name = attr.ib()
     short_name = attr.ib()
     types: List[str] = attr.ib(factory=list)
 
     @classmethod
     def list_converter(cls, list):
-        return [GeocodeAddressComponent.get_converter(li) for li in list]
+        return [GeocodeAddressComponent.from_any(li) for li in list]
 
     @classmethod
-    def get_converter(cls, ob):
+    def from_any(cls, ob):
         if isinstance(ob, GeocodeAddressComponent):
             return cls.from_obj(ob)
         else:
@@ -34,7 +35,7 @@ class GeocodeLocation(object):
     lng = attr.ib(converter=float)
 
     @classmethod
-    def get_converter(cls, ob):
+    def from_any(cls, ob):
         if isinstance(ob, GeocodeLocation):
             return cls.from_obj(ob)
         else:
@@ -51,11 +52,11 @@ class GeocodeLocation(object):
 
 @attr.s
 class GeocodeViewport(object):
-    northeast: GeocodeLocation = attr.ib(converter=GeocodeLocation.get_converter)
-    southwest: GeocodeLocation = attr.ib(converter=GeocodeLocation.get_converter)
+    northeast: GeocodeLocation = attr.ib(converter=GeocodeLocation.from_any)
+    southwest: GeocodeLocation = attr.ib(converter=GeocodeLocation.from_any)
 
     @classmethod
-    def get_converter(cls, ob):
+    def from_any(cls, ob):
         if isinstance(ob, GeocodeViewport):
             return cls.from_obj(ob)
         else:
@@ -72,13 +73,13 @@ class GeocodeViewport(object):
 
 @attr.s
 class GeocodeGeometry(object):
-    bounds: GeocodeViewport = attr.ib(converter=GeocodeViewport.get_converter)
-    location: GeocodeLocation = attr.ib(converter=GeocodeLocation.get_converter)
+    bounds: GeocodeViewport = attr.ib(converter=GeocodeViewport.from_any)
+    location: GeocodeLocation = attr.ib(converter=GeocodeLocation.from_any)
     location_type = attr.ib()
-    viewport: GeocodeViewport = attr.ib(converter=GeocodeViewport.get_converter)
+    viewport: GeocodeViewport = attr.ib(converter=GeocodeViewport.from_any)
 
     @classmethod
-    def get_converter(cls, ob):
+    def from_any(cls, ob):
         if isinstance(ob, GeocodeGeometry):
             return cls.from_obj(ob)
         else:
@@ -103,7 +104,7 @@ class GeocodeResponse(object):
     formatted_address = attr.ib()
     place_id = attr.ib()
     postal = attr.ib(converter=str)
-    geometry: GeocodeGeometry = attr.ib(converter=GeocodeGeometry.get_converter)
+    geometry: GeocodeGeometry = attr.ib(converter=GeocodeGeometry.from_any)
     postcode_localities: List[str] = attr.ib(factory=list)
     types: List[str] = attr.ib(factory=list)
     address_components: List[GeocodeAddressComponent] = attr.ib(
@@ -111,7 +112,7 @@ class GeocodeResponse(object):
     )
 
     @classmethod
-    def get_converter(cls, ob):
+    def from_any(cls, ob):
         if isinstance(ob, GeocodeResponse):
             return cls.from_obj(ob)
         else:
