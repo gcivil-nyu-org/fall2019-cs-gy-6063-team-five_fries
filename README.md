@@ -47,3 +47,9 @@ Next, install Homebrew by pasting the following into the terminal and hitting En
 Finally, install the latest version of Python by running the following command: `brew install python3`
 
 Confirm that it was installed correctly: `python3 --version`. You should see `Python 3.X.X` output in the terminal.
+
+#####Installing pip and virtualenv
+
+pip is the preferred way to install Django.  Documentation for installing pip can be found [here](https://pip.pypa.io/en/stable/installing/).  Once pip is installed, it is trivial to install the virtualenv package (for isolating project dependencies).  In the Terminal type `pip install virtualenv`.  
+
+Once virtualenv has been installed, navigate to the cloned project directory and create a local virtualenv folder with `virtualenv venv`. This will create a folder in you project directory called `venv/` which will store your local project dependencies.  Activate you virtual environment by typing `source venv/bin/activate`, and install your local dependencies in the virtual environment by typing `pip install -r requirements.txt`, which will download and install all the project required software listed in the `requirements.txt` file that was cloned with the project.
