@@ -18,7 +18,7 @@ class SiteUser(AbstractUser):
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
 
-    favorites = models.ManyToManyField(Location, related_name = "favorited_by")
+    favorites = models.ManyToManyField(Location, related_name="favorited_by")
 
     def user_type_string(self):
         return self.user_type_string_map.get(self.user_type, "")
