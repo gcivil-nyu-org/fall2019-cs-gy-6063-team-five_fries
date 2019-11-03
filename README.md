@@ -28,3 +28,22 @@ To get start with the Google API platform, instructions for creating a Billing A
 When starting, insure that you enable your account for the Places APIs, which includes the Geocoding API that we will primarily be using. You will be prompted to select or create a project to associate your API key and billing account with. If you already have an existing one that you would like to use, select that. If not, go ahead and create a new project.
 
 Once the project is created, you will be prompted to create or add a Billing Account to your profile.  Once your project has an associated Billing Account, an API key should be created to authenticate your requests. It can be found under the Credentials section of the APIs & Services tab. Copy this key into your heroku app's Config Vars with the key name `GOOGLE_API_KEY`.  This will allow your app to authenticate and retrieve Google Geocode API results.
+
+
+### Local Project setup
+
+#### MacOS Project Setup
+
+##### Install Python 3
+Although Python 2 is installed by default on most Macs, Python 3 is required for this project. Confirm the installed version of python by opening the Terminal and typing `python --version`. To check to see if Python3 is already installed type `python3 --version` in the terminal and hit enter.  
+
+#####Install Xcode and Homebrew
+We will use the package manager Homebrew to install Python3. Homebrew depends on Apple's Xcode package, so install Xcode through the AppStore or by running the following command in the Terminal.
+`xcode-select --install`
+
+Next, install Homebrew by pasting the following into the terminal and hitting Enter:
+`/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+
+Finally, install the latest version of Python by running the following command: `brew install python3`
+
+Confirm that it was installed correctly: `python3 --version`. You should see `Python 3.X.X` output in the terminal.
