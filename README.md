@@ -37,7 +37,7 @@ Once the project is created, you will be prompted to create or add a Billing Acc
 ##### Install Python 3
 Although Python 2 is installed by default on most Macs, Python 3 is required for this project. Confirm the installed version of python by opening the Terminal and typing `python --version`. To check to see if Python3 is already installed type `python3 --version` in the terminal and hit enter.  
 
-#####Install Xcode and Homebrew
+##### Install Xcode and Homebrew
 We will use the package manager Homebrew to install Python3. Homebrew depends on Apple's Xcode package, so install Xcode through the AppStore or by running the following command in the Terminal.
 `xcode-select --install`
 
@@ -48,7 +48,7 @@ Finally, install the latest version of Python by running the following command: 
 
 Confirm that it was installed correctly: `python3 --version`. You should see `Python 3.X.X` output in the terminal.
 
-#####Installing pip and virtualenv
+##### Installing pip and virtualenv
 
 pip is the preferred way to install Django.  Documentation for installing pip can be found [here](https://pip.pypa.io/en/stable/installing/).  Once pip is installed, it is trivial to install the virtualenv package (for isolating project dependencies).  In the Terminal type `pip install virtualenv`.  
 
