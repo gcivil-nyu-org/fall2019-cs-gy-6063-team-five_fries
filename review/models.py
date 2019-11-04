@@ -14,9 +14,7 @@ class Review(models.Model):
     )
 
     content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
-    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    time = models.DateTimeField()
 
-    # TODO: MIGRATE THIS
     def __str__(self):
         return "%s: %s" % (self.user, self.content)
