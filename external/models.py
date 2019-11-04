@@ -3,7 +3,7 @@ from location.models import Location
 
 
 class ZillowHousing(models.Model):
-    zpid = models.CharField(max_length=255)
+    zpid = models.CharField(max_length=255, primary_key=True)
     estimated_rent_price = models.DecimalField(max_digits=20, decimal_places=2)
     estimated_rent_price_currency = models.CharField(max_length=10)
     last_estimated = models.DateField()
