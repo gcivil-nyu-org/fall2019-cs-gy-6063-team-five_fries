@@ -29,6 +29,12 @@ When starting, insure that you enable your account for the Places APIs, which in
 
 Once the project is created, you will be prompted to create or add a Billing Account to your profile.  Once your project has an associated Billing Account, an API key should be generated to authenticate your requests. It can be found under the Credentials section of the APIs & Services tab. Copy this key into your heroku app's Config Vars with the key name `GOOGLE_API_KEY`.  This will allow your app to authenticate and retrieve Google Geocode API results.
 
+#### Getting Zillow API Key
+
+See instructions here [https://www.zillow.com/howto/api/APIOverview.htm](https://www.zillow.com/howto/api/APIOverview.htm)
+
+#### Getting NYC OpenData 311 API Key
+
 
 ### Local Project setup
 
