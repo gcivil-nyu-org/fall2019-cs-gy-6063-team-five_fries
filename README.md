@@ -47,7 +47,7 @@ Although Python 2 is installed by default on most Macs, Python 3 is required for
 We will use the package manager Homebrew to install Python3. Homebrew depends on Apple's Xcode package, so install Xcode through the AppStore or by running the following command in the Terminal.
 `xcode-select --install`
 
-Next, install Homebrew by pasting the following into the terminal and hitting Enter:
+Next, install Homebrew by pasting the following into the terminal and hitting Enter, or by following the instructions here: [http://osxdaily.com/2018/03/07/how-install-homebrew-mac-os/](http://osxdaily.com/2018/03/07/how-install-homebrew-mac-os/):
 `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 
 Finally, install the latest version of Python by running the following command: `brew install python3`
