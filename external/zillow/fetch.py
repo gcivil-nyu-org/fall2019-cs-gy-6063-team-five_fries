@@ -30,7 +30,7 @@ def fetch_zillow_housing(
 
 
 def get_zillow_housing(
-    *, address, city_state=None, zipcode=None, show_rent_z_estimate
+    *, address, city_state=None, zipcode=None, show_rent_z_estimate=True
 ) -> List[ZillowHousing]:
     results = fetch_zillow_housing(
         address=address,
