@@ -42,3 +42,8 @@ class LocationViewTests(TestCase):
         )
         response = self.client.get(reverse("favlist"))
         self.assertEqual(response.status_code, 200)
+
+    def test_review_view(self):
+        self.client.force_login(SiteUser.objects.get_or_create(username="testuser")[0])
+        response = self.client.get(reverse("review", args=(1,)))
+        self.assertEqual(response.status_code, 302)
