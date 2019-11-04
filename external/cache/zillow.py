@@ -29,6 +29,7 @@ def refresh_zillow_housing(location):
             estimated_rent_price_currency=response.estimated_rent_price_currency,
             last_estimated=response.last_estimated,
             url=response.url,
+            suite_num=response_addr.get("suite_num", ""),
             location=location,
         )
     location.last_fetched_zillow = timezone.now()
