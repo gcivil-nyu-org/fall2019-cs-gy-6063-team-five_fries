@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "djgeojson",
     "localflavor",
     "location.apps.LocationConfig",
+    "review.apps.ReviewConfig",
 ]
 
 MIDDLEWARE = [
