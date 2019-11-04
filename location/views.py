@@ -60,10 +60,10 @@ def review(request, pk):
         form = ReviewForm(request.POST)
         if form.is_valid():
             r = Review(
-                user = request.user,
-                location = Location.objects.only("id").get(id=pk),
-                content = request.POST['content'],
-                time = datetime.now()
+                user=request.user,
+                location=Location.objects.only("id").get(id=pk),
+                content=request.POST['content'],
+                time=datetime.now()
             )
             r.save()
     return HttpResponseRedirect(reverse("location", args=(pk,)))
