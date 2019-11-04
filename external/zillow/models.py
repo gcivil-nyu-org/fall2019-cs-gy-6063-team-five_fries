@@ -20,6 +20,10 @@ class ZillowAddress(object):
     def from_dict(cls, dic):
         return cls(**dic)
 
+    @property
+    def full_address(self):
+        return f"{self.street}, {self.city}, {self.state}, {self.zipcode}"
+
 
 @attr.s
 class ZillowHousingResponse(object):

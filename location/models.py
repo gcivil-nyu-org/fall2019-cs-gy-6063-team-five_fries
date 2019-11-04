@@ -17,9 +17,13 @@ class Location(models.Model):
     last_fetched_zillow = models.DateTimeField(blank=True, null=True)
 
     @property
-    def url_encoded_full_address(self):
+    def full_address(self):
         addr_components = map(str, [self.address, self.city, self.state, self.zipcode])
-        return quote(", ".join(addr_components))
+        return ", ".join(addr_components)
+
+    @property
+    def url_encoded_full_address(self):
+        return quote(self.full_address)
 
     @property
     def google_map_url(self):

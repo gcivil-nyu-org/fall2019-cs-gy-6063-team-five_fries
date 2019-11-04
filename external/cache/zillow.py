@@ -2,6 +2,7 @@ from ..models import ZillowHousing
 from django.utils import timezone
 import datetime
 from external.zillow import get_zillow_housing
+from streetaddress import StreetAddressParser
 
 
 def refresh_zillow_housing(location):
@@ -11,10 +12,15 @@ def refresh_zillow_housing(location):
         zipcode=location.zipcode,
     )
 
+    addr_parser = StreetAddressParser()
     for response in results:
-        if location.address != response.address.street:
+        loc_addr = addr_parser.parse(location.full_address)
+        response_addr = addr_parser.parse(response.address.full_address)
+        if loc_addr["street_full"] != response_addr["street_full"]:
             continue
         if location.city != response.address.city:
+            continue
+        if location.state != response.address.state:
             continue
 
         ZillowHousing.objects.create(
