@@ -2,6 +2,7 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
 
 from review.models import Review
 from review.form import ReviewForm
@@ -26,7 +27,8 @@ def review(request, pk):
             r = Review(
                 user = request.user,
                 location = Location.objects.only("id").get(id=pk),
-                content = request.POST['content']
+                content = request.POST['content'],
+                time = datetime.now()
             )
             r.save()
         return HttpResponseRedirect(reverse("location", args=(pk,)))
