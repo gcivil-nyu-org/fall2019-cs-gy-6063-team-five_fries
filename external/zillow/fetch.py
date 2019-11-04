@@ -26,7 +26,10 @@ def fetch_zillow_housing(
         },
     )
     dic = dict(xmltodict.parse(xml_response.content))
-    return dic["SearchResults:searchresults"]["response"]["results"]["result"]
+    if "response" in dic["SearchResults:searchresults"]:
+        return dic["SearchResults:searchresults"]["response"]["results"]["result"]
+    else:
+        return []
 
 
 def get_zillow_housing(

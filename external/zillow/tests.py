@@ -1,7 +1,7 @@
 from django.test import TestCase
 from .fetch import fetch_zillow_housing, get_zillow_housing
 from .stub import fetch_zillow_housing as fetch_zillow_housing_stub
-from .stub import get_zillow_response
+from .stub import get_zillow_response, get_zillow_error_response
 from .models import ZillowHousingResponse
 from unittest import mock
 
@@ -22,3 +22,11 @@ class ZillowTests(TestCase):
         )
         for housing in results:
             self.assertTrue(isinstance(housing, ZillowHousingResponse))
+
+    @mock.patch("external.zillow.fetch.requests")
+    def test_get_zillow_housing_no_match_results(self, mock_requests):
+        mock_requests.get().content = get_zillow_error_response()
+        results = get_zillow_housing(
+            address="Jay St", zipcode="11201", show_rent_z_estimate=True
+        )
+        self.assertEqual(len(results), 0)
