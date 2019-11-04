@@ -40,6 +40,7 @@ class ZillowTests(TestCase):
         self.assertTrue(
             ZillowHousing.objects.filter(location__address=loc.address).count() > 0
         )
+        self.assertNotEqual(loc.last_fetched_zillow, None)
 
     @mock.patch("external.cache.zillow.get_zillow_housing")
     def test_cache(self, actual_request):
@@ -54,6 +55,7 @@ class ZillowTests(TestCase):
             zipcode="11201",
             latitude=decimal.Decimal("40.688563"),
             longitude=decimal.Decimal("-73.983519"),
+            last_fetched_zillow=timezone.now(),
         )
 
         ZillowHousing.objects.create(

@@ -25,13 +25,14 @@ def refresh_zillow_housing(location):
             url=response.url,
             location=location,
         )
+    location.last_fetched_zillow = timezone.now()
+    location.save()
 
 
 def refresh_zillow_housing_if_needed(location):
-    if location.zillow_set.count() > 0:
-        recent = location.zillow_set.latest("last_modified")
+    if location.last_fetched_zillow:
         now = timezone.now()
-        if now - recent.last_modified < datetime.timedelta(days=1):
+        if now - location.last_fetched_zillow < datetime.timedelta(days=1):
             return
 
     refresh_zillow_housing(location)
