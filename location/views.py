@@ -66,4 +66,4 @@ def review(request, pk):
                 time = datetime.now()
             )
             r.save()
-        return HttpResponseRedirect(reverse("location", args=(pk,)))
+    return HttpResponseRedirect(reverse("location", args=(pk,)))
