@@ -22,7 +22,7 @@ class ZillowAddress(object):
 
 
 @attr.s
-class ZillowHousing(object):
+class ZillowHousingResponse(object):
     zpid = attr.ib()
     address = attr.ib(converter=ZillowAddress.from_dict)
     estimated_rent_price = attr.ib(converter=decimal.Decimal)

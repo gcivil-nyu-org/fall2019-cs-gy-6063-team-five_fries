@@ -2,7 +2,7 @@ from django.test import TestCase
 from .fetch import fetch_zillow_housing, get_zillow_housing
 from .stub import fetch_zillow_housing as fetch_zillow_housing_stub
 from .stub import get_zillow_response
-from .models import ZillowHousing
+from .models import ZillowHousingResponse
 from unittest import mock
 
 
@@ -21,4 +21,4 @@ class ZillowTests(TestCase):
             address="Jay St", zipcode="11201", show_rent_z_estimate=True
         )
         for housing in results:
-            self.assertTrue(isinstance(housing, ZillowHousing))
+            self.assertTrue(isinstance(housing, ZillowHousingResponse))
