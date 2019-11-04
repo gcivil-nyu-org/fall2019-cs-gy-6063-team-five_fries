@@ -2,6 +2,7 @@
 {% block header %}
 {% load leaflet_tags %}
 {% load static %}
+    {% load crispy_forms_tags %}
 {% leaflet_js %}
 {% leaflet_css %}
 
@@ -97,6 +98,12 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
             </div>
         </div>
     {% endif %}
+    <h2>Write some review</h2>
+    <form action="{% url "review" object.id %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Submit">
+    </form>
 
 
 {% endblock %}
