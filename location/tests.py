@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from .models import Location
+from mainapp.models import SiteUser
 import string
 
 
@@ -31,3 +32,8 @@ class LocationViewTests(TestCase):
     def test_location_view(self):
         response = self.client.get(reverse("location", args=(1,)))
         self.assertEqual(response.status_code, 200)
+
+    def test_review_view(self):
+        self.client.force_login(SiteUser.objects.get_or_create(username="testuser")[0])
+        response = self.client.get(reverse("review", args=(1,)))
+        self.assertEqual(response.status_code, 302)
