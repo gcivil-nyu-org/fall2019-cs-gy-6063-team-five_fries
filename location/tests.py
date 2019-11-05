@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from .models import Location
+from mainapp.models import SiteUser
 import string
 from unittest import mock
 from external.zillow.stub import fetch_zillow_housing
@@ -33,4 +34,11 @@ class LocationViewTests(TestCase):
     @mock.patch("external.zillow.fetch.fetch_zillow_housing", fetch_zillow_housing)
     def test_location_view(self):
         response = self.client.get(reverse("location", args=(1,)))
+        self.assertEqual(response.status_code, 200)
+
+    def test_favorites_list_view(self):
+        self.client.force_login(
+            SiteUser.objects.create(user_type="R", username="testuser")
+        )
+        response = self.client.get(reverse("favlist"))
         self.assertEqual(response.status_code, 200)

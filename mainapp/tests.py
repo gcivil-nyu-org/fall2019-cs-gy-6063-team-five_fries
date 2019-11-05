@@ -25,6 +25,36 @@ class BaseTemplateTestCase(TestCase):
         nav = soup.find("nav", class_="navbar")
         self.assertIn("Log In", nav.text)
 
+    def test_favorites_on_header_for_renter(self):
+        """If a Renter has been logged in, Favorites should be shown in the header"""
+        self.client.force_login(
+            SiteUser.objects.create(user_type="R", username="testuser")
+        )
+        response = self.client.get(reverse("index"))
+        soup = BeautifulSoup(response.content, "html.parser")
+        nav = soup.find("nav", class_="navbar")
+        self.assertIn("Favorites", nav.text)
+
+    def test_favorites_on_header_for_tenant(self):
+        """If a Tenant has been logged in, Favorites should not be shown in the header"""
+        self.client.force_login(
+            SiteUser.objects.create(user_type="T", username="testuser")
+        )
+        response = self.client.get(reverse("index"))
+        soup = BeautifulSoup(response.content, "html.parser")
+        nav = soup.find("nav", class_="navbar")
+        self.assertNotContains(nav.text, "Favorites")
+
+    def test_favorites_on_header_for_landlord(self):
+        """If a Landlord has been logged in, Favorites should not be shown in the header"""
+        self.client.force_login(
+            SiteUser.objects.create(user_type="L", username="testuser")
+        )
+        response = self.client.get(reverse("index"))
+        soup = BeautifulSoup(response.content, "html.parser")
+        nav = soup.find("nav", class_="navbar")
+        self.assertNotContains(nav.text, "Favorites")
+
 
 class AccountViewTestCase(TestCase):
     def test_redirect_user_if_not_logged_in(self):
@@ -63,7 +93,7 @@ class SiteUserModelTests(TestCase):
 
     def test_user_type_tenant(self):
         """
-        tests whether a user created with the "Renter" type
+        tests whether a user created with the "Tenant" type
         returns the correct value from its get_user_type method
         """
         user = SiteUser.objects.create(user_type="T", username="test_user")
@@ -71,7 +101,7 @@ class SiteUserModelTests(TestCase):
 
     def test_user_type_landlord(self):
         """
-        tests whether a user created with the "Renter" type
+        tests whether a user created with the "Landlord" type
         returns the correct value from its get_user_type method
         """
         user = SiteUser.objects.create(user_type="L", username="test_user")
