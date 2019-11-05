@@ -6,6 +6,10 @@ from .models import ZillowHousingResponse
 from unittest import mock
 
 
+def get_zws_id_stub():
+    return "ZWSID"
+
+
 class ZillowTests(TestCase):
     @mock.patch("external.zillow.fetch.requests")
     def test_fetch_zillow_housing(self, mock_requests):
@@ -23,6 +27,7 @@ class ZillowTests(TestCase):
         for housing in results:
             self.assertTrue(isinstance(housing, ZillowHousingResponse))
 
+    @mock.patch("external.zillow.fetch.get_zws_id", get_zws_id_stub)
     @mock.patch("external.zillow.fetch.requests")
     def test_get_zillow_housing_no_match_results(self, mock_requests):
         mock_requests.get().content = get_zillow_error_response()
