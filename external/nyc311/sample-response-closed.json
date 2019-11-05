@@ -1,0 +1,108 @@
+[
+    {
+        "created_date": "2019-11-02T13:38:43.000",
+        "incident_zip": "11361",
+        "incident_address": "45 AVENUE",
+        "complaint_type": "Street Sign - Dangling",
+        "descriptor": "St Name - Attached to Pole",
+        "status": "In Progress"
+    },
+    {
+        "created_date": "2019-11-02T13:38:37.000",
+        "incident_zip": "10016",
+        "incident_address": "201 EAST   28 STREET",
+        "city": "NEW YORK",
+        "complaint_type": "Noise - Helicopter",
+        "descriptor": "Other",
+        "status": "Closed"
+    },
+    {
+        "created_date": "2019-11-02T13:38:21.000",
+        "incident_zip": "10040",
+        "incident_address": "34 HILLSIDE AVENUE",
+        "city": "NEW YORK",
+        "complaint_type": "Noise - Residential",
+        "descriptor": "Loud Music/Party",
+        "status": "Closed"
+    },
+    {
+        "created_date": "2019-11-02T13:38:15.000",
+        "incident_zip": "11201",
+        "incident_address": "8 OLD FULTON STREET",
+        "city": "BROOKLYN",
+        "complaint_type": "Noise - Vehicle",
+        "descriptor": "Car/Truck Music",
+        "status": "Closed"
+    },
+    {
+        "created_date": "2019-11-02T13:38:03.000",
+        "incident_zip": "11415",
+        "incident_address": "110 81 AVENUE",
+        "city": "KEW GARDENS",
+        "complaint_type": "Damaged Tree",
+        "descriptor": "Tree Alive - in Poor Condition",
+        "status": "In Progress"
+    },
+    {
+        "created_date": "2019-11-02T13:38:02.000",
+        "incident_zip": "10000",
+        "incident_address": "CENTRAL PARK",
+        "city": "NEW YORK",
+        "complaint_type": "Noise - Helicopter",
+        "descriptor": "Other",
+        "status": "In Progress"
+    },
+    {
+        "created_date": "2019-11-02T13:38:00.000",
+        "incident_zip": "11377",
+        "incident_address": "50-30 44 STREET",
+        "city": "Woodside",
+        "complaint_type": "Water System",
+        "descriptor": "Hydrant Running (WC3)",
+        "status": "Open"
+    },
+    {
+        "created_date": "2019-11-02T13:38:00.000",
+        "incident_zip": "11216",
+        "incident_address": "311 QUINCY STREET",
+        "city": "BROOKLYN",
+        "complaint_type": "Dirty Conditions",
+        "descriptor": "E3 Dirty Sidewalk",
+        "status": "Open"
+    },
+    {
+        "created_date": "2019-11-02T13:37:57.000",
+        "incident_zip": "11105",
+        "incident_address": "19-19 DITMARS BOULEVARD",
+        "city": "ASTORIA",
+        "complaint_type": "Curb Condition",
+        "descriptor": "Curb Defect-Metal Protruding",
+        "status": "In Progress"
+    },
+    {
+        "created_date": "2019-11-02T13:37:39.000",
+        "incident_zip": "10012",
+        "incident_address": "BOWERY",
+        "complaint_type": "Lost Property",
+        "descriptor": "Bag/Wallet",
+        "status": "Closed"
+    },
+    {
+        "created_date": "2019-11-02T13:37:24.000",
+        "incident_zip": "10009",
+        "incident_address": "405 EAST   14 STREET",
+        "city": "NEW YORK",
+        "complaint_type": "Vending",
+        "descriptor": "Unlicensed",
+        "status": "Closed"
+    },
+    {
+        "created_date": "2019-11-02T13:37:18.000",
+        "incident_zip": "11691",
+        "incident_address": "22-21 EDGEMERE AVENUE",
+        "city": "FAR ROCKAWAY",
+        "complaint_type": "Abandoned Vehicle",
+        "descriptor": "With License Plate",
+        "status": "Closed"
+    }
+]

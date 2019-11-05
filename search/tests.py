@@ -6,6 +6,7 @@ from unittest import mock
 import datetime
 from .models import CraigslistLocation, LastRetrievedData
 from external.craigslist.stub import fetch_craigslist_housing
+from external.nyc311.stub import fetch_311_data
 
 
 def create_c_location(
@@ -107,6 +108,7 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Go")
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_index_with_zip(self):
         """
         Tests the search page being retrieved with a zip code
@@ -116,6 +118,7 @@ class SearchIndexViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Zip Code:")
 
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_index_no_zip(self):
         """
         tests the search page with an incomplete zip passed in

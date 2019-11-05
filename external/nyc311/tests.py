@@ -5,6 +5,7 @@ import pandas as pd
 from .stat import get_311_statistics
 from .fetch import fetch_311_data, fetch_311_data_as_dataframe, get_311_data
 from .stub import fetch_311_data as fetch_311_data_stub
+from .stub import fetch_311_data_closed as fetch_311_data_closed_stub
 from .models import NYC311Statistics, NYC311Complaint
 
 
@@ -29,8 +30,8 @@ class FetchNYC311ConstraintsTests(TestCase):
         client.get.assert_called_once()
 
 
-@mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
 class NYC311StatiscticsTests(TestCase):
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
     def test_statistics_returns(self):
         try:
             stats = get_311_statistics("11201")
@@ -39,6 +40,16 @@ class NYC311StatiscticsTests(TestCase):
         except TimeoutError:
             pass
 
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_closed_stub)
+    def test_statistics_returns_with_closed(self):
+        try:
+            stats = get_311_statistics("11201")
+            for s in stats:
+                self.assertTrue(isinstance(s, NYC311Statistics))
+        except TimeoutError:
+            pass
+
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
     def test_statistics_value(self):
         """
         tests excact value of the returned statistics by comparing them to
