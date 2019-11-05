@@ -67,7 +67,7 @@ def get_311_statistics(
             total_complaints_query_zip = len(complaints_query_zip_df)
             # complaints of the desired type in the zip code of interest that were closed
             closed_complaints_query_zip = len(
-                dict(tuple(complaints_query_zip_df.groupby("status")))["Closed"]
+                dict(tuple(complaints_query_zip_df.groupby("status"))).get("Closed", [])
             )
             percentage_complaints_closed = (
                 closed_complaints_query_zip / total_complaints_query_zip
