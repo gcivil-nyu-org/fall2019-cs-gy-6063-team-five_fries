@@ -9,6 +9,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.shortcuts import render
 
 
 class LocationView(generic.DetailView):
@@ -27,3 +28,11 @@ def favorites(request, pk):
     user.favorites.add(apartment)
     messages.success(request, "This apartment has been added to your favorites!")
     return HttpResponseRedirect(reverse("location", args=(pk,)))
+
+
+@login_required
+def favlist(request):
+    favorited_apartments = request.user.favorites.all()
+    return render(
+        request, "favlist.html", {"favorited_apartments": favorited_apartments}
+    )

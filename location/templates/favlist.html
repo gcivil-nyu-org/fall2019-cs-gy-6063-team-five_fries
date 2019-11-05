@@ -3,7 +3,7 @@
 {% block content %}
     <p>Here's a list of your favorite apartments:</p>
     {% for apt in favorited_apartments %}
-        <a href=""><h5>{{apt.address}}, {{apt.city}}, {{apt.state}}, {{apt.zipcode}}</h5></a>
+        <a href="{% url 'location' apt.id %}"><h5>{{apt.address}}, {{apt.city}}, {{apt.state}}, {{apt.zipcode}}</h5></a>
         <hr class="mt-0 mb-2 mt-2">
     {% endfor %}
 {% endblock %}

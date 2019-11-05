@@ -49,17 +49,24 @@
 
 <form action="{% url 'location' object.id %}" method="GET">
 {#{% csrf_token %}#}
+{% if request.user.is_authenticated and user.user_type_string == "Renter" %}
 <form action="{% url 'favorite' object.id %}" method="POST">
 {% csrf_token %}
 <button type="submit" class="btn secondaryAction btn-outline-primary">Favorite</button>
 </form>
 
 {% if messages %}
-<ul class="messages">
+<ul>
   {% for message in messages %}
-  <li style="color:green" {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+{#    {% if 'apartment' in message %}#}
+        <li style="color:green">
+            {{ message }}
+        </li>
+{#    {% endif %}#}
   {% endfor %}
 </ul>
+{% endif %}
+
 {% endif %}
 
 {% endblock %}
