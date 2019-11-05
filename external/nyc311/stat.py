@@ -45,7 +45,8 @@ def get_311_statistics(
             for complaint_type in complaint_type_list
         ]
 
-        if not complaint_dfs: continue
+        if not complaint_dfs:
+            continue
 
         complaint_dfs_concatenated = pd.concat(complaint_dfs)
         # The dataframe (which contains only complaints for a specific type e.g. noise)
