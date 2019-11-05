@@ -43,7 +43,7 @@ class BaseTemplateTestCase(TestCase):
         response = self.client.get(reverse("index"))
         soup = BeautifulSoup(response.content, "html.parser")
         nav = soup.find("nav", class_="navbar")
-        self.assertNotContains(nav.text, "Favorites")
+        self.assertNotIn("Favorites", nav.text)
 
     def test_favorites_on_header_for_landlord(self):
         """If a Landlord has been logged in, Favorites should not be shown in the header"""
@@ -53,7 +53,7 @@ class BaseTemplateTestCase(TestCase):
         response = self.client.get(reverse("index"))
         soup = BeautifulSoup(response.content, "html.parser")
         nav = soup.find("nav", class_="navbar")
-        self.assertNotContains(nav.text, "Favorites")
+        self.assertNotIn("Favorites", nav.text)
 
 
 class AccountViewTestCase(TestCase):
