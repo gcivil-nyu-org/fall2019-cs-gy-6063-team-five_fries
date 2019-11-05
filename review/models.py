@@ -5,13 +5,9 @@ from location.models import Location
 
 
 class Review(models.Model):
-    location = models.ForeignKey(
-        Location, on_delete=models.CASCADE
-    )
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
-    user = models.ForeignKey(
-        SiteUser, on_delete=models.CASCADE
-    )
+    user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
 
     content = models.TextField()
     time = models.DateTimeField()

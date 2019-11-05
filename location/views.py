@@ -15,20 +15,20 @@ class LocationView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(LocationView, self).get_context_data(**kwargs)
-        context['form'] = ReviewForm
+        context["form"] = ReviewForm
         return context
 
 
 @login_required
 def review(request, pk):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ReviewForm(request.POST)
         if form.is_valid():
             r = Review(
                 user=request.user,
                 location=Location.objects.only("id").get(id=pk),
-                content=request.POST['content'],
-                time=datetime.now()
+                content=request.POST["content"],
+                time=datetime.now(),
             )
             r.save()
     return HttpResponseRedirect(reverse("location", args=(pk,)))
