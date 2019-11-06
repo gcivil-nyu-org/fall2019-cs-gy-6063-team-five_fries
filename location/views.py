@@ -28,6 +28,7 @@ def review(request, pk):
                 user=request.user,
                 location=Location.objects.only("id").get(id=pk),
                 content=request.POST["content"],
+                rating=request.POST["rating"],
                 time=datetime.now(),
             )
             r.save()
