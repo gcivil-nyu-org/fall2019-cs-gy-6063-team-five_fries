@@ -27,7 +27,15 @@ def fetch_zillow_housing(
     )
     dic = dict(xmltodict.parse(xml_response.content))
     if "response" in dic["SearchResults:searchresults"]:
-        return dic["SearchResults:searchresults"]["response"]["results"]["result"]
+        res = dic["SearchResults:searchresults"]["response"]["results"]["result"]
+        # Zillow API seems to return a dictionary instead of a list of
+        # dictionary when there is a single result in the response, which is
+        # weird. For consistency, let's pack it as a list
+        # https://gcivil-nyu.slack.com/archives/GMPVA9K34/p1573052518010800?thread_ts=1573048164.009300&cid=GMPVA9K34
+        if isinstance(res, dict):
+            return [res]
+        else:  # believe it is a list of dict
+            return res
     else:
         return []
 
