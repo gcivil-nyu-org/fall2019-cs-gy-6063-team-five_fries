@@ -46,4 +46,30 @@
 <p>No data from Zillow</p>
 {% endif %}
 <i>Last update: {{object.last_fetched_zillow}}</i>
+
+{% if request.user.is_authenticated and user.user_type_string == "Renter" %}
+    <form action="{% url 'favorite' object.id %}" method="POST">
+    {% csrf_token %}
+    {% if object in request.user.favorites.all %}
+        <button type="submit"><img src="https://img.icons8.com/color/64/000000/hearts.png"></button>
+    {% else %}
+        <button type="submit"><img src="https://img.icons8.com/material-outlined/64/000000/hearts.png"></button>
+    {% endif %}
+    </form>
+<!--
+Uncomment to display messages indicating confirmation of favorited/unfavorited apartment.
+{% if messages %}
+<ul>
+  {% for message in messages %}
+    {% if 'apartment' in message %}
+        <li style="color:green">
+            {{ message }}
+        </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+{% endif %}
+-->
+{% endif %}
+
 {% endblock %}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
+from location.models import Location
 
 
 class SiteUser(AbstractUser):
@@ -16,6 +17,8 @@ class SiteUser(AbstractUser):
 
     timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    favorites = models.ManyToManyField(Location, related_name="favorited_by")
 
     def user_type_string(self):
         return self.user_type_string_map.get(self.user_type, "")
