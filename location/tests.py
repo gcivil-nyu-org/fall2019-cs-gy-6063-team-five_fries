@@ -28,10 +28,10 @@ class LocationModelTests(TestCase):
             self.assertTrue(c in accepted_chars)
 
 
+@mock.patch("external.zillow.fetch.fetch_zillow_housing", fetch_zillow_housing)
 class LocationViewTests(TestCase):
     fixtures = ["locations.json"]
 
-    @mock.patch("external.zillow.fetch.fetch_zillow_housing", fetch_zillow_housing)
     def test_location_view(self):
         response = self.client.get(reverse("location", args=(1,)))
         self.assertEqual(response.status_code, 200)
@@ -42,3 +42,22 @@ class LocationViewTests(TestCase):
         )
         response = self.client.get(reverse("favlist"))
         self.assertEqual(response.status_code, 200)
+
+    def test_review_view(self):
+        self.client.force_login(SiteUser.objects.get_or_create(username="testuser")[0])
+        response = self.client.get(reverse("review", args=(1,)))
+        self.assertEqual(response.status_code, 302)
+
+    def test_is_not_tanant(self):
+        self.client.force_login(
+            SiteUser.objects.create(user_type="R", username="testuser")
+        )
+        response = self.client.get(reverse("location", args=(1,)))
+        self.assertContains(response, "Cannot write review for this location")
+
+    def test_is_tanant(self):
+        self.client.force_login(
+            SiteUser.objects.create(user_type="T", username="testuser")
+        )
+        response = self.client.get(reverse("location", args=(1,)))
+        self.assertContains(response, "Write something")

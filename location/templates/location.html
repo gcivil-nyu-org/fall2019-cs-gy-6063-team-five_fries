@@ -2,10 +2,16 @@
 {% block header %}
 {% load leaflet_tags %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% leaflet_js %}
 {% leaflet_css %}
 
 <script type="text/javascript">
+  $(document).ready(function(){
+  $("#check_user").click(function(){
+        $("#display_review").toggle();
+    });
+  });
   let latitude = {{ object.latitude }};
   let longitude = {{ object.longitude }};
   window.addEventListener("map:init", (event) => {
@@ -17,6 +23,8 @@
     .openPopup();
 
   });
+
+
 </script>
 {% endblock%}
 
@@ -71,5 +79,45 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 {% endif %}
 -->
 {% endif %}
+    {% if object.review_set %}
+        <h2> Review: </h2>
+        <hr class="mt-0 mb-2 mt-2">
+        <div class="row h-65">
+            <div class="col">
+                <table class="table table-striped table-bordered table-hover table-sm results-table" width="100%">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="th-sm">Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in object.review_set.all %}
+                        <tr>
+                            <td scope="row">
+                                {{ review.user }} @ {{ review.time }}  :
+                                <br><br>
+                                {{ review.content }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+
+    <h2>Write some review:</h2>
+    {% if request.user.user_type_string == "Tenant" %}
+        <input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
+            <div id="display_review" class="hidden">
+                <form action="{% url "review" object.id %}" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Submit" name="form_submit">
+                </form>
+            </div>
+    {% else %}
+        <p>Cannot write review for this location. Because you are not tenant.</p>
+    {% endif %}
 
 {% endblock %}
