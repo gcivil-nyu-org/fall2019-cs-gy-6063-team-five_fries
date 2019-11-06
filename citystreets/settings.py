@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "localflavor",
     "location.apps.LocationConfig",
     "external.apps.ExternalConfig",
+    "review.apps.ReviewConfig",
 ]
 
 MIDDLEWARE = [
