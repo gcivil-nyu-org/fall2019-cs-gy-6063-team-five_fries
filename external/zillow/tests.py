@@ -30,6 +30,9 @@ class ZillowTests(TestCase):
     @mock.patch("external.zillow.fetch.get_zws_id", get_zws_id_stub)
     @mock.patch("external.zillow.fetch.requests")
     def test_get_zillow_housing_no_match_results(self, mock_requests):
+        """
+        In case zillow returns error response, the result of get_zillow_housing should be an empty list
+        """
         mock_requests.get().content = get_zillow_error_response()
         results = get_zillow_housing(
             address="Jay St", zipcode="11201", show_rent_z_estimate=True
