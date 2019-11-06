@@ -30,7 +30,9 @@ def favorites(request, pk):
         messages.success(request, "This apartment has been added to your favorites!")
     else:
         user.favorites.remove(apartment)
-        messages.success(request, "This apartment has been removed from your favorites!")
+        messages.success(
+            request, "This apartment has been removed from your favorites!"
+        )
     return HttpResponseRedirect(reverse("location", args=(pk,)))
 
 
