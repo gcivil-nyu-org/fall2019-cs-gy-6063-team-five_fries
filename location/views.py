@@ -25,6 +25,10 @@ class LocationView(generic.DetailView):
         refresh_zillow_housing_if_needed(obj)
         return obj
 
+    def get_context_data(self, **kwargs):
+        context = super(LocationView, self).get_context_data(**kwargs)
+        context["form"] = ReviewForm()
+        return context
 
 @login_required
 def favorites(request, pk):
@@ -48,10 +52,7 @@ def favlist(request):
         request, "favlist.html", {"favorited_apartments": favorited_apartments}
     )
  
-    def get_context_data(self, **kwargs):
-        context = super(LocationView, self).get_context_data(**kwargs)
-        context["form"] = ReviewForm()
-        return context
+
 
 
 @login_required
