@@ -2,7 +2,7 @@ from secret import get_zws_id
 import requests
 import xmltodict
 from typing import List, Dict
-from .models import ZillowHousing
+from .models import ZillowHousingResponse
 
 
 def fetch_zillow_housing(
@@ -26,16 +26,19 @@ def fetch_zillow_housing(
         },
     )
     dic = dict(xmltodict.parse(xml_response.content))
-    return dic["SearchResults:searchresults"]["response"]["results"]["result"]
+    if "response" in dic["SearchResults:searchresults"]:
+        return dic["SearchResults:searchresults"]["response"]["results"]["result"]
+    else:
+        return []
 
 
 def get_zillow_housing(
-    *, address, city_state=None, zipcode=None, show_rent_z_estimate
-) -> List[ZillowHousing]:
+    *, address, city_state=None, zipcode=None, show_rent_z_estimate=True
+) -> List[ZillowHousingResponse]:
     results = fetch_zillow_housing(
         address=address,
         city_state=city_state,
         zipcode=zipcode,
         show_rent_z_estimate=show_rent_z_estimate,
     )
-    return [ZillowHousing.from_zillow_response(dic) for dic in results]
+    return [ZillowHousingResponse.from_zillow_response(dic) for dic in results]

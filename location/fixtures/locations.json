@@ -58,5 +58,17 @@
         "latitude": 40.626118,
         "longitude": -74.030419
     }
+},
+{
+    "model": "location.location",
+    "pk": 6,
+    "fields": {
+        "city": "Brooklyn",
+        "state": "NY",
+        "address": "146 Jefferson St",
+        "zipcode": "11206",
+        "latitude": 40.700254,
+        "longitude": -73.929997
+    }
 }
 ]

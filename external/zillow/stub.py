@@ -11,6 +11,12 @@ def fetch_zillow_housing(
         return json.loads(f.read())
 
 
+def get_zillow_error_response() -> str:
+    filepath = os.path.join(os.path.dirname(__file__), "sample-response-error.xml")
+    with open(filepath) as f:
+        return f.read()
+
+
 def get_zillow_response() -> str:
     filepath = os.path.join(os.path.dirname(__file__), "sample-response.xml")
     with open(filepath) as f:
