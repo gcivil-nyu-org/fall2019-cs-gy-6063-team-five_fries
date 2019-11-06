@@ -5,6 +5,7 @@ before_script:
   - python manage.py makemigrations --check --dry-run
   - python manage.py migrate
   - python manage.py collectstatic --noinput
+  - python manage.py loaddata locations.json
 script:
   - black --check --diff .
   - flake8 .

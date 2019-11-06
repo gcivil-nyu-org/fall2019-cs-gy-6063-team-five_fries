@@ -44,6 +44,10 @@ def get_311_statistics(
             complaint_type_df_dict[complaint_type]
             for complaint_type in complaint_type_list
         ]
+
+        if not complaint_dfs:
+            continue
+
         complaint_dfs_concatenated = pd.concat(complaint_dfs)
         # The dataframe (which contains only complaints for a specific type e.g. noise)
         # are further grouped by zip code).
@@ -67,7 +71,7 @@ def get_311_statistics(
             total_complaints_query_zip = len(complaints_query_zip_df)
             # complaints of the desired type in the zip code of interest that were closed
             closed_complaints_query_zip = len(
-                dict(tuple(complaints_query_zip_df.groupby("status")))["Closed"]
+                dict(tuple(complaints_query_zip_df.groupby("status"))).get("Closed", [])
             )
             percentage_complaints_closed = (
                 closed_complaints_query_zip / total_complaints_query_zip

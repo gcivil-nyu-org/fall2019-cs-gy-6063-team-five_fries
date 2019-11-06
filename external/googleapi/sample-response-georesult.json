@@ -1,0 +1,120 @@
+{
+    "current_data": {
+        "address_components": [{
+            "long_name": "11103",
+            "short_name": "11103",
+            "types": ["postal_code"]
+        }, {
+            "long_name": "Long Island City",
+            "short_name": "LIC",
+            "types": ["neighborhood", "political"]
+        }, {
+            "long_name": "Queens",
+            "short_name": "Queens",
+            "types": ["political", "sublocality", "sublocality_level_1"]
+        }, {
+            "long_name": "Queens County",
+            "short_name": "Queens County",
+            "types": ["administrative_area_level_2", "political"]
+        }, {
+            "long_name": "New York",
+            "short_name": "NY",
+            "types": ["administrative_area_level_1", "political"]
+        }, {
+            "long_name": "United States",
+            "short_name": "US",
+            "types": ["country", "political"]
+        }],
+        "formatted_address": "Long Island City, NY 11103, USA",
+        "geometry": {
+            "bounds": {
+                "northeast": {
+                    "lat": 40.771016,
+                    "lng": -73.893221
+                },
+                "southwest": {
+                    "lat": 40.753304,
+                    "lng": -73.922832
+                }
+            },
+            "location": {
+                "lat": 40.7633726,
+                "lng": -73.9109977
+            },
+            "location_type": "APPROXIMATE",
+            "viewport": {
+                "northeast": {
+                    "lat": 40.771016,
+                    "lng": -73.893221
+                },
+                "southwest": {
+                    "lat": 40.753304,
+                    "lng": -73.922832
+                }
+            }
+        },
+        "place_id": "ChIJPX80rBRfwokRcw53oIpf_Dc",
+        "postcode_localities": ["Astoria", "Long Island City"],
+        "types": ["postal_code"]
+    },
+    "current_index": 0,
+    "data": [{
+        "address_components": [{
+            "long_name": "11103",
+            "short_name": "11103",
+            "types": ["postal_code"]
+        }, {
+            "long_name": "Long Island City",
+            "short_name": "LIC",
+            "types": ["neighborhood", "political"]
+        }, {
+            "long_name": "Queens",
+            "short_name": "Queens",
+            "types": ["political", "sublocality", "sublocality_level_1"]
+        }, {
+            "long_name": "Queens County",
+            "short_name": "Queens County",
+            "types": ["administrative_area_level_2", "political"]
+        }, {
+            "long_name": "New York",
+            "short_name": "NY",
+            "types": ["administrative_area_level_1", "political"]
+        }, {
+            "long_name": "United States",
+            "short_name": "US",
+            "types": ["country", "political"]
+        }],
+        "formatted_address": "Long Island City, NY 11103, USA",
+        "geometry": {
+            "bounds": {
+                "northeast": {
+                    "lat": 40.771016,
+                    "lng": -73.893221
+                },
+                "southwest": {
+                    "lat": 40.753304,
+                    "lng": -73.922832
+                }
+            },
+            "location": {
+                "lat": 40.7633726,
+                "lng": -73.9109977
+            },
+            "location_type": "APPROXIMATE",
+            "viewport": {
+                "northeast": {
+                    "lat": 40.771016,
+                    "lng": -73.893221
+                },
+                "southwest": {
+                    "lat": 40.753304,
+                    "lng": -73.922832
+                }
+            }
+        },
+        "place_id": "ChIJPX80rBRfwokRcw53oIpf_Dc",
+        "postcode_localities": ["Astoria", "Long Island City"],
+        "types": ["postal_code"]
+    }],
+    "len": 1
+}

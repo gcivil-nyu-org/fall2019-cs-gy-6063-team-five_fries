@@ -24,3 +24,7 @@ Pillow
 pep8-naming
 bs4
 attrs
+django-allauth
+django-localflavor
+googlemaps
+street-address

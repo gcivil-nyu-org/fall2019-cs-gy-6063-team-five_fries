@@ -1,14 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Account</h1>
-<ul>
-    <li>Username: {{ user.username }}</li>
-    <li>Name: {{ user.first_name }} {{user.last_name}}</li>
-    <li>Email: {{ user.email }}</li>
-    <li>Phone number: {{ user.profile.phone_number }}</li>
-    <li>Current location: {{ user.profile.current_location }}</li>
-    <li>Work location: {{ user.profile.work_location }}</li>
-    <li>User type: {{ user.profile.user_type_string }}</li>
-</ul>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-7">
+            <h1>Account</h1>
+            <ul class="list-group">
+                <li class="list-group-item">Username: {{ user.username }}</li>
+                <li class="list-group-item">Name: {{ user.full_name }}</li>
+                <li class="list-group-item">Email: {{ user.email }}</li>
+                <li class="list-group-item">Phone number: {{ user.phone_number }}</li>
+                <li class="list-group-item">Current location: {{ user.current_location }}</li>
+                <li class="list-group-item">Work location: {{ user.work_location }}</li>
+                <li class="list-group-item">User type: {{ user.user_type_string }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="{% url 'account_logout' %}">Logout</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

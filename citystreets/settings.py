@@ -17,26 +17,27 @@ import django_heroku
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "&fnx8u(w_wkn$by1)@z233)w)vg5u(@bmt=aaom^i6(dxvt_!4"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # Application definition
 
 INSTALLED_APPS = [
-    "mainapp.apps.MainappConfig",
-    "search.apps.SearchConfig",
     "django.contrib.admin",
+    "mainapp.apps.MainappConfig",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "search.apps.SearchConfig",
     "django.contrib.auth",
+    "django.contrib.sites",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -44,10 +45,13 @@ INSTALLED_APPS = [
     "crispy_forms",
     "phonenumber_field",
     "location_field.apps.DefaultConfig",
-    "signup.apps.SignupConfig",
     "map.apps.MapConfig",
     "leaflet",
     "djgeojson",
+    "localflavor",
+    "location.apps.LocationConfig",
+    "external.apps.ExternalConfig",
+    "review.apps.ReviewConfig",
 ]
 
 MIDDLEWARE = [
@@ -60,12 +64,40 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# allauth settings
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+LOGIN_REDIRECT_URL = "/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/"
+ACCOUNT_FORMS = {"signup": "mainapp.forms.SiteUserSignupForm"}
+
+AUTH_USER_MODEL = "mainapp.SiteUser"
+
+# Email information
+EMAIL_USE_TLS = True
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "team.five.fries@gmail.com"
+EMAIL_HOST_PASSWORD = "90d#C0Yx4EHxh4!mN4er1Z7"
+EMAIL_PORT = 587
+# end allauth settings
+
 ROOT_URLCONF = "citystreets.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

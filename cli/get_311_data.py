@@ -7,9 +7,9 @@ from external.nyc311 import get_311_data  # noqa: E402
 
 if __name__ == "__main__":
     try:
-        zipcode = 10009
+        zipcode = 10000
         print("get_311_data() with valid zipcode", zipcode)
-        query_results = get_311_data(10009, 5)  # valid zip code
+        query_results = get_311_data(zipcode, 5)  # valid zip code
         print(query_results)
         print("No match?", len(query_results) == 0)
     except TimeoutError:
