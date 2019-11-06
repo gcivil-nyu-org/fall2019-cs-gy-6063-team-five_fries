@@ -50,13 +50,13 @@ def favlist(request):
  
     def get_context_data(self, **kwargs):
         context = super(LocationView, self).get_context_data(**kwargs)
-        context["form"] = ReviewForm
+        context["form"] = ReviewForm()
         return context
 
 
 @login_required
 def review(request, pk):
-    if request.method == "POST":
+    if "form_submit" in request.POST:
         form = ReviewForm(request.POST)
         if form.is_valid():
             r = Review(

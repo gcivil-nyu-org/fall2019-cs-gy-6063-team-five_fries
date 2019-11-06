@@ -2,11 +2,16 @@
 {% block header %}
 {% load leaflet_tags %}
 {% load static %}
-    {% load crispy_forms_tags %}
+{% load crispy_forms_tags %}
 {% leaflet_js %}
 {% leaflet_css %}
 
 <script type="text/javascript">
+  $(document).ready(function(){
+  $("#check_user").click(function(){
+        $("#display_review").toggle();
+    });
+  });
   let latitude = {{ object.latitude }};
   let longitude = {{ object.longitude }};
   window.addEventListener("map:init", (event) => {
@@ -18,6 +23,8 @@
     .openPopup();
 
   });
+
+
 </script>
 {% endblock%}
 
@@ -98,12 +105,19 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
             </div>
         </div>
     {% endif %}
-    <h2>Write some review</h2>
-    <form action="{% url "review" object.id %}" method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit" value="Submit">
-    </form>
 
+    <h2>Write some review:</h2>
+    {% if request.user.user_type_string == "Tenant" %}
+        <input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
+            <div id="display_review" class="hidden">
+                <form action="{% url "review" object.id %}" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Submit" name="form_submit">
+                </form>
+            </div>
+    {% else %}
+        <p>Cannot write review for this location. Because you are not tenant.</p>
+    {% endif %}
 
 {% endblock %}
