@@ -47,8 +47,6 @@
 {% endif %}
 <i>Last update: {{object.last_fetched_zillow}}</i>
 
-<form action="{% url 'location' object.id %}" method="GET">
-{#{% csrf_token %}#}
 {% if request.user.is_authenticated and user.user_type_string == "Renter" %}
     <form action="{% url 'favorite' object.id %}" method="POST">
     {% csrf_token %}

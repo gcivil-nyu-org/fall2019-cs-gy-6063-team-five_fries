@@ -1,15 +1,12 @@
 from django.views import generic
 from .models import Location
 from external.cache.zillow import refresh_zillow_housing_if_needed
-from mainapp.models import SiteUser
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.shortcuts import render
 
 
 class LocationView(generic.DetailView):
@@ -20,6 +17,7 @@ class LocationView(generic.DetailView):
         obj = super().get_object()
         refresh_zillow_housing_if_needed(obj)
         return obj
+
 
 @login_required
 def favorites(request, pk):
