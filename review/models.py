@@ -4,6 +4,7 @@ from mainapp.models import SiteUser
 from location.models import Location
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+
 class Review(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
@@ -13,8 +14,8 @@ class Review(models.Model):
     rating = models.IntegerField(
         default=1,
         validators=[MinValueValidator(1), MaxValueValidator(5)],
-        blank = False,
-        null = False
+        blank=False,
+        null=False,
     )
     time = models.DateTimeField()
 
