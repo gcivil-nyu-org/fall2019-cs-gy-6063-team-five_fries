@@ -25,8 +25,12 @@ class LocationView(generic.DetailView):
 def favorites(request, pk):
     apartment = get_object_or_404(Location, pk=pk)
     user = request.user
-    user.favorites.add(apartment)
-    messages.success(request, "This apartment has been added to your favorites!")
+    if apartment not in user.favorites.all():
+        user.favorites.add(apartment)
+        messages.success(request, "This apartment has been added to your favorites!")
+    else:
+        user.favorites.remove(apartment)
+        messages.success(request, "This apartment has been removed from your favorites!")
     return HttpResponseRedirect(reverse("location", args=(pk,)))
 
 
