@@ -9,10 +9,7 @@ from review.form import ReviewForm
 from .models import Location
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 
