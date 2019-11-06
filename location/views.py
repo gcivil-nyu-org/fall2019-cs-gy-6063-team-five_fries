@@ -30,6 +30,7 @@ class LocationView(generic.DetailView):
         context["form"] = ReviewForm()
         return context
 
+
 @login_required
 def favorites(request, pk):
     apartment = get_object_or_404(Location, pk=pk)
@@ -51,8 +52,6 @@ def favlist(request):
     return render(
         request, "favlist.html", {"favorited_apartments": favorited_apartments}
     )
- 
-
 
 
 @login_required
