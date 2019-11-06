@@ -47,3 +47,17 @@ class LocationViewTests(TestCase):
         self.client.force_login(SiteUser.objects.get_or_create(username="testuser")[0])
         response = self.client.get(reverse("review", args=(1,)))
         self.assertEqual(response.status_code, 302)
+
+    def test_is_not_tanant(self):
+        self.client.force_login(
+            SiteUser.objects.create(user_type="R", username="testuser")
+        )
+        response = self.client.get(reverse("location", args=(1,)))
+        self.assertContains(response, "Cannot write review for this location")
+
+    def test_is_tanant(self):
+        self.client.force_login(
+            SiteUser.objects.create(user_type="T", username="testuser")
+        )
+        response = self.client.get(reverse("location", args=(1,)))
+        self.assertContains(response, "Write something")
