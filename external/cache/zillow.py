@@ -23,15 +23,19 @@ def refresh_zillow_housing(location):
         if location.state != response.address.state:
             continue
 
-        ZillowHousing.objects.create(
+        # https://docs.djangoproject.com/en/2.2/ref/models/querysets/#update-or-create
+        ZillowHousing.objects.update_or_create(
             zpid=response.zpid,
-            estimated_rent_price=response.estimated_rent_price,
-            estimated_rent_price_currency=response.estimated_rent_price_currency,
-            last_estimated=response.last_estimated,
-            url=response.url,
-            suite_num=response_addr.get("suite_num", ""),
-            location=location,
+            defaults={
+                "estimated_rent_price": response.estimated_rent_price,
+                "estimated_rent_price_currency": response.estimated_rent_price_currency,
+                "last_estimated": response.last_estimated,
+                "url": response.url,
+                "suite_num": response_addr.get("suite_num", ""),
+                "location": location,
+            },
         )
+
     location.last_fetched_zillow = timezone.now()
     location.save()
 
