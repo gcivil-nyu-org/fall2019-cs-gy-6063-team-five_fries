@@ -2,6 +2,7 @@ from django.db import models
 
 from mainapp.models import SiteUser
 from location.models import Location
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Review(models.Model):
@@ -11,6 +12,12 @@ class Review(models.Model):
 
     content = models.TextField()
     time = models.DateTimeField()
+    rating = models.IntegerField(
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        blank=False,
+        null=False,
+    )
 
     def __str__(self):
         return "%s: %s" % (self.user, self.content)

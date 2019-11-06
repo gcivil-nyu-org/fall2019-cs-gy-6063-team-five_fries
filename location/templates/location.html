@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% block script %}
+<!-- Font Awesome Icon Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
 {% block header %}
 {% load leaflet_tags %}
 {% load static %}
@@ -88,6 +92,7 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
                     <thead>
                         <tr>
                             <th scope="col" class="th-sm">Review</th>
+                            <th scope="col" class="th-sm">Rating</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -95,8 +100,16 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
                         <tr>
                             <td scope="row">
                                 {{ review.user }} @ {{ review.time }}  :
-                                <br><br>
                                 {{ review.content }}
+                            </td>
+                            <td>
+                                {% for idx in '12345' %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <span class="fa fa-star checked"></span>
+                                    {% else %}
+                                        <span class="fa fa-star"></span>
+                                    {% endif %}
+                                {% endfor %}
                             </td>
                         </tr>
                         {% endfor %}

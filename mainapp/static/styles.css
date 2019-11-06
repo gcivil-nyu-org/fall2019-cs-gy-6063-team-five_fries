@@ -34,3 +34,7 @@ footer {
 .hidden{
     display: none;
 }
+
+.checked{
+    color: orange;
+}
