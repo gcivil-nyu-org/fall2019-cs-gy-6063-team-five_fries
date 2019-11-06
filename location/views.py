@@ -59,8 +59,9 @@ def review(request, pk):
             r = Review(
                 user=request.user,
                 location=Location.objects.only("id").get(id=pk),
-                content=request.POST["content"],
+                content=form.cleaned_data["content"],
                 time=datetime.now(),
+                rating=form.cleaned_data["rating"],
             )
             r.save()
     return HttpResponseRedirect(reverse("location", args=(pk,)))
