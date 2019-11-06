@@ -28,10 +28,10 @@ class LocationModelTests(TestCase):
             self.assertTrue(c in accepted_chars)
 
 
+@mock.patch("external.zillow.fetch.fetch_zillow_housing", fetch_zillow_housing)
 class LocationViewTests(TestCase):
     fixtures = ["locations.json"]
 
-    @mock.patch("external.zillow.fetch.fetch_zillow_housing", fetch_zillow_housing)
     def test_location_view(self):
         response = self.client.get(reverse("location", args=(1,)))
         self.assertEqual(response.status_code, 200)
