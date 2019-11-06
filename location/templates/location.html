@@ -1,4 +1,8 @@
 {% extends 'base.html' %}
+{% block script %}
+<!-- Font Awesome Icon Library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
 {% block header %}
 {% load leaflet_tags %}
 {% load static %}
@@ -23,8 +27,8 @@
 
 {% block content %}
 <h1>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h1>
-    # After onclick "write review...",  should POST and display write review
-    # should automatically update the page
+{#    # After onclick "write review...",  should POST and display write review#}
+{#    # should automatically update the page#}
 {% leaflet_map "leaflet_map_main" %}
     {% if object.review_set %}
         <h2> Review: </h2>
@@ -36,6 +40,7 @@
                         <tr>
                             <th scope="col" class="th-sm">User</th>
                             <th scope="col" class="th-sm">Content</th>
+                            <th scope="col" class="th-sm">Rating</th>
                             <th scope="col" class="th-sm">Time</th>
                         </tr>
                     </thead>
@@ -44,6 +49,15 @@
                         <tr>
                             <td scope="row">{{ review.user }}</td>
                             <td>{{ review.content }}</td>
+                            <td>
+                                {% for idx in '12345' %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <span class="fa fa-star checked"></span>
+                                    {% else %}
+                                        <span class="fa fa-star"></span>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
                             <td>{{ review.time }}</td>
                         </tr>
                         {% endfor %}
@@ -55,7 +69,7 @@
     <h2>Write some review</h2>
     <form action="{% url "review" object.id %}" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form|crispy }}
         <input type="submit" value="Submit">
     </form>
 
