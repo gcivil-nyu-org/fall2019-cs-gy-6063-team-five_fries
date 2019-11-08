@@ -16,6 +16,10 @@ body {
     color: whitesmoke;
 }
 
+.center-container {
+    margin-bottom: 40px;
+}
+
 main.index {
     height: inherit;
     align-items: center;
@@ -55,6 +59,7 @@ footer {
     display: none;
 }
 
-div.signup {
-    margin-bottom: 40px;
+.checked {
+    color: orange;
 }
+
