@@ -3,13 +3,17 @@ html {
 }
 
 body {
-    margin-top: 65px;
-    margin-bottom: 40px;
     height: 100%;
+    /* the height of the header */
+    padding-top: 56px;
+    /* the height of the footer */
+    padding-bottom: 30px;
 }
 
-main {
-    margin-bottom: 40px;
+.logo {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: whitesmoke;
 }
 
 main.index {
@@ -18,7 +22,6 @@ main.index {
     justify-content: center;
     display: flex;
 }
-
 
 footer {
     bottom: 0;
@@ -50,20 +53,4 @@ footer {
 
 .hidden {
     display: none;
-}
-
-.splash {
-    position: relative;
-    background-size: cover;
-    padding-top: 8rem;
-    padding-bottom: 8rem;
-    padding-left: 2rem;
-    padding-right: 2rem;
-    margin: 0 auto;
-}
-
-main.index div.container {
-    background-color: #343a40;
-    background: url("../img/nyc.jpg") no-repeat center center;
-    background-size: cover;
 }
