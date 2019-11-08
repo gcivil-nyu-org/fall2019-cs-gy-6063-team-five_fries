@@ -58,3 +58,10 @@ class Apartment(models.Model):
     @property
     def estimated_rent_price_for_display(self):
         return f"${self.estimated_rent_price}"
+
+    def avg_rate(self):
+        review_sum = 0
+        for review in self.review_set.all():
+            review_sum += review.rating
+        avg = review_sum / self.review_set.count()
+        return float("%.2f" % round(avg,2))

@@ -12,9 +12,9 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-  $("#check_user").click(function(){
-        $("#display_review").toggle();
-    });
+      $("#check_user").click(function(){
+            $("#display_review").toggle();
+        });
   });
   let latitude = {{ object.latitude }};
   let longitude = {{ object.longitude }};
@@ -85,37 +85,53 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 {% endif %}
     {% if object.review_set %}
         <h2> Review: </h2>
-        <hr class="mt-0 mb-2 mt-2">
-        <div class="row h-65">
-            <div class="col">
-                <table class="table table-striped table-bordered table-hover table-sm results-table" width="100%">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="th-sm">Review</th>
-                            <th scope="col" class="th-sm">Rating</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for review in object.review_set.all %}
-                        <tr>
-                            <td scope="row">
-                                {{ review.user }} @ {{ review.time }}  :
-                                {{ review.content }}
-                            </td>
-                            <td>
-                                {% for idx in '12345' %}
-                                    {% if forloop.counter <= review.rating %}
-                                        <span class="fa fa-star checked"></span>
-                                    {% else %}
-                                        <span class="fa fa-star"></span>
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
+        <ul class="list-unstyled">
+            <li>
+                Average: {{ object.avg_rate }}
+            </li>
+            <li>
+            {% for idx in '12345' %}
+                {% if forloop.counter <= object.avg_rate %}
+                    <span class="fa fa-star checked"></span>
+                {% else %}
+                    <span class="fa fa-star"></span>
+                {% endif %}
+            {% endfor %}
+            </li>
+        </ul>
+
+        <div class=" mb-3 text-center">
+            {% for review in object.review_set.all %}
+
+            <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
+                <div class="card-header">
+                    <ul class="list-unstyled">
+                        <li>{{ review.user }}</li>
+                        <li>
+                        {% for idx in '12345' %}
+                            {% if forloop.counter <= review.rating %}
+                                <span class="fa fa-star checked"></span>
+                            {% else %}
+                                <span class="fa fa-star"></span>
+                            {% endif %}
                         {% endfor %}
-                    </tbody>
-                </table>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title pricing-card-title">
+                    </h5>
+
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>{{ review.content }}</li>
+                    </ul>
+
+                    <h4 class=" mb-0">
+                        <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
+                    </h4>
+                </div>
             </div>
+            {% endfor %}
         </div>
     {% endif %}
 
