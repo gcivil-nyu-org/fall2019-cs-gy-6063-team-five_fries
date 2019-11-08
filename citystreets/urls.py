@@ -23,4 +23,5 @@ urlpatterns = [
     path("search/", include("search.urls")),
     path("map/", include("map.urls")),
     path("location/", include("location.urls")),
+    path("imagesimilarity/", include("imagesimilarity.urls")),
 ]
