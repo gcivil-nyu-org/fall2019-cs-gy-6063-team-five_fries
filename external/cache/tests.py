@@ -1,10 +1,9 @@
 from django.test import TestCase
 from .zillow import refresh_zillow_housing_if_needed
 from unittest import mock
-from ..models import ZillowHousing
 from ..zillow.stub import fetch_zillow_housing as fetch_zillow_housing_stub
 from django.utils import timezone
-from location.models import Location
+from location.models import Location, Apartment
 import decimal
 
 
@@ -33,12 +32,12 @@ class ZillowTests(TestCase):
         actual_request.return_value = sample_response
 
         self.assertEqual(
-            ZillowHousing.objects.filter(location__address=loc.address).count(), 0
+            Apartment.objects.filter(location__address=loc.address).count(), 0
         )
         refresh_zillow_housing_if_needed(loc)
         actual_request.assert_called()
         self.assertTrue(
-            ZillowHousing.objects.filter(location__address=loc.address).count() > 0
+            Apartment.objects.filter(location__address=loc.address).count() > 0
         )
         self.assertNotEqual(loc.last_fetched_zillow, None)
 
@@ -58,12 +57,12 @@ class ZillowTests(TestCase):
             last_fetched_zillow=timezone.now(),
         )
 
-        ZillowHousing.objects.create(
+        Apartment.objects.create(
             zpid="2094141487",
             estimated_rent_price=2865,
             estimated_rent_price_currency="USD",
             last_estimated=timezone.now(),
-            url="http://www.zillow.com/homes/2094141487_zpid/",
+            zillow_url="http://www.zillow.com/homes/2094141487_zpid/",
             location=loc,
         )
 
