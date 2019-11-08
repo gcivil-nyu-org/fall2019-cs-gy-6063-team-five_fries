@@ -30,6 +30,17 @@ class Location(models.Model):
     def google_map_url(self):
         return f"https://www.google.com/maps/search/?api=1&query={self.url_encoded_full_address}"
 
+    def avg_rate(self):
+        review_sum = 0
+        for review in self.review_set.all():
+            review_sum += review.rating
+        if self.review_set.count() != 0:
+            avg = review_sum / self.review_set.count()
+            return float("%.2f" % round(avg,2))
+        else:
+            return 0
+
+
 
 class Apartment(models.Model):
     suite_num = models.CharField(unique=True, max_length=30, blank=True, null=True)
@@ -59,9 +70,3 @@ class Apartment(models.Model):
     def estimated_rent_price_for_display(self):
         return f"${self.estimated_rent_price}"
 
-    def avg_rate(self):
-        review_sum = 0
-        for review in self.review_set.all():
-            review_sum += review.rating
-        avg = review_sum / self.review_set.count()
-        return float("%.2f" % round(avg,2))

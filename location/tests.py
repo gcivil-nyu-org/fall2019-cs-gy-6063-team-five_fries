@@ -1,7 +1,9 @@
 from django.test import TestCase
 from django.urls import reverse
+from datetime import datetime
 from .models import Location
 from mainapp.models import SiteUser
+from review.models import Review
 import string
 from unittest import mock
 from external.zillow.stub import fetch_zillow_housing
@@ -26,6 +28,22 @@ class LocationModelTests(TestCase):
         )
         for c in loc.google_map_url:
             self.assertTrue(c in accepted_chars)
+
+    def test_avg_rate(self):
+        s1 = SiteUser.objects.create(full_name="test_user")
+        l1 = Location.objects.create(state="NY")
+        r1 = Review.objects.create(
+            location=l1, user=s1, content="test_content", time=datetime.now(), rating=1
+        )
+        r2 = Review.objects.create(
+            location=l1, user=s1, content="test_content2", time=datetime.now(), rating=5
+        )
+        avg = (1+5)/2
+        self.assertEqual(l1.avg_rate(), avg)
+
+    def test_empty_review_avg_rate(self):
+        l1 = Location.objects.create(state="NY")
+        self.assertEqual(l1.avg_rate(), 0)
 
 
 @mock.patch("external.zillow.fetch.fetch_zillow_housing", fetch_zillow_housing)
