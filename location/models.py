@@ -36,10 +36,9 @@ class Location(models.Model):
             review_sum += review.rating
         if self.review_set.count() != 0:
             avg = review_sum / self.review_set.count()
-            return float("%.2f" % round(avg,2))
+            return float("%.2f" % round(avg, 2))
         else:
             return 0
-
 
 
 class Apartment(models.Model):

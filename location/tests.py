@@ -38,7 +38,7 @@ class LocationModelTests(TestCase):
         r2 = Review.objects.create(
             location=l1, user=s1, content="test_content2", time=datetime.now(), rating=5
         )
-        avg = (1+5)/2
+        avg = (r1.rating + r2.rating) / 2
         self.assertEqual(l1.avg_rate(), avg)
 
     def test_empty_review_avg_rate(self):
