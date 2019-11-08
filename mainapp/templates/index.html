@@ -1,27 +1,39 @@
-{% extends 'base.html' %}
+{% extends 'base_index.html' %}
 
 {% block content %}
-<div class="container">
+
+<div class="container splash rounded">
     <div class="row">
-        {% if request.user.is_authenticated %}
-        <div class="col">
-            <p>Welcome, {{ request.user.username }}</p>
-            <a href="{% url 'account_logout' %}">Logout</a>
+        <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
+            <div class="row form-group">
+                <div class="col">
+                    <form action="{% url 'search' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col-12 col-md-9 mb-2 mb-md-0">
+                                <input type="text" class="form-control form-control-lg"
+                                    placeholder="Search for a Location...">
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <button type="submit" class="btn btn-block btn-lg btn-primary">Search!</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% if not request.user.is_authenticated %}
+            <div class="row">
+                <div class="col-6 text-center">
+                    <a href="{% url 'account_login' %}"><button class="form-control-lg btn-primary">Log In</button></a>
+                </div>
+                <div class="col-6 text-center">
+                    <a href="{% url 'account_signup' %}">
+                        <button class=" form-control-lg btn-primary">Sign Up</button>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
         </div>
-        <div class="col-sm text-center">
-            <a href="{% url 'search' %}"><button class="btn btn-primary">Search</button></a>
-        </div>
-        {% else %}
-        <div class="col-sm text-center">
-            <a href="{% url 'search' %}"><button class="btn btn-primary">Search</button></a>
-        </div>
-        <div class="col-sm text-center">
-            <a href="{% url 'account_login' %}"><button class="btn btn-primary">Sign In</button></a>
-        </div>
-        <div class="col-sm text-center">
-            <a href="{% url 'account_signup' %}"><button class="btn btn-primary">Sign Up</button></a>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}
