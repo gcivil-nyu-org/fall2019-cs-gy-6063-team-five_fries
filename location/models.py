@@ -32,7 +32,7 @@ class Location(models.Model):
 
 
 class Apartment(models.Model):
-    suite_num = models.CharField(max_length=30, blank=True, null=True)
+    suite_num = models.CharField(unique=True, max_length=30, blank=True, null=True)
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
@@ -42,17 +42,19 @@ class Apartment(models.Model):
     )
     number_of_bed = models.IntegerField(null=True, validators=[MinValueValidator(0)])
 
-    # Zillow
-    zpid = models.CharField(max_length=255, unique=True)
-    estimated_rent_price = models.DecimalField(max_digits=20, decimal_places=2)
-    estimated_rent_price_currency = models.CharField(max_length=10)
-    last_estimated = models.DateField()
     last_modified = models.DateTimeField(auto_now=True)
-    zillow_url = models.URLField()
+
+    # Zillow
+    zpid = models.CharField(max_length=255, unique=True, blank=True, null=True)
+    estimated_rent_price = models.DecimalField(
+        max_digits=20, decimal_places=2, blank=True, null=True
+    )
+    last_estimated = models.DateField(blank=True, null=True)
+    zillow_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return f"Apartment({self.suite_num}) - {self.location.address}"
 
     @property
     def estimated_rent_price_for_display(self):
-        return f"{self.estimated_rent_price_currency} {self.estimated_rent_price}"
+        return f"${self.estimated_rent_price}"

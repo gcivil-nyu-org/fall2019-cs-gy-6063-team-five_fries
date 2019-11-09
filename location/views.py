@@ -25,6 +25,7 @@ class LocationView(generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super(LocationView, self).get_context_data(**kwargs)
         context["form"] = ReviewForm()
+        context["zillow_list"] = self.object.apartment_set.exclude(zpid=None).all()
         return context
 
 

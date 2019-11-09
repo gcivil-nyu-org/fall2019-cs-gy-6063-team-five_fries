@@ -39,9 +39,9 @@
 <hr>
 
 <h2>Apartments</h2>
-{% if object.apartment_set.all %}
+{% if zillow_list %}
 <ul>
-{% for apt in object.apartment_set.all %}
+{% for apt in zillow_list %}
 <li>
   <a href={{apt.zillow_url}}>
   <h3>

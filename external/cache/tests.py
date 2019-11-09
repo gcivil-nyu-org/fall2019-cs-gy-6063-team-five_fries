@@ -60,7 +60,6 @@ class ZillowTests(TestCase):
         Apartment.objects.create(
             zpid="2094141487",
             estimated_rent_price=2865,
-            estimated_rent_price_currency="USD",
             last_estimated=timezone.now(),
             zillow_url="http://www.zillow.com/homes/2094141487_zpid/",
             location=loc,
