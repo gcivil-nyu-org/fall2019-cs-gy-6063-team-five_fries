@@ -1,6 +1,30 @@
+html {
+    height: 100%;
+}
+
 body {
-    padding-top: 65px;
+    height: 100%;
+    /* the height of the header */
+    padding-top: 56px;
+    /* the height of the footer */
+    padding-bottom: 30px;
+}
+
+.logo {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: whitesmoke;
+}
+
+.center-container {
     margin-bottom: 40px;
+}
+
+main.index {
+    height: inherit;
+    align-items: center;
+    justify-content: center;
+    display: flex;
 }
 
 footer {
@@ -31,10 +55,11 @@ footer {
     width: 100%
 }
 
-.hidden{
+.hidden {
     display: none;
 }
 
-.checked{
+.checked {
     color: orange;
 }
+
