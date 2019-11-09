@@ -1,6 +1,7 @@
 from django.db import models
 from localflavor.us import models as us_models
 from urllib.parse import quote
+from django.core.validators import MinValueValidator
 
 
 class Location(models.Model):
@@ -35,6 +36,11 @@ class Apartment(models.Model):
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
+
+    rent_price = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, validators=[MinValueValidator(0)]
+    )
+    number_of_bed = models.IntegerField(null=True, validators=[MinValueValidator(0)])
 
     # Zillow
     zpid = models.CharField(max_length=255, unique=True)
