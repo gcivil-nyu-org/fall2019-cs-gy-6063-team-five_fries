@@ -45,7 +45,7 @@ class Apartment(models.Model):
     zillow_url = models.URLField()
 
     def __str__(self):
-        return f"Apartment({self.suite_num}, {self.url}) - {self.location.address}"
+        return f"Apartment({self.suite_num}) - {self.location.address}"
 
     @property
     def estimated_rent_price_for_display(self):
