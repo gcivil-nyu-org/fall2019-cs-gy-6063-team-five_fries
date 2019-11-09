@@ -37,6 +37,87 @@
 {% leaflet_map "leaflet_map_main" %}
 
 <hr>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Apartments</h2>
+            {% if object.apartment_set.all %}
+            <ul>
+            {% for apt in object.apartment_set.all %}
+            <li>
+              <a href={{apt.zillow_url}}>
+              <h3>
+                {% if apt.suite_num %}
+                  <span class="badge badge-secondary">#{{apt.suite_num}}</span>
+                {% endif %}
+                {{apt.estimated_rent_price_for_display}}
+              </h3>
+              </a>
+            </li>
+            {% endfor %}
+            </ul>
+            {% else %}
+            <p>No apartments</p>
+            {% endif %}
+        </div>
+
+
+        <div class="col">
+            {% if object.review_set %}
+            <h2> Review: </h2>
+            <ul class="list-unstyled">
+                <li>
+                    Average: {{ object.avg_rate }}
+                </li>
+                <li>
+                {% for idx in '12345' %}
+                    {% if forloop.counter <= object.avg_rate %}
+                        <span class="fa fa-star checked"></span>
+                    {% else %}
+                        <span class="fa fa-star"></span>
+                    {% endif %}
+                {% endfor %}
+                </li>
+            </ul>
+
+            <div class="mb-3 text-center">
+                {% for review in object.review_set.all %}
+                <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
+                    <div class="card-header">
+                        <ul class="list-unstyled">
+                            <li>{{ review.user }}</li>
+                            <li>
+                            {% for idx in '12345' %}
+                                {% if forloop.counter <= review.rating %}
+                                    <span class="fa fa-star checked"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title pricing-card-title">
+                        </h5>
+
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>{{ review.content }}</li>
+                        </ul>
+
+                        <h4 class=" mb-0">
+                            <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
+                        </h4>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
 
 <h2>Apartments</h2>
 {% if zillow_list %}
@@ -83,57 +164,6 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 {% endif %}
 -->
 {% endif %}
-    {% if object.review_set %}
-        <h2> Review: </h2>
-        <ul class="list-unstyled">
-            <li>
-                Average: {{ object.avg_rate }}
-            </li>
-            <li>
-            {% for idx in '12345' %}
-                {% if forloop.counter <= object.avg_rate %}
-                    <span class="fa fa-star checked"></span>
-                {% else %}
-                    <span class="fa fa-star"></span>
-                {% endif %}
-            {% endfor %}
-            </li>
-        </ul>
-
-        <div class=" mb-3 text-center">
-            {% for review in object.review_set.all %}
-
-            <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
-                <div class="card-header">
-                    <ul class="list-unstyled">
-                        <li>{{ review.user }}</li>
-                        <li>
-                        {% for idx in '12345' %}
-                            {% if forloop.counter <= review.rating %}
-                                <span class="fa fa-star checked"></span>
-                            {% else %}
-                                <span class="fa fa-star"></span>
-                            {% endif %}
-                        {% endfor %}
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <h5 class="card-title pricing-card-title">
-                    </h5>
-
-                    <ul class="list-unstyled mt-3 mb-4">
-                        <li>{{ review.content }}</li>
-                    </ul>
-
-                    <h4 class=" mb-0">
-                        <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
-                    </h4>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    {% endif %}
 
     <h2>Write some review:</h2>
     {% if request.user.user_type_string == "Tenant" %}
