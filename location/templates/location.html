@@ -41,6 +41,7 @@
     <div class="row">
         <div class="col">
             <h2>Apartments</h2>
+            <div class="location-results">
             {% if object.apartment_set.all %}
             <ul>
             {% for apt in object.apartment_set.all %}
@@ -59,6 +60,7 @@
             {% else %}
             <p>No apartments</p>
             {% endif %}
+            </div>
         </div>
 
 
@@ -80,7 +82,7 @@
                 </li>
             </ul>
 
-            <div class="mb-3 text-center">
+            <div class="mb-3 text-center location-results">
                 {% for review in object.review_set.all %}
                 <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
                     <div class="card-header">
