@@ -12,6 +12,12 @@ def refresh_zillow_housing(location):
         zipcode=location.zipcode,
     )
 
+    # reset outdated zillow informations
+    result_zpids = set(response.zpid for response in results)
+    location.apartment_set.exclude(zpid__in=result_zpids).update(
+        zpid=None, estimated_rent_price=None, last_estimated=None, zillow_url=None
+    )
+
     addr_parser = StreetAddressParser()
     for response in results:
         loc_addr = addr_parser.parse(location.full_address)
