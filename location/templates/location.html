@@ -167,8 +167,9 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 -->
 {% endif %}
 
-    <h2>Write some review:</h2>
+
     {% if request.user.user_type_string == "Tenant" %}
+    <h2>Write some review:</h2>
         <input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
             <div id="display_review" class="hidden">
                 <form action="{% url "review" object.id %}" method="post">
@@ -178,6 +179,7 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
                 </form>
             </div>
     {% else %}
+        <hr>
         <p>Cannot write review for this location. Because you are not tenant.</p>
     {% endif %}
 
