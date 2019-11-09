@@ -8,6 +8,11 @@ from location.models import Location, Apartment
 import decimal
 
 
+def get_zws_id_stub():
+    return "ZWSID"
+
+
+@mock.patch("external.zillow.fetch.get_zws_id", get_zws_id_stub)
 class ZillowTests(TestCase):
     fixtures = ["locations.json"]
 
