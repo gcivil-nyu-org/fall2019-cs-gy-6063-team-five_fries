@@ -30,7 +30,7 @@
                 <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
                     <div class="card-header">
                         <ul class="list-unstyled">
-                            <a href="/location/{{review.location.id}}/">{{ review.location.address }}</a>
+                            <a href="{% url 'location' review.location.id %}">{{ review.location.address }}</a>
                             <li>
                             {% for idx in '12345' %}
                                 {% if forloop.counter <= review.rating %}
