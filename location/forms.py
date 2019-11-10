@@ -14,3 +14,9 @@ class ApartmentUploadForm(forms.Form):
     suite_num = forms.CharField(label="Suite Number", required = False, max_length=30)
 
 
+    def clean_estimated_rent_price(self):
+        estimated_rent_price = self.cleaned_data.get('estimated_rent_price')
+        if estimated_rent_price < 0:
+            raise forms.ValidationError("Rental price cannot be negative!")
+
+        return estimated_rent_price
