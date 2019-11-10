@@ -5,7 +5,7 @@
     <h1>Upload Apartment</h1>
     <hr class="mt-0 mb-2 mt-2">
 
-    <form action="{% url 'apartment_upload' %}" method="POST">
+    <form action="{% url 'apartment_upload' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
         <input type="submit" value="Upload!" class="btn btn-primary">
