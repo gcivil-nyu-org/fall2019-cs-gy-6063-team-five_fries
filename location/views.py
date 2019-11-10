@@ -6,11 +6,13 @@ from datetime import datetime
 
 from review.models import Review
 from review.form import ReviewForm
+from .forms import ApartmentUploadForm
 from .models import Location
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django import forms
 
 
 class LocationView(generic.DetailView):
@@ -66,3 +68,24 @@ def review(request, pk):
             )
             r.save()
     return HttpResponseRedirect(reverse("location", args=(pk,)))
+
+@login_required
+def apartment_upload(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = ApartmentUploadForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # redirect to a new URL:
+            return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ApartmentUploadForm()
+
+    return render(request, 'apartment_upload.html', {'form': form})
+
+def apartment_upload_confirmation(request):
+    return render(request, 'apartment_upload_confirmation.html')
