@@ -68,4 +68,3 @@ class Apartment(models.Model):
     @property
     def estimated_rent_price_for_display(self):
         return f"${self.estimated_rent_price}"
-
