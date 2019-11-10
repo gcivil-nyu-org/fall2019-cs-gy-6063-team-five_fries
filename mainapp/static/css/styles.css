@@ -63,3 +63,7 @@ footer {
     color: orange;
 }
 
+.location-results{
+    height: 50vh;
+    overflow-y: scroll;
+}
