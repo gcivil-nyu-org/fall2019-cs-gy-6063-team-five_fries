@@ -10,6 +10,10 @@ class ApartmentUploadForm(forms.Form):
     estimated_rent_price = forms.DecimalField(
         label="Rent Price ($)", max_digits=20, decimal_places=2
     )
+
+    # Handling input files with Django
+    # https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
+    image = forms.ImageField()
     latitude = forms.DecimalField(
         label="Latitude", required=False, max_digits=9, decimal_places=6
     )
