@@ -2,8 +2,11 @@ from django.test import TestCase
 from django.urls import reverse
 
 # from django.contrib.auth.models import User
+from location.models import Location
+from review.models import Review
 from .models import SiteUser
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 
 class BaseTemplateTestCase(TestCase):
@@ -66,6 +69,18 @@ class AccountViewTestCase(TestCase):
         self.client.force_login(SiteUser.objects.get_or_create(username="testuser")[0])
         response = self.client.get(reverse("account"))
         self.assertEqual(response.status_code, 200)
+
+    def test_show_review_view(self):
+        s1 = SiteUser.objects.create(full_name="test_user")
+        l1 = Location.objects.create(state="NY")
+        r1 = Review.objects.create(
+            location=l1, user=s1, content="test_content", time=datetime.now()
+        )
+        self.client.force_login(
+            SiteUser.objects.get_or_create(full_name="test_user")[0]
+        )
+        response = self.client.get(reverse("account"))
+        self.assertContains(response, r1.content)
 
 
 class MainIndexViewTestCase(TestCase):
