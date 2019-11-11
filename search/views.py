@@ -50,32 +50,28 @@ def search(request):
 
 
 def data_311(request):
-    if request.method == "POST" and "data" in request.POST:
-        zip_code = request.POST["zip_code"]
+    if request.method == "GET" and "zip_code" in request.GET:
+        zip_code = request.GET["zip_code"]
+
+        results = {}
+        timeout = False
+        # Get 311 statistics
         try:
-            results = get_311_data(str(zip_code))
+            results["stats"] = get_311_statistics(str(zip_code))
         except TimeoutError:
-            return render(request, "search/results_311.html", {"timeout": True})
+            timeout = True
+
+        # Get 311 raw complaints
+        try:
+            results["complaints"] = get_311_data(str(zip_code))
+        except TimeoutError:
+            timeout = True
 
         return render(
             request,
             "search/results_311.html",
-            {"results": results, "no_matches": len(results) == 0},
+            {"results": results, "zip_code": str(zip_code), "no_matches": len(results) == 0, "timeout": timeout},
         )
-
-    elif request.method == "POST" and "statistics" in request.POST:
-        zip_code = request.POST["zip_code"]
-        try:
-            results = get_311_statistics(str(zip_code))
-        except TimeoutError:
-            return render(request, "search/statistics_311.html", {"timeout": True})
-
-        return render(
-            request,
-            "search/statistics_311.html",
-            {"zip": zip_code, "results": results, "no_matches": len(results) == 0},
-        )
-
     else:
         return render(request, "search/data_311.html", {})
 
