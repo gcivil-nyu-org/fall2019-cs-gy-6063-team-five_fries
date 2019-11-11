@@ -21,12 +21,14 @@ def search(request):
         zip_code = request.GET.get("zipcode")
         search_data = {}
         if zip_code:
-            search_data["locations"] =  Location.objects.filter(zipcode=str(zip_code))
+            search_data["locations"] = Location.objects.filter(zipcode=str(zip_code))
 
             # Get 311 statistics
             try:
                 stats = get_311_statistics(str(zip_code))
-                search_data["stats"] = [(s.complaint_type, 100 * s.complaint_level / 5) for s in stats]
+                search_data["stats"] = [
+                    (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
+                ]
             except TimeoutError:
                 timeout = True
 
@@ -61,7 +63,12 @@ def data_311(request):
         return render(
             request,
             "search/results_311.html",
-            {"results": results, "zip_code": str(zip_code), "no_matches": len(results) == 0, "timeout": timeout},
+            {
+                "results": results,
+                "zip_code": str(zip_code),
+                "no_matches": len(results) == 0,
+                "timeout": timeout,
+            },
         )
     else:
         return render(request, "search/data_311.html", {})
