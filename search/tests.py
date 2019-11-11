@@ -116,7 +116,7 @@ class SearchIndexViewTests(TestCase):
         """
         response = self.client.get("/search/?zipcode=10000")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Zip Code:")
+        self.assertContains(response, "Search results for 10000")
 
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_index_no_zip(self):
