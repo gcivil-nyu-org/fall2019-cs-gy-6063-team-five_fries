@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row justify-content-center">
 
-        <div class="col col-7 ">
+        <div class="col col-7 " style="max-width:40%">
             <h1>Account</h1>
             <ul class="list-group location-results">
                 <li class="list-group-item">Username: {{ user.username }}</li>
@@ -27,7 +27,7 @@
 
             <div class="mb-3 text-center location-results">
                 {% for review in user.review_set.all %}
-                <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
+                <div class="card mb-4 shadow-sm "style="max-width: 35rem;">
                     <div class="card-header">
                         <ul class="list-unstyled">
                             <a href="{% url 'location' review.location.id %}">{{ review.location.address }}</a>
