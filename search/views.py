@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.utils import timezone
 from .models import CraigslistLocation, LastRetrievedData
+from location.models import Location
 
 
 from external.nyc311 import get_311_data, get_311_statistics
@@ -20,22 +21,12 @@ def search(request):
         zip_code = request.GET.get("zipcode")
         search_data = {}
         if zip_code:
-            search_data["locations"] = fetch_craigslist_housing(
-                limit=25,  # FIXME: temporarily limit the results up to 25 for the fast response
-                site="newyork",
-                category="apa",
-                filters={"zip_code": str(zip_code)},
-            )
+            search_data["locations"] =  Location.objects.filter(zipcode=str(zip_code))
 
             # Get 311 statistics
             try:
-                search_data["stats"] = get_311_statistics(str(zip_code))
-            except TimeoutError:
-                timeout = True
-
-            # Get 311 raw complaints
-            try:
-                search_data["complaints"] = get_311_data(str(zip_code))
+                stats = get_311_statistics(str(zip_code))
+                search_data["stats"] = [(s.complaint_type, 100 * s.complaint_level / 5) for s in stats]
             except TimeoutError:
                 timeout = True
 
