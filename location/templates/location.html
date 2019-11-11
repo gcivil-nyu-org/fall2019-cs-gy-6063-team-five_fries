@@ -42,9 +42,9 @@
         <div class="col">
             <h2>Apartments</h2>
             <div class="location-results">
-            {% if object.apartment_set.all %}
+            {% if zillow_list %}
             <ul>
-            {% for apt in object.apartment_set.all %}
+            {% for apt in zillow_list %}
             <li>
               <a href={{apt.zillow_url}}>
               <h3>
@@ -61,7 +61,10 @@
             <p>No apartments</p>
             {% endif %}
             </div>
+            <i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
         </div>
+
+
 
 
         <div class="col">
@@ -121,26 +124,6 @@
 </div>
 
 
-<h2>Apartments</h2>
-{% if zillow_list %}
-<ul>
-{% for apt in zillow_list %}
-<li>
-  <a href={{apt.zillow_url}}>
-  <h3>
-    {% if apt.suite_num %}
-      <span class="badge badge-secondary">#{{apt.suite_num}}</span>
-    {% endif %}
-    {{apt.estimated_rent_price_for_display}}
-  </h3>
-  </a>
-</li>
-{% endfor %}
-</ul>
-{% else %}
-<p>No apartments</p>
-{% endif %}
-<i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
 
 {% if request.user.is_authenticated and user.user_type_string == "Renter" %}
     <form action="{% url 'favorite' object.id %}" method="POST">
