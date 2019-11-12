@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Restraunts Data Results</h2><hr>
-
+    {% if timeout %}
+        <p style="color:red">Timeout occurred.</p>
+    {% elif no_matches %}
+        <p style="color:red">No matches were found.</p>
+    {% else %}
     {% for result in results %}
         <h5>Apartment Results</h5>
         <h5>Complaint Results</h5>
@@ -15,8 +19,6 @@
             </ul>
         </ul>
         <hr>
-    {% endfor %}
-    {% if timeout %}
-        <p style="color:red">Timeout occurred.</p>
+        {% endfor %}
     {% endif %}
 {% endblock %}
