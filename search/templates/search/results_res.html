@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Restraunts Data Results</h2><hr>
+
+    {% for result in results %}
+        <h5>Apartment Results</h5>
+        <h5>Complaint Results</h5>
+        <ul>
+        <li>Name of the Restraunts: {{ result.dba }}</li>
+            <li>Cuisine Type: {{results.cuisine_description }}</li>
+            <li>Boro: {{ result.boro }}</li>
+            <li>ZIP Code: {{ result.zipcode }}</li>
+        <li>Complaint</li>
+            <ul>
+            <li>Action: {{ result.action }}</li>
+            <li>Violation Description: {{ result.violation_description }}</li>
+            <li>Score: {{ result.score }}</li>
+            </ul>
+        </ul>
+        <hr>
+    {% endfor %}
+    {% if timeout %}
+        <p style="color:red">Timeout occurred.</p>
+    {% endif %}

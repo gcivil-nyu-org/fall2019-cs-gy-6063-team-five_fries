@@ -7,6 +7,7 @@ from location.models import Location
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
+from external.res import get_res_data
 
 
 class CraigslistIndexView(generic.ListView):
@@ -203,3 +204,19 @@ def build_search_query(zip_code, min_price, max_price, bed_num):
         query_params["apartment_set__number_of_bed"] = bed_num
 
     return query_params
+
+def data_res(request):
+    if request.method == "POST" and "data" in request.POST:
+        zipcode = request.POST["zipcode"]
+        try:
+            results = get_res_data(str(zipcode))
+        except TimeoutError:
+            return render(request, "search/results_res.html", {"timeout": True})
+
+        return render(
+            request,
+            "search/results_res.html",
+            {"results": results, "no_matches": len(results) == 0},
+        )
+    else:
+        return render(request, "search/data_res.html", {})
