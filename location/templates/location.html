@@ -57,7 +57,23 @@
             </li>
             {% endfor %}
             </ul>
-            {% else %}
+            {% endif %}
+            {% if landlord_list %}
+            <ul>
+            {% for apt in landlord_list %}
+            <li>
+              <h3>
+                {% if apt.suite_num %}
+                  <span class="badge badge-secondary">#{{apt.suite_num}}</span>
+                {% endif %}
+                {{apt.estimated_rent_price_for_display}}
+              </h3>
+            </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if not zillow_list and not landlord_list %}
             <p>No apartments</p>
             {% endif %}
             </div>
