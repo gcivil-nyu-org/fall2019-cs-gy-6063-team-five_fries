@@ -124,6 +124,31 @@
 </div>
 
 
+<h2>Apartments</h2>
+{% if object.apartment_set.all %}
+<ul>
+{% for apt in object.apartment_set.all %}
+<li>
+  {% if object.is_zillow_listing %}
+  <a href={{apt.zillow_url}}>
+  {% endif %}
+  <h3>
+    {% if apt.suite_num %}
+      <span class="badge badge-secondary">#{{apt.suite_num}}</span>
+    {% endif %}
+    {{apt.estimated_rent_price_for_display}}
+  </h3>
+  {% if object.is_zillow_listing %}
+  </a>
+  {% endif %}
+
+</li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No apartments</p>
+{% endif %}
+<i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
 
 {% if request.user.is_authenticated and user.user_type_string == "Renter" %}
     <form action="{% url 'favorite' object.id %}" method="POST">
