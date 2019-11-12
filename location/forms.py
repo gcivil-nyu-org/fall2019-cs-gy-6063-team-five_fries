@@ -7,7 +7,7 @@ class ApartmentUploadForm(forms.Form):
     state = us_forms.USStateField(label="State")
     address = forms.CharField(label="Address", max_length=255)
     zipcode = us_forms.USZipCodeField(label="Zip Code")
-    estimated_rent_price = forms.DecimalField(
+    rent_price = forms.DecimalField(
         label="Rent Price ($)", max_digits=20, decimal_places=2
     )
 
