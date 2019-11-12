@@ -30,6 +30,7 @@ class LocationView(generic.DetailView):
         context["landlord_list"] = self.object.apartment_set.filter(zpid=None).all()
         return context
 
+
 @login_required
 def favorites(request, pk):
     apartment = get_object_or_404(Location, pk=pk)
@@ -99,10 +100,7 @@ def apartment_upload(request):
 
             # create an apartment and link it to that location
             apt = Apartment.objects.create(
-                suite_num=suite_num,
-                image=image,
-                rent_price=rent_price,
-                location=loc,
+                suite_num=suite_num, image=image, rent_price=rent_price, location=loc
             )
 
             apt.save()

@@ -43,7 +43,7 @@ class Location(models.Model):
 
 class Apartment(models.Model):
     suite_num = models.CharField(max_length=30, blank=True, null=True)
-    image = models.ImageField(null = True, blank = True)
+    image = models.ImageField(null=True, blank=True)
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
