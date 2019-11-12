@@ -4,11 +4,11 @@
 
 {%  block script %}
 <script>
-$(document).ready(function(){
-  $("#complaints_button").click(function(){
-    $("#complaints").toggle();
-  });
-});
+    $(document).ready(function () {
+        $("#complaints_button").click(function () {
+            $("#complaints").toggle();
+        });
+    });
 </script>
 
 <style>
@@ -26,10 +26,10 @@ $(document).ready(function(){
     border-style: solid;
 }
 
-div.meter {
-    display: inline-block;
-    vertical-align: middle;
-}
+    div.meter {
+        display: inline-block;
+        vertical-align: middle;
+    }
 
 .meter > span {
   display: block;
@@ -70,16 +70,22 @@ div.meter {
     <div class="row justify-content-center h-30">
         <div class="col-12">
             <div class="row">
-                <div class="col-5">
+                <div class="col">
                     <h2>Search All Locations</h2>
-                    <form action="{% url 'search' %}" method="GET">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Zip Code (5 digits)" id="zip_code" name="zipcode"
-                                minlength="5" maxlength="5" required pattern="\d*">
-                            <div class="input-group-append">
-                                <input type="submit" class="btn btn-primary" value="Go">
-                            </div>
-                        </div>
+                    <form action="{% url 'search' %}" method="GET" class="form-inline">
+                        <label class="sr-only" for="zip_code">Zipcode</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Zip Code (5 digits)"
+                                        id="zip_code" name="zipcode" minlength="5" maxlength="5" pattern="\d*" required>
+                        
+                        <label class="sr-only" for="min_price">Min Price</label>
+                        <input type="number" class="form-control mb-2 mr-sm-2" placeholder="Min Price" id="min_price"
+                                        name="min_price">
+                        
+                        <label class="sr-only" for="max_price">Max Price</label>
+                        <input type="number" class="form-control mb-2 mr-sm-2" placeholder="Max Price" id="max_price"
+                                        name="max_price">
+                        
+                        <input type="submit" class="btn btn-primary mb-2" value="Go">
                     </form>
                 </div>
             </div>
@@ -87,7 +93,8 @@ div.meter {
     </div>
     <br>
     <div>
-        <h3>Search results for {{ zip }}</h3>
+        <h3>Search results</h3>
+        <p>{{ search_title }}</p>
     </div>
     {% if search_data.stats %}
     <p>
@@ -98,11 +105,12 @@ div.meter {
             {{ search_data.description_for_complaint_level }}
         </span>
         <ul id="stats-list" class="horizontal-list" stype="display: inline-block">
-        {% for key, percentage in search_data.stats %}
+            {% for key, percentage in search_data.stats %}
             <li>
-                <span>{{ key }} </span><div class="meter"><span style="width: {{ percentage }}%"></span></div>
+                <span>{{ key }} </span>
+                <div class="meter"><span style="width: {{ percentage }}%"></span></div>
             </li>
-        {% endfor %}
+            {% endfor %}
         </ul>
         <a href="{% url 'data_311'%}?zip_code={{zip}}">See more</a>
         </div>
@@ -125,7 +133,7 @@ div.meter {
             </div>
         </div>
         {% else %}
-            No locations
+        No locations
         {% endif %}
     </div>
 

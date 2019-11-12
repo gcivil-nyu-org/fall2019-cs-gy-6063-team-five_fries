@@ -19,10 +19,25 @@ def search(request):
     if request.method == "GET":
         timeout = False
         zip_code = request.GET.get("zipcode")
-        search_data = {}
-        if zip_code:
-            search_data["locations"] = Location.objects.filter(zipcode=str(zip_code))
+        max_price = request.GET.get("max_price")
+        min_price = request.GET.get("min_price")
 
+        search_title = ""
+        if zip_code:
+            search_title = search_title + f"Zipcode: {zip_code} "
+        if min_price:
+            search_title = search_title + f"Min Price: {min_price} "
+        if max_price:
+            search_title = search_title + f"Max Price: {max_price} "
+
+        query_params = build_search_query(
+            zip_code=zip_code, max_price=max_price, min_price=min_price
+        )
+
+        search_data = {}
+        if query_params.keys():
+
+            search_data["locations"] = Location.objects.filter(**query_params)
             # Get 311 statistics
             try:
                 stats = get_311_statistics(str(zip_code))
@@ -45,7 +60,12 @@ def search(request):
         return render(
             request,
             "search/search.html",
-            {"search_data": search_data, "zip": str(zip_code), "timeout": timeout},
+            {
+                "search_data": search_data,
+                "zip": zip_code,
+                "search_title": search_title,
+                "timeout": timeout,
+            },
         )
     else:
         # render an error
@@ -149,3 +169,22 @@ def css_color_for_complaint_level(level):
     level = round(min(max(0, level), 5))
     colors = ["lightgreen", "lightgreen", "orange", "orange", "orangered", "orangered"]
     return colors[level]
+
+    
+def build_search_query(zip_code, min_price, max_price):
+    # builds a dictionary of query parameters used to pass values into
+    # the Location model query
+    query_params = {}
+    if zip_code:
+        # filter based on existence of locations with the specified zip code
+        query_params["zipcode"] = zip_code
+    if max_price:
+        # filter based on existence of apartments  with a rent_price less than or equal (lte)
+        # than the max_price
+        query_params["apartment_set__rent_price__lte"] = max_price
+    if min_price:
+        # filter based on existence of apartments  with a rent_price greater than or equal (gte)
+        # than the min_price
+        query_params["apartment_set__rent_price__gte"] = min_price
+
+    return query_params
