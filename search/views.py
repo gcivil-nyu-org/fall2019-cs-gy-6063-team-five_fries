@@ -29,10 +29,16 @@ def search(request):
                 search_data["stats"] = [
                     (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
                 ]
-                average_complaint_level = sum(s.complaint_level for s in stats) / len(stats)
+                average_complaint_level = sum(s.complaint_level for s in stats) / len(
+                    stats
+                )
                 search_data["average_complaint_level"] = average_complaint_level
-                search_data["description_for_complaint_level"] = description_for_complaint_level(average_complaint_level)
-                search_data["css_color_for_complaint_level"] = css_color_for_complaint_level(average_complaint_level)
+                search_data[
+                    "description_for_complaint_level"
+                ] = description_for_complaint_level(average_complaint_level)
+                search_data[
+                    "css_color_for_complaint_level"
+                ] = css_color_for_complaint_level(average_complaint_level)
             except TimeoutError:
                 timeout = True
 
@@ -124,10 +130,10 @@ def clist_results(request):
     return render(request, "search/clist_results.html", context)
 
 
-"""
-Return an emoji for given complaint_level in the range [0, 5]
-"""
 def description_for_complaint_level(level):
+    """
+    Return an emoji for given complaint_level in the range [0, 5]
+    """
     level = round(min(max(0, level), 5))
     return [
         "Very low 😊",
@@ -138,13 +144,8 @@ def description_for_complaint_level(level):
         "Very high 😡",
     ][level]
 
+
 def css_color_for_complaint_level(level):
     level = round(min(max(0, level), 5))
-    return [
-        "lightgreen",
-        "lightgreen",
-        "orange",
-        "orange",
-        "orangered",
-        "orangered",
-    ][level]
+    colors = ["lightgreen", "lightgreen", "orange", "orange", "orangered", "orangered"]
+    return colors[level]
