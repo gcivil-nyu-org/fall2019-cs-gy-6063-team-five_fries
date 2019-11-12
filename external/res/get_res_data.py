@@ -1,4 +1,3 @@
-
 from sodapy import Socrata
 import requests
 import pandas as pd
@@ -17,8 +16,6 @@ def get_res_data(zip, max_query_results=5, num_entries_to_search=10000, t_out=10
     query_results = None
     timeout = False
     no_matches = True
-
-
 
     try:
         results = client.get(
