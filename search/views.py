@@ -30,6 +30,8 @@ def search(request):
         if max_price:
             search_title = search_title + f"Max Price: {max_price} "
 
+        # build the query parameter dictionary that will be used to
+        # query the Location model
         query_params = build_search_query(
             zip_code=zip_code, max_price=max_price, min_price=min_price
         )
@@ -170,7 +172,7 @@ def css_color_for_complaint_level(level):
     colors = ["lightgreen", "lightgreen", "orange", "orange", "orangered", "orangered"]
     return colors[level]
 
-    
+
 def build_search_query(zip_code, min_price, max_price):
     # builds a dictionary of query parameters used to pass values into
     # the Location model query
