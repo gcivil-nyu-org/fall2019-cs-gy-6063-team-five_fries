@@ -43,6 +43,7 @@ class Location(models.Model):
 
 class Apartment(models.Model):
     suite_num = models.CharField(unique=True, max_length=30, blank=True, null=True)
+    image = models.ImageField(null = True, blank = True)
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
@@ -61,6 +62,7 @@ class Apartment(models.Model):
     )
     last_estimated = models.DateField(blank=True, null=True)
     zillow_url = models.URLField(blank=True, null=True)
+    is_zillow_listing = models.BooleanField(default=True)
 
     def __str__(self):
         return f"Apartment({self.suite_num}) - {self.location.address}"
