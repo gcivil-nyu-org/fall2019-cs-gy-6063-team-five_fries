@@ -27,8 +27,8 @@ class LocationView(generic.DetailView):
         context = super(LocationView, self).get_context_data(**kwargs)
         context["form"] = ReviewForm()
         context["zillow_list"] = self.object.apartment_set.exclude(zpid=None).all()
+        context["landlord_list"] = self.object.apartment_set.filter(zpid=None).all()
         return context
-
 
 @login_required
 def favorites(request, pk):
@@ -82,7 +82,8 @@ def apartment_upload(request):
             state = form.cleaned_data["state"]
             address = form.cleaned_data["address"]
             zipcode = form.cleaned_data["zipcode"]
-            estimated_rent_price = form.cleaned_data["estimated_rent_price"]
+            rent_price = form.cleaned_data["rent_price"]
+            image = form.cleaned_data["image"]
             suite_num = form.cleaned_data["suite_num"]
 
             # TODO use geocoding API to get latitude and longitude
@@ -99,8 +100,8 @@ def apartment_upload(request):
             # create an apartment and link it to that location
             apt = Apartment.objects.create(
                 suite_num=suite_num,
-                estimated_rent_price=estimated_rent_price,
-                is_zillow_listing=False,
+                image=image,
+                rent_price=rent_price,
                 location=loc,
             )
 
