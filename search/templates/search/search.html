@@ -107,8 +107,7 @@
         <ul id="stats-list" class="horizontal-list" stype="display: inline-block">
             {% for key, percentage in search_data.stats %}
             <li>
-                <span>{{ key }} </span>
-                <div class="meter"><span style="width: {{ percentage }}%"></span></div>
+                <span>{{ key }} </span><div class="meter"><span style="width: {{ percentage }}%"></span></div>
             </li>
             {% endfor %}
         </ul>
