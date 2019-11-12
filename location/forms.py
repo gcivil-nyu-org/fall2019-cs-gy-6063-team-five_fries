@@ -22,7 +22,6 @@ class ApartmentUploadForm(forms.Form):
     #     label="Longitude", required=False, max_digits=9, decimal_places=6
     # )
 
-
     def clean_estimated_rent_price(self):
         estimated_rent_price = self.cleaned_data.get("estimated_rent_price")
         if estimated_rent_price < 0:
