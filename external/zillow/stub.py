@@ -17,6 +17,7 @@ all_zillow_response_names = [
     "zillow-normal.xml",
     "zillow-error.xml",
     "zillow-single.xml",
+    "zillow-without-estimate.xml",
 ]
 
 
