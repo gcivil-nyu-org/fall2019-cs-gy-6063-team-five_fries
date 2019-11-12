@@ -79,3 +79,17 @@ class LocationViewTests(TestCase):
         )
         response = self.client.get(reverse("location", args=(1,)))
         self.assertContains(response, "Write something")
+
+    def test_apartment_upload_view(self):
+        self.client.force_login(
+            SiteUser.objects.create(user_type="L", username="testuser")
+        )
+        response = self.client.get(reverse("apartment_upload"))
+        self.assertEqual(response.status_code, 200)
+
+    def test_apartment_upload_confirmation_view(self):
+        self.client.force_login(
+            SiteUser.objects.create(user_type="L", username="testuser")
+        )
+        response = self.client.get(reverse("apartment_upload_confirmation"))
+        self.assertEqual(response.status_code, 200)
