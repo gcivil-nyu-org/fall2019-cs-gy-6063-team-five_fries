@@ -14,13 +14,14 @@ class ApartmentUploadForm(forms.Form):
     # Handling input files with Django
     # https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
     image = forms.ImageField()
-    latitude = forms.DecimalField(
-        label="Latitude", required=False, max_digits=9, decimal_places=6
-    )
-    longitude = forms.DecimalField(
-        label="Longitude", required=False, max_digits=9, decimal_places=6
-    )
-    suite_num = forms.CharField(label="Suite Number", required=False, max_length=30)
+    suite_num = forms.CharField(label="Suite Number", max_length=30)
+    # latitude = forms.DecimalField(
+    #     label="Latitude", required=False, max_digits=9, decimal_places=6
+    # )
+    # longitude = forms.DecimalField(
+    #     label="Longitude", required=False, max_digits=9, decimal_places=6
+    # )
+
 
     def clean_estimated_rent_price(self):
         estimated_rent_price = self.cleaned_data.get("estimated_rent_price")
