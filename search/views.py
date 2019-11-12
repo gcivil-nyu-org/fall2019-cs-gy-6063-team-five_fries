@@ -6,6 +6,7 @@ from .models import CraigslistLocation, LastRetrievedData
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
+from external.res import get_res_data
 
 
 class CraigslistIndexView(generic.ListView):
@@ -124,3 +125,20 @@ def clist_results(request):
     result_list = CraigslistLocation.objects.all()
     context = {"clist_results": result_list}
     return render(request, "search/clist_results.html", context)
+
+
+def data_res(request):
+    if request.method == "POST" and "data" in request.POST:
+        zipcode = request.POST["zipcode"]
+        try:
+            results = get_res_data(str(zipcode))
+        except TimeoutError:
+            return render(request, "search/results_res.html", {"timeout": True})
+
+        return render(
+            request,
+            "search/results_res.html",
+            {"results": results, "no_matches": len(results) == 0},
+        )
+    else:
+        return render(request, "search/data_res.html", {})
