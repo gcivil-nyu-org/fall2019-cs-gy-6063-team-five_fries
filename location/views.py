@@ -85,6 +85,8 @@ def apartment_upload(request):
             estimated_rent_price = form.cleaned_data["estimated_rent_price"]
             suite_num = form.cleaned_data["suite_num"]
 
+            # TODO use geocoding API to get latitude and longitude
+
             # create or retrieve an existing location
             loc = Location.objects.get_or_create(
                 city=city, state=state, address=address, zipcode=zipcode

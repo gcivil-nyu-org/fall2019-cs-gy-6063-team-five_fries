@@ -48,7 +48,6 @@ class Apartment(models.Model):
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
 
-<<<<<<< HEAD
     rent_price = models.DecimalField(
         max_digits=20, decimal_places=2, null=True, validators=[MinValueValidator(0)]
     )
