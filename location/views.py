@@ -78,18 +78,31 @@ def apartment_upload(request):
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
-            city = form.cleaned_data['city']
-            state = form.cleaned_data['state']
-            address = form.cleaned_data['address']
-            zipcode = form.cleaned_data['zipcode']
-            estimated_rent_price = form.cleaned_data['estimated_rent_price']
-            suite_num = form.cleaned_data['suite_num']
+            city = form.cleaned_data["city"]
+            state = form.cleaned_data["state"]
+            address = form.cleaned_data["address"]
+            zipcode = form.cleaned_data["zipcode"]
+            estimated_rent_price = form.cleaned_data["estimated_rent_price"]
+            suite_num = form.cleaned_data["suite_num"]
 
             # create or retrieve an existing location
-            loc = Location.objects.get_or_create(city=city, state=state, address=address, zipcode=zipcode)[0] # using get_or_create avoids race condition
+            loc = Location.objects.get_or_create(
+                city=city, state=state, address=address, zipcode=zipcode
+            )[
+                0
+            ]  # using get_or_create avoids race condition
+
+            loc.save()
 
             # create an apartment and link it to that location
-            apt = Apartment.objects.create(suite_num=suite_num, estimated_rent_price=estimated_rent_price, is_zillow_listing=False, location=loc)
+            apt = Apartment.objects.create(
+                suite_num=suite_num,
+                estimated_rent_price=estimated_rent_price,
+                is_zillow_listing=False,
+                location=loc,
+            )
+
+            apt.save()
 
             # redirect to a new URL:
             return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
