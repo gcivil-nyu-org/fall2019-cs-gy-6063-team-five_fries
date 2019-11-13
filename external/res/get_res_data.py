@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 
 
-def get_res_data(zip, max_query_results=20, num_entries_to_search=20000, t_out=10):
+def get_res_data(zip, max_query_results=20, num_entries_to_search=2000, t_out=10):
 
     res_dataset_domain = "data.cityofnewyork.us"
     res_dataset_identifier = "43nn-pn8j"
