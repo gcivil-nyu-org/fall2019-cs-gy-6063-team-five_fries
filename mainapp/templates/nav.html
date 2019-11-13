@@ -54,6 +54,11 @@
                 <ul class="navbar-nav ml-auto">
                     <!-- right aligned items -->
                     <li class="nav-item active">
+                        {% if request.user.is_authenticated and user.user_type_string == "Landlord" %}
+                        <a class="nav-link" href="{% url 'apartment_upload' %}">Upload Apartment</a>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item active">
                         {% if request.user.is_authenticated and user.user_type_string == "Renter" %}
                         <a class="nav-link" href="{% url 'favlist' %}">Favorites</a>
                         {% endif %}

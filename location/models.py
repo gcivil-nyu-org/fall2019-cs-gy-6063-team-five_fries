@@ -42,7 +42,8 @@ class Location(models.Model):
 
 
 class Apartment(models.Model):
-    suite_num = models.CharField(unique=True, max_length=30, blank=True, null=True)
+    suite_num = models.CharField(max_length=30, blank=True, null=True)
+    image = models.ImageField(null=True, blank=True)
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
@@ -66,5 +67,5 @@ class Apartment(models.Model):
         return f"Apartment({self.suite_num}) - {self.location.address}"
 
     @property
-    def estimated_rent_price_for_display(self):
-        return f"${self.estimated_rent_price}"
+    def rent_price_for_display(self):
+        return f"${self.rent_price}"
