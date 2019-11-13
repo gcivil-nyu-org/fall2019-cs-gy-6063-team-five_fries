@@ -48,9 +48,10 @@
             <li>
               <h3>
                 {% if apt.suite_num %}
-                    <a href={{apt.zillow_url}}><span class="badge badge-secondary">#{{apt.suite_num}}</span></a>
+                    <a href="{% url 'apartment' pk=object.id suite_num=apt.suite_num %}"><span class="badge badge-secondary">#{{apt.suite_num}}</span></a>
                 {% endif %}
                 {{apt.rent_price_for_display}}
+                <a href="{{ apt.zillow_url }}"><span class="badge badge-secondary">Zillow</span></a>
               </h3>
             </li>
             {% endfor %}
