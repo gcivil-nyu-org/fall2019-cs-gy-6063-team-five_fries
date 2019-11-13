@@ -143,7 +143,7 @@ class SearchIndexViewTests(TestCase):
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_page_min_price(self):
         """
-        tests the search page with only a zipcode passed in
+        tests the search page with zipcode and min_price passed in
         """
         response = self.client.get("/search/?zipcode=10000&min_price=500")
         self.assertContains(response, "Zipcode: 10000")
@@ -154,11 +154,23 @@ class SearchIndexViewTests(TestCase):
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_page_max_price(self):
         """
-        tests the search page with only a zipcode passed in
+        tests the search page with zipcode and max_price passed in
         """
         response = self.client.get("/search/?zipcode=10000&min_price=&max_price=2000")
         self.assertContains(response, "Zipcode: 10000")
         self.assertContains(response, "Max Price: 2000")
+        self.assertNotContains(response, "Min Price:")
+
+    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    def test_search_page_bed_num(self):
+        """
+        tests the search page with zipcode and bed_num passed in
+        """
+        response = self.client.get("/search/?zipcode=10000&min_price=&max_price=&bed_num=4")
+        self.assertContains(response, "Zipcode: 10000")
+        self.assertContains(response, "Number of Bedroom: 4")
+        self.assertNotContains(response, "Max Price:")
         self.assertNotContains(response, "Min Price:")
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
@@ -168,11 +180,12 @@ class SearchIndexViewTests(TestCase):
         tests the search page with only a zipcode passed in
         """
         response = self.client.get(
-            "/search/?zipcode=10000&min_price=500&max_price=2000"
+            "/search/?zipcode=10000&min_price=500&max_price=2000&bed_num=4"
         )
         self.assertContains(response, "Zipcode: 10000")
         self.assertContains(response, "Max Price: 2000")
         self.assertContains(response, "Min Price: 500")
+        self.assertContains(response, "Number of Bedroom: 4")
 
 
 class SearchCraigsTests(TestCase):

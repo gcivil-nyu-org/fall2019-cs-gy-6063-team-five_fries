@@ -45,7 +45,7 @@ def search(request):
             if max_price:
                 search_title = search_title + f"Max Price: {max_price} "
             if bed_num:
-                search_title = search_title + f"Suite Number: {bed_num}"
+                search_title = search_title + f"Number of Bedroom: {bed_num}"
 
             search_data["locations"] = Location.objects.filter(**query_params)
             # Get 311 statistics
