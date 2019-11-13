@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 from datetime import datetime
-from .models import Location
+from .models import Location, Apartment
 from mainapp.models import SiteUser
 from review.models import Review
 import string
@@ -79,3 +79,33 @@ class LocationViewTests(TestCase):
         )
         response = self.client.get(reverse("location", args=(1,)))
         self.assertContains(response, "Write something")
+
+    def test_apartment_view(self):
+        """create location and apartment associated with that location.
+        test checks if the apartment detail view is loaded"""
+        city = "Brooklyn"
+        state = "New York"
+        address = "1234 Coney Island Avenue"
+        zipcode = 11218
+        # using get_or_create avoids race condition
+        loc = Location.objects.get_or_create(
+            city=city, state=state, address=address, zipcode=zipcode
+        )[0]
+
+        # create an apartment and link it to that location
+        suite_num = "18C"
+        number_of_bed = 3
+        image = "Images/System_Data_Flow_Diagram.png"
+        rent_price = 3000
+        apt = Apartment.objects.create(
+            suite_num=suite_num,
+            number_of_bed=number_of_bed,
+            image=image,
+            rent_price=rent_price,
+            location=loc,
+        )
+
+        response = self.client.get(
+            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+        )
+        self.assertEqual(response.status_code, 200)
