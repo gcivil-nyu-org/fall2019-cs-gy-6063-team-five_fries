@@ -7,7 +7,7 @@
         <p style="color:red">No matches were found.</p>
     {% else %}
     {% for result in results %}
-
+        {% if results.violation_description != nan %}
             <h5>Apartment Results</h5>
             <h5>Complaint Results</h5>
             <ul>
@@ -20,7 +20,7 @@
                 </ul>
             </ul>
             <hr>
-
+        {% endif %}
     {% endfor %}
     {% endif %}
 {% endblock %}
