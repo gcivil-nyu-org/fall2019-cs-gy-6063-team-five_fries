@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.views import generic
 from django.utils import timezone
 from .models import CraigslistLocation, LastRetrievedData
+from .forms import SearchForm
 from location.models import Location
-
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
@@ -17,12 +17,34 @@ class CraigslistIndexView(generic.ListView):
 def search(request):
     # generic zip code form post
     if request.method == "GET":
+
+        # pass the form data to the form class
+        search_form = SearchForm(request.GET)
+
         timeout = False
         zip_code = request.GET.get("zipcode")
-        search_data = {}
-        if zip_code:
-            search_data["locations"] = Location.objects.filter(zipcode=str(zip_code))
+        max_price = request.GET.get("max_price")
+        min_price = request.GET.get("min_price")
 
+        search_title = ""
+
+        # build the query parameter dictionary that will be used to
+        # query the Location model
+        query_params = build_search_query(
+            zip_code=zip_code, max_price=max_price, min_price=min_price
+        )
+
+        search_data = {}
+        if query_params.keys() and search_form.is_valid():
+
+            if zip_code:
+                search_title = search_title + f"Zipcode: {zip_code} "
+            if min_price:
+                search_title = search_title + f"Min Price: {min_price} "
+            if max_price:
+                search_title = search_title + f"Max Price: {max_price} "
+
+            search_data["locations"] = Location.objects.filter(**query_params)
             # Get 311 statistics
             try:
                 stats = get_311_statistics(str(zip_code))
@@ -45,11 +67,18 @@ def search(request):
         return render(
             request,
             "search/search.html",
-            {"search_data": search_data, "zip": str(zip_code), "timeout": timeout},
+            {
+                "search_data": search_data,
+                "zip": zip_code,
+                "search_title": search_title,
+                "search_form": search_form,
+                "timeout": timeout,
+            },
         )
     else:
         # render an error
-        return render(request, "search/search.html")
+        search_form = SearchForm()
+        return render(request, "search/search.html", {"search_form": search_form})
 
 
 def data_311(request):
@@ -149,3 +178,22 @@ def css_color_for_complaint_level(level):
     level = round(min(max(0, level), 5))
     colors = ["lightgreen", "lightgreen", "orange", "orange", "orangered", "orangered"]
     return colors[level]
+
+
+def build_search_query(zip_code, min_price, max_price):
+    # builds a dictionary of query parameters used to pass values into
+    # the Location model query
+    query_params = {}
+    if zip_code:
+        # filter based on existence of locations with the specified zip code
+        query_params["zipcode"] = zip_code
+    if max_price:
+        # filter based on existence of apartments  with a rent_price less than or equal (lte)
+        # than the max_price
+        query_params["apartment_set__rent_price__lte"] = max_price
+    if min_price:
+        # filter based on existence of apartments  with a rent_price greater than or equal (gte)
+        # than the min_price
+        query_params["apartment_set__rent_price__gte"] = min_price
+
+    return query_params
