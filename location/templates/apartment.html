@@ -29,7 +29,10 @@
           <div class="p-4">
             <p class="lead font-weight-bold">{{loc.address}}, {{loc.city}}, {{loc.state}}, {{loc.zipcode}}</p>
 
-
+            <div class="mb-3">
+                <span class="badge red mr-1">Suite: {{ apt.suite_num }}</span>
+                <span class="badge blue mr-1">Bedrooms: {{ apt.number_of_bed }}</span>
+            </div>
 
             <p class="lead">
               <span>{{ apt.rent_price_for_display }}</span>
