@@ -167,7 +167,9 @@ class SearchIndexViewTests(TestCase):
         """
         tests the search page with zipcode and bed_num passed in
         """
-        response = self.client.get("/search/?zipcode=10000&min_price=&max_price=&bed_num=4")
+        response = self.client.get(
+            "/search/?zipcode=10000&min_price=&max_price=&bed_num=4"
+        )
         self.assertContains(response, "Zipcode: 10000")
         self.assertContains(response, "Number of Bedroom: 4")
         self.assertNotContains(response, "Max Price:")
