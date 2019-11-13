@@ -46,14 +46,12 @@
             <ul>
             {% for apt in zillow_list %}
             <li>
-              <a href={{apt.zillow_url}}>
               <h3>
                 {% if apt.suite_num %}
-                  <span class="badge badge-secondary">#{{apt.suite_num}}</span>
+                    <a href={{apt.zillow_url}}><span class="badge badge-secondary">#{{apt.suite_num}}</span></a>
                 {% endif %}
                 {{apt.rent_price_for_display}}
               </h3>
-              </a>
             </li>
             {% endfor %}
             </ul>
