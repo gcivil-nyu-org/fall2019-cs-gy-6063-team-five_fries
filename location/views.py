@@ -30,6 +30,13 @@ class LocationView(generic.DetailView):
         context["landlord_list"] = self.object.apartment_set.filter(zpid=None).all()
         return context
 
+def apartment_detail_view(request, pk, suite_num):
+    loc = Location.objects.get(pk=pk)
+    apt = loc.apartment_set.get(suite_num=suite_num)
+
+    return render(
+        request, "apartment.html", {"loc": loc, "apt": apt}
+    )
 
 @login_required
 def favorites(request, pk):
