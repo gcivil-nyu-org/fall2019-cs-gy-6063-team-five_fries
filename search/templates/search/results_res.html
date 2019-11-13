@@ -7,18 +7,20 @@
         <p style="color:red">No matches were found.</p>
     {% else %}
     {% for result in results %}
-        <h5>Apartment Results</h5>
-        <h5>Complaint Results</h5>
-        <ul>
-        <li>Name of the Restraunts: {{ result.dba }}</li>
-            <li>Boro: {{ result.boro }}</li>
-            <li>ZIP Code: {{ result.zipcode }}</li>
-        <li>Complaint</li>
+
+            <h5>Apartment Results</h5>
+            <h5>Complaint Results</h5>
             <ul>
-            <li>Violation Description: {{ result.violation_description }}</li>
+            <li>Name of the Restraunts: {{ result.dba }}</li>
+                <li>Borough: {{ result.boro }}</li>
+                <li>ZIP Code: {{ result.zipcode }}</li>
+            <li>Complaint</li>
+                <ul>
+                <li>Violation Description: {{ result.violation_description }}</li>
+                </ul>
             </ul>
-        </ul>
-        <hr>
-        {% endfor %}
+            <hr>
+
+    {% endfor %}
     {% endif %}
 {% endblock %}
