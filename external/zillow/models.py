@@ -1,6 +1,7 @@
 import attr
 import decimal
 from datetime import datetime
+from attr.converters import optional
 
 
 def parse_zillow_datetime(value):
@@ -28,10 +29,10 @@ class ZillowAddress(object):
 @attr.s
 class ZillowHousingResponse(object):
     zpid = attr.ib()
-    address = attr.ib(converter=ZillowAddress.from_dict)
-    estimated_rent_price = attr.ib(converter=decimal.Decimal)
+    address = attr.ib(converter=optional(ZillowAddress.from_dict))
+    estimated_rent_price = attr.ib(converter=optional(decimal.Decimal))
     estimated_rent_price_currency = attr.ib()
-    last_estimated = attr.ib(converter=parse_zillow_datetime)
+    last_estimated = attr.ib(converter=optional(parse_zillow_datetime))
     url = attr.ib()
 
     @classmethod
@@ -42,12 +43,12 @@ class ZillowHousingResponse(object):
             rent_estimate = {}
 
         return cls(
-            zpid=dic["zpid"],
-            address=dic["address"],
+            zpid=dic.get("zpid"),
+            address=dic.get("address"),
             estimated_rent_price=rent_estimate.get("#text"),
             estimated_rent_price_currency=rent_estimate.get("@currency"),
-            last_estimated=dic["rentzestimate"]["last-updated"],
-            url=dic["links"]["mapthishome"],
+            last_estimated=dic.get("rentzestimate", {}).get("last-updated"),
+            url=dic.get("links", {}).get("mapthishome"),
         )
 
     @property

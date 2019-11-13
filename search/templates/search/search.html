@@ -4,12 +4,65 @@
 
 {%  block script %}
 <script>
-$(document).ready(function(){
-  $("#complaints_button").click(function(){
-    $("#complaints").toggle();
-  });
-});
+    $(document).ready(function () {
+        $("#complaints_button").click(function () {
+            $("#complaints").toggle();
+        });
+    });
 </script>
+
+<style>
+.meter {
+    width: 4rem;
+    height: 0.7rem;
+    position: relative;
+    background: white;
+    -moz-border-radius: 25px;
+    -webkit-border-radius: 25px;
+    border-radius: 25px;
+    box-shadow: inset 0 -1px 1px rgba(255,255,255,0.3);
+    border-color: lightgray;
+    border-width: 1px;
+    border-style: solid;
+}
+
+    div.meter {
+        display: inline-block;
+        vertical-align: middle;
+    }
+
+.meter > span {
+  display: block;
+  height: 100%;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  background-color: orangered;
+  background-image: linear-gradient(
+    center bottom,
+    orangered 37%,
+    orangered 69%
+  );
+  box-shadow:
+    inset 0 2px 9px  rgba(255,255,255,0.3),
+    inset 0 -2px 6px rgba(0,0,0,0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.horizontal-list {
+    display: flex;
+    list-style-type: none;
+}
+.horizontal-list li {
+    margin: 0 0.5rem;
+}
+#stats-list {
+    margin: 0;
+    padding: 0;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -17,129 +70,60 @@ $(document).ready(function(){
     <div class="row justify-content-center h-30">
         <div class="col-12">
             <div class="row">
-                <div class="col-5">
+                <div class="col">
                     <h2>Search All Locations</h2>
-                    <form action="{% url 'search' %}" method="GET">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Zip Code (5 digits)" id="zip_code" name="zipcode"
-                                minlength="5" maxlength="5" required pattern="\d*">
-                            <div class="input-group-append">
-                                <input type="submit" class="btn btn-primary" value="Go">
-                            </div>
-                        </div>
-                    </form>
+
+                    {% crispy search_form %}
+
                 </div>
             </div>
         </div>
     </div>
-    {% if search_data.locations %}
-    <hr class="mt-0 mb-2 mt-2">
-    <div class="row h-65">
-        <div class="col">
-            <p><strong>Zip Code:</strong> {{ zip }}</p>
-            <table class="table table-striped table-bordered table-hover table-sm results-table" width="100%">
-                <thead>
-                    <tr>
-                        <th scope="col" class="th-sm">ID</th>
-                        <th scope="col" class="th-sm">Price</th>
-                        <th scope="col" class="th-sm">Where</th>
-                        <th scope="col" class="th-sm">Bedrooms</th>
-                        <th scope="col" class="th-sm">Detail</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in search_data.locations %}
-                    <tr>
-                        <td scope="row">{{ item.id }}</td>
-                        <td>{{ item.price }}</td>
-                        <td>{{ item.where }}</td>
-                        <td>{{ item.bedrooms }}</td>
-                        <td>
-                            <div class="text-center">
-                                <button class="btn seccondaryAction btn-outline-primary">More Details</button>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <br>
+    <div>
+        <h3>Search results</h3>
+        <p>{{ search_title }}</p>
     </div>
-    {% endif %}
     {% if search_data.stats %}
+    <p>
         <hr class="mt-0 mb-2 mt-2">
-        {% if timeout %}
-            <p style="color:red">Timeout occurred.</p>
-        {% else %}
-            <h5>311 Data Statistics for Zip Code: {{ zip }}</h5>
-            <ol>
-            {% for result in search_data.stats %}
-                <br>
-                <li><h5>{{ result.complaint_type }} Complaints</h5></li>
-                <ul>
-                    <!-- complaint levels are displayed in different colors depending on the complaint level -->
-                    <!-- 0-1 (low complaints) -- green, 2-3 (medium complaints) -- orange, 4-5 (high complaints) -- red -->
-                    {% if result.complaint_level == 0 or result.complaint_level == 1 %}
-                        <li style="color:green">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
-
-                    {% elif result.complaint_level == 2 or result.complaint_level == 3 %}
-                        <li style="color:orange">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
-
-                    {% elif result.complaint_level == 4 or result.complaint_level == 5 %}
-                        <li style="color:red">{{ result.complaint_type }} Level (0 - 5): {{ result.complaint_level }}</li>
-
-                    {% else %}
-                        <li>{{ result.complaint_type }} Level (0 - 5): Invalid {{ result.complaint_type }} Level</li>
-                    {% endif %}
-
-                    <li>Total {{ result.complaint_type }} Complaints: {{ result.total_complaints_query_zip }}</li>
-                    <li>Closed {{ result.complaint_type }} Complaints: {{ result.closed_complaints_query_zip }}</li>
-                    <li>Percentage {{ result.complaint_type }} Complaints Closed: {{ result.percentage_complaints_closed }}%</li>
-                    <li>Most {{ result.complaint_type }} Violations in Neighborhood: {{ result.max_complaints_zip }} ({{ result.max_complaints }} complaints)</li>
-                </ul>
-
+        <div class="horizontal-list">
+        <h5>Complaints Level:</h5>
+        <span style="margin-left: 0.5rem; color: {{search_data.css_color_for_complaint_level}};">
+            {{ search_data.description_for_complaint_level }}
+        </span>
+        <ul id="stats-list" class="horizontal-list" stype="display: inline-block">
+            {% for key, percentage in search_data.stats %}
+            <li>
+                <span>{{ key }} </span><div class="meter"><span style="width: {{ percentage }}%"></span></div>
+            </li>
             {% endfor %}
-            </ol>
-        {% endif %}
-    {% endif %}
-
-    <hr class="mt-0 mb-2 mt-2">
-
-
-    {% if search_data.complaints %}
-        <button class="btn btn-primary" id="complaints_button">Display/Hide Complaints</button>
-        <div id="complaints" class="hidden">
-        <hr class="mt-0 mb-2 mt-2">
-        {% if timeout %}
-            <p style="color:red">Timeout occurred.</p>
-
-        {% else %}
-            <h5>311 Data Complaints for Zip Code: {{ zip }}</h5>
-            <ol>
-            {% for result in search_data.complaints %}
-                <li><h5>Complaint Results</h5></li>
-                <ul>
-                <li>Date Created: {{ result.created_date }}</li>
-                <li>Incident Address</li>
-                    <ul>
-                    <li>Street Address: {{ result.incident_address }}</li>
-                    <li>ZIP Code: {{ result.incident_zip }}</li>
-                    <li>City: {{ result.city }}</li>
-                    </ul>
-
-                <li>Complaint</li>
-                    <ul>
-                    <li>Complaint Type: {{ result.complaint_type }}</li>
-                    <li>Description: {{ result.descriptor }}</li>
-                    <li>Status: {{ result.status }}</li>
-                    </ul>
-                </ul>
-                <hr class="mt-0 mb-2 mt-2">
-            {% endfor %}
-            </ol>
-        {% endif %}
+        </ul>
+        <a href="{% url 'data_311'%}?zip_code={{zip}}">See more</a>
         </div>
+    </p>
     {% endif %}
+
+    <div>
+        <h5>Locations</h5>
+        <hr class="mt-0 mb-2 mt-2">
+        {% if search_data.locations %}
+        <div class="row h-65">
+            <div class="col">
+                <ul>
+                    {% for item in search_data.locations %}
+                    <li>
+                        <a href="{% url 'location' item.id %}">{{ item.full_address }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% else %}
+        No locations
+        {% endif %}
+    </div>
+
 </div>
 
 {% endblock %}

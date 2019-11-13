@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block script %}
 <!-- Font Awesome Icon Library -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 {% block header %}
 {% load leaflet_tags %}
@@ -12,9 +12,9 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-  $("#check_user").click(function(){
-        $("#display_review").toggle();
-    });
+      $("#check_user").click(function(){
+            $("#display_review").toggle();
+        });
   });
   let latitude = {{ object.latitude }};
   let longitude = {{ object.longitude }};
@@ -37,27 +37,108 @@
 {% leaflet_map "leaflet_map_main" %}
 
 <hr>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2>Apartments</h2>
+            <div class="location-results">
+            {% if zillow_list %}
+            <ul>
+            {% for apt in zillow_list %}
+            <li>
+              <a href={{apt.zillow_url}}>
+              <h3>
+                {% if apt.suite_num %}
+                  <span class="badge badge-secondary">#{{apt.suite_num}}</span>
+                {% endif %}
+                {{apt.rent_price_for_display}}
+              </h3>
+              </a>
+            </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+            {% if landlord_list %}
+            <ul>
+            {% for apt in landlord_list %}
+            <li>
+              <h3>
+                {% if apt.suite_num %}
+                  <span class="badge badge-secondary">#{{apt.suite_num}}</span>
+                {% endif %}
+                {{apt.rent_price_for_display}}
+              </h3>
+            </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
 
-<h2>Zillow</h2>
-{% if object.zillow_set.all %}
-<ul>
-{% for zillow in object.zillow_set.all %}
-<li>
-  <a href={{zillow.url}}>
-  <h3>
-    {% if zillow.suite_num %}
-      <span class="badge badge-secondary">#{{zillow.suite_num}}</span>
-    {% endif %}
-    {{zillow.estimated_rent_price_for_display}}
-  </h3>
-  </a>
-</li>
-{% endfor %}
-</ul>
-{% else %}
-<p>No data from Zillow</p>
-{% endif %}
-<i>Last update: {{object.last_fetched_zillow}}</i>
+            {% if not zillow_list and not landlord_list %}
+            <p>No apartments</p>
+            {% endif %}
+            </div>
+            <i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
+        </div>
+
+
+
+
+        <div class="col">
+            {% if object.review_set %}
+            <h2> Review: </h2>
+            <ul class="list-unstyled">
+                <li>
+                    Average: {{ object.avg_rate }}
+                </li>
+                <li>
+                {% for idx in '12345' %}
+                    {% if forloop.counter <= object.avg_rate %}
+                        <span class="fa fa-star checked"></span>
+                    {% else %}
+                        <span class="fa fa-star"></span>
+                    {% endif %}
+                {% endfor %}
+                </li>
+            </ul>
+
+            <div class="mb-3 text-center location-results">
+                {% for review in object.review_set.all %}
+                <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
+                    <div class="card-header">
+                        <ul class="list-unstyled">
+                            <li>{{ review.user }}</li>
+                            <li>
+                            {% for idx in '12345' %}
+                                {% if forloop.counter <= review.rating %}
+                                    <span class="fa fa-star checked"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title pricing-card-title">
+                        </h5>
+
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>{{ review.content }}</li>
+                        </ul>
+
+                        <h4 class=" mb-0">
+                            <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
+                        </h4>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
 
 {% if request.user.is_authenticated and user.user_type_string == "Renter" %}
     <form action="{% url 'favorite' object.id %}" method="POST">
@@ -83,54 +164,18 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 {% endif %}
 -->
 {% endif %}
-    {% if object.review_set %}
-        <h2> Review: </h2>
-        <hr class="mt-0 mb-2 mt-2">
-        <div class="row h-65">
-            <div class="col">
-                <table class="table table-striped table-bordered table-hover table-sm results-table" width="100%">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="th-sm">Review</th>
-                            <th scope="col" class="th-sm">Rating</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for review in object.review_set.all %}
-                        <tr>
-                            <td scope="row">
-                                {{ review.user }} @ {{ review.time }}  :
-                                {{ review.content }}
-                            </td>
-                            <td>
-                                {% for idx in '12345' %}
-                                    {% if forloop.counter <= review.rating %}
-                                        <span class="fa fa-star checked"></span>
-                                    {% else %}
-                                        <span class="fa fa-star"></span>
-                                    {% endif %}
-                                {% endfor %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    {% endif %}
 
-    <h2>Write some review:</h2>
+
     {% if request.user.user_type_string == "Tenant" %}
+    <h2>Write some review:</h2>
         <input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
             <div id="display_review" class="hidden">
                 <form action="{% url "review" object.id %}" method="post">
                     {% csrf_token %}
-                    {{ form }}
+                    {{ form | crispy}}
                     <input type="submit" value="Submit" name="form_submit">
                 </form>
             </div>
-    {% else %}
-        <p>Cannot write review for this location. Because you are not tenant.</p>
     {% endif %}
 
 {% endblock %}

@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
-
+{% block script %}
+<!-- Font Awesome Icon Library -->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+{% load static %}
 {% block content %}
+<br>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-7">
+
+        <div class="col col-7 " style="max-width:40%">
             <h1>Account</h1>
-            <ul class="list-group">
+            <ul class="list-group location-results">
                 <li class="list-group-item">Username: {{ user.username }}</li>
                 <li class="list-group-item">Name: {{ user.full_name }}</li>
                 <li class="list-group-item">Email: {{ user.email }}</li>
@@ -15,7 +21,46 @@
                 <li class="list-group-item">User type: {{ user.user_type_string }}</li>
             </ul>
         </div>
+        <div class="col">
+        {% if user.review_set %}
+            <h1> Submitted Review: </h1>
+
+            <div class="mb-3 text-center location-results">
+                {% for review in user.review_set.all %}
+                <div class="card mb-4 shadow-sm "style="max-width: 35rem;">
+                    <div class="card-header">
+                        <ul class="list-unstyled">
+                            <a href="{% url 'location' review.location.id %}">{{ review.location.address }}</a>
+                            <li>
+                            {% for idx in '12345' %}
+                                {% if forloop.counter <= review.rating %}
+                                    <span class="fa fa-star checked"></span>
+                                {% else %}
+                                    <span class="fa fa-star"></span>
+                                {% endif %}
+                            {% endfor %}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title pricing-card-title">
+                        </h5>
+
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>{{ review.content }}</li>
+                        </ul>
+
+                        <h4 class=" mb-0">
+                            <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
+                        </h4>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        </div>
     </div>
+
     <div class="row">
         <div class="col">
             <a href="{% url 'account_logout' %}">Logout</a>

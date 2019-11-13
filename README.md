@@ -35,6 +35,16 @@ See instructions here [https://www.zillow.com/howto/api/APIOverview.htm](https:/
 
 #### Getting NYC OpenData 311 API Key
 
+#### Email Account Authentication
+
+This project uses email authentication via django-allauth to confirm user accounts and for password resets.  Currently the project is configured just to use simple username/password credentials with a gmail account in order to send the emails.  
+
+To configure your own gmail account the send out emails for the project, simply create a new google account to be used as the sender.  Once that is done, you will need to turn on Less Secury App access in the account, otherwise it will refuse the email/password combo that is specified in `settings.py`.  
+
+To do this, log into your email google account and navigate to [https://myaccount.google.com](https://myaccount.google.com) and click on the Security menu item on the left hand side.  In the Security menu, scroll down until you reach the Less Secure App access setting. Turn this on.
+
+Once this is done, navigate to the `settings.py` file in the `citystreets/` folder of your project directory.  Scroll down until you reach the `# Emails information` section, and replace the values for `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` with the gmail address and login password.  Save `settings.py` and you should be good to go for email authentication and password reset.
+
 
 ### Local Project setup
 
