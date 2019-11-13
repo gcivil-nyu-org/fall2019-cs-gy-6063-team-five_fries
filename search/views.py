@@ -29,15 +29,6 @@ def search(request):
 
         search_title = ""
 
-        if zip_code:
-            search_title = search_title + f"Zipcode: {zip_code} "
-        if min_price:
-            search_title = search_title + f"Min Price: {min_price} "
-        if max_price:
-            search_title = search_title + f"Max Price: {max_price} "
-        if bed_num:
-            search_title = search_title + f"Suite Number: {bed_num}"
-
         # build the query parameter dictionary that will be used to
         # query the Location model
         query_params = build_search_query(
@@ -53,6 +44,8 @@ def search(request):
                 search_title = search_title + f"Min Price: {min_price} "
             if max_price:
                 search_title = search_title + f"Max Price: {max_price} "
+            if bed_num:
+                search_title = search_title + f"Suite Number: {bed_num}"
 
             search_data["locations"] = Location.objects.filter(**query_params)
             # Get 311 statistics

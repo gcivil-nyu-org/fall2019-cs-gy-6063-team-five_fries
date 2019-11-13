@@ -17,6 +17,7 @@ class SearchForm(forms.Form):
     )
     min_price = forms.IntegerField(min_value=0, required=False)
     max_price = forms.IntegerField(min_value=0, required=False)
+    bed_num = forms.IntegerField(min_value=0, required=False)
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
@@ -44,6 +45,11 @@ class SearchForm(forms.Form):
                 "max_price",
                 css_class="form-control-sm mb-2 mr-sm-2",
                 placeholder="Max Price",
+            ),
+            Field(
+                "bed_num",
+                css_class="form-control-sm mb-2 mr-sm-2",
+                placeholder="Bedroom Number",
             ),
             Submit("search", "Go", css_class="btn btn-primary mb-2"),
         )
