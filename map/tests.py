@@ -1,7 +1,9 @@
 from django.test import TestCase
-from .models import CityStreetSpot
+
+# from .models import CityStreetSpot
 from django.urls import reverse
-from search.models import CraigslistLocation
+
+# from search.models import CraigslistLocation
 
 
 # class CityStreetSpotTestCase(TestCase):
