@@ -25,13 +25,14 @@ def search(request):
         zip_code = request.GET.get("zipcode")
         max_price = request.GET.get("max_price")
         min_price = request.GET.get("min_price")
+        bed_num = request.GET.get("bed_num")
 
         search_title = ""
 
         # build the query parameter dictionary that will be used to
         # query the Location model
         query_params = build_search_query(
-            zip_code=zip_code, max_price=max_price, min_price=min_price
+            zip_code=zip_code, max_price=max_price, min_price=min_price, bed_num=bed_num
         )
 
         search_data = {}
@@ -43,6 +44,8 @@ def search(request):
                 search_title = search_title + f"Min Price: {min_price} "
             if max_price:
                 search_title = search_title + f"Max Price: {max_price} "
+            if bed_num:
+                search_title = search_title + f"Number of Bedroom: {bed_num}"
 
             search_data["locations"] = Location.objects.filter(**query_params)
             # Get 311 statistics
@@ -180,7 +183,7 @@ def css_color_for_complaint_level(level):
     return colors[level]
 
 
-def build_search_query(zip_code, min_price, max_price):
+def build_search_query(zip_code, min_price, max_price, bed_num):
     # builds a dictionary of query parameters used to pass values into
     # the Location model query
     query_params = {}
@@ -195,5 +198,8 @@ def build_search_query(zip_code, min_price, max_price):
         # filter based on existence of apartments  with a rent_price greater than or equal (gte)
         # than the min_price
         query_params["apartment_set__rent_price__gte"] = min_price
+    if bed_num:
+        # filter based on existence of locations with the specified bedroom number
+        query_params["apartment_set__number_of_bed"] = bed_num
 
     return query_params
