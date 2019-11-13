@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.views import generic
 from django.utils import timezone
 from .models import CraigslistLocation, LastRetrievedData
+from .forms import SearchForm
 from location.models import Location
-
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
@@ -17,18 +17,16 @@ class CraigslistIndexView(generic.ListView):
 def search(request):
     # generic zip code form post
     if request.method == "GET":
+
+        # pass the form data to the form class
+        search_form = SearchForm(request.GET)
+
         timeout = False
         zip_code = request.GET.get("zipcode")
         max_price = request.GET.get("max_price")
         min_price = request.GET.get("min_price")
 
         search_title = ""
-        if zip_code:
-            search_title = search_title + f"Zipcode: {zip_code} "
-        if min_price:
-            search_title = search_title + f"Min Price: {min_price} "
-        if max_price:
-            search_title = search_title + f"Max Price: {max_price} "
 
         # build the query parameter dictionary that will be used to
         # query the Location model
@@ -37,7 +35,14 @@ def search(request):
         )
 
         search_data = {}
-        if query_params.keys():
+        if query_params.keys() and search_form.is_valid():
+
+            if zip_code:
+                search_title = search_title + f"Zipcode: {zip_code} "
+            if min_price:
+                search_title = search_title + f"Min Price: {min_price} "
+            if max_price:
+                search_title = search_title + f"Max Price: {max_price} "
 
             search_data["locations"] = Location.objects.filter(**query_params)
             # Get 311 statistics
@@ -66,12 +71,14 @@ def search(request):
                 "search_data": search_data,
                 "zip": zip_code,
                 "search_title": search_title,
+                "search_form": search_form,
                 "timeout": timeout,
             },
         )
     else:
         # render an error
-        return render(request, "search/search.html")
+        search_form = SearchForm()
+        return render(request, "search/search.html", {"search_form": search_form})
 
 
 def data_311(request):
