@@ -86,6 +86,7 @@ def apartment_upload(request):
             rent_price = form.cleaned_data["rent_price"]
             image = form.cleaned_data["image"]
             suite_num = form.cleaned_data["suite_num"]
+            number_of_bed = form.cleaned_data["number_of_bed"]
 
             # TODO use geocoding API to get latitude and longitude
 
@@ -100,7 +101,11 @@ def apartment_upload(request):
 
             # create an apartment and link it to that location
             apt = Apartment.objects.create(
-                suite_num=suite_num, image=image, rent_price=rent_price, location=loc
+                suite_num=suite_num,
+                number_of_bed=number_of_bed,
+                image=image,
+                rent_price=rent_price,
+                location=loc,
             )
 
             apt.save()
