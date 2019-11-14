@@ -32,10 +32,9 @@ class LocationView(generic.DetailView):
 
 
 def apartment_detail_view(request, pk, suite_num):
-    loc = Location.objects.get(pk=pk)
-    apt = loc.apartment_set.get(suite_num=suite_num)
+    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
 
-    return render(request, "apartment.html", {"loc": loc, "apt": apt})
+    return render(request, "apartment.html", { "apt": apt })
 
 
 @login_required
