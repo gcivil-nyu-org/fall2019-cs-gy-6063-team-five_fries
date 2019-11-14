@@ -6,7 +6,7 @@ from datetime import datetime
 
 from review.models import Review
 from review.form import ReviewForm
-from .forms import ApartmentUploadForm
+from .forms import ApartmentUploadForm, ClaimForm
 from .models import Location, Apartment
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
@@ -34,7 +34,41 @@ class LocationView(generic.DetailView):
 def apartment_detail_view(request, pk, suite_num):
     apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
 
-    return render(request, "apartment.html", { "apt": apt })
+    show_claim_button = not apt.tenant or not apt.landlord
+    return render(
+        request, "apartment.html", {"apt": apt, "show_claim_button": show_claim_button}
+    )
+
+
+@login_required
+def claim_view(request, pk, suite_num):
+    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
+
+    if request.method == "POST":
+        form = ClaimForm(request.POST)
+        if form.is_valid():
+            claim_type = form.cleaned_data["claim_type"]
+            if claim_type == "tenant":
+                if apt.tenant:
+                    # TODO
+                    print(form.cleaned_data["note"])
+                else:
+                    apt.tenant = request.user
+                    apt.save()
+                return render(request, "claim_result.html", {"apt": apt})
+            elif claim_type == "landlord":
+                if apt.landlord:
+                    # TODO
+                    print(form.cleaned_data["note"])
+                else:
+                    apt.landlord = request.user
+                    apt.save()
+                return render(request, "claim_result.html", {"apt": apt})
+        else:
+            return render(request, "claim.html", {"apt": apt, "form": form})
+    else:
+        form = ClaimForm()
+        return render(request, "claim.html", {"apt": apt, "form": form})
 
 
 @login_required

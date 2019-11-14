@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block script %}
+<style>
+#button_container button {
+    width: 17rem;
+}
+
+#button_container form:not(:last-child) button {
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Claim</h1>
+<p>
+    Are you a tenant or a landlord of <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">#{{ apt.suite_num }}</a>
+    at <a href="{% url 'location' pk=apt.location.id %}"> {{ apt.location.full_address }}</a>? 
+    <br>
+    Please claim your apartment by fillout this form.
+</p>
+<ul>
+    <li>Suite: #{{ apt.suite_num }}</li>
+    <li>Address: {{ apt.location.full_address }}</li>
+{% if apt.tenant %}
+    <li>Current tenant: {{ apt.tenant.full_name }}</li>
+{% endif %}
+{% if apt.landlord %}
+    <li>Current landlord: {{ apt.landlord.full_name }}</li>
+{% endif %}
+</ul>
+<div class="flex-column" id="button_container">
+    <form method="POST" action="{% url 'claim' pk=apt.location.id suite_num=apt.suite_num %}">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <button class="btn btn-primary" type="submit">Claim</button>
+    </form>
+    <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">
+        <button class="btn btn-secondary" type="button">No, bring me back to the apartment</button>
+    </a>
+</div>
+{% endblock %}

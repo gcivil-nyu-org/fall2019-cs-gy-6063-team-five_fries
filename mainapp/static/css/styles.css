@@ -67,3 +67,7 @@ footer {
     height: 50vh;
     overflow-y: scroll;
 }
+
+.italic {
+    font-style: italic;
+}

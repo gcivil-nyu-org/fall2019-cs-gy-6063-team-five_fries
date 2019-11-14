@@ -50,3 +50,16 @@ class ApartmentUploadForm(forms.Form):
         except Location.DoesNotExist:
             # if the apartment belongs to a location that does not exist, we can't have duplicate apartments
             return suite_num
+
+
+class ClaimForm(forms.Form):
+    claim_type = forms.ChoiceField(
+        choices=[
+            ("tenant", "I am a tenant of this apartment"),
+            ("landlord", "I am a landlord of this apartment"),
+        ],
+        widget=forms.RadioSelect(attrs={"required": True}),
+        label="Are you a tenant or a landlord?",
+        required=True,
+    )
+    note = forms.CharField(widget=forms.Textarea, required=False)
