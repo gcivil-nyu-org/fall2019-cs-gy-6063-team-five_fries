@@ -55,6 +55,21 @@ class Apartment(models.Model):
 
     last_modified = models.DateTimeField(auto_now=True)
 
+    landlord = models.ForeignKey(
+        "mainapp.SiteUser",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="landlord_apartment_set",
+    )
+    tenant = models.ForeignKey(
+        "mainapp.SiteUser",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="tenant_apartment_set",
+    )
+
     # Zillow
     zpid = models.CharField(max_length=255, unique=True, blank=True, null=True)
     estimated_rent_price = models.DecimalField(

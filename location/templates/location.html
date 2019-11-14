@@ -139,7 +139,7 @@
 </div>
 
 
-{% if request.user.is_authenticated and user.user_type_string == "Renter" %}
+{% if request.user.is_authenticated %}
     <form action="{% url 'favorite' object.id %}" method="POST">
     {% csrf_token %}
     {% if object in request.user.favorites.all %}

@@ -16,7 +16,6 @@ class SiteUserAdmin(UserAdmin):
                     "phone_number",
                     "current_location",
                     "work_location",
-                    "user_type",
                 )
             },
         ),
