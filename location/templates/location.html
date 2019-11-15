@@ -164,7 +164,7 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 {% endif %}
 
 
-    {% if request.user.user_type_string == "Tenant" %}
+    {% if can_leave_a_review %}
     <h2>Write some review:</h2>
         <input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
             <div id="display_review" class="hidden">

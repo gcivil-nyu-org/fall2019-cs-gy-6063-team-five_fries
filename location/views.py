@@ -28,6 +28,8 @@ class LocationView(generic.DetailView):
         context["form"] = ReviewForm()
         context["zillow_list"] = self.object.apartment_set.exclude(zpid=None).all()
         context["landlord_list"] = self.object.apartment_set.filter(zpid=None).all()
+        if self.request.user.is_authenticated:
+            context["can_leave_a_review"] = self.object.check_tenant(self.request.user)
         return context
 
 
