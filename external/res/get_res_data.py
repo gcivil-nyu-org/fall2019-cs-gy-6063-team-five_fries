@@ -16,7 +16,6 @@ def get_res_data(zip, max_query_results=20, num_entries_to_search=2000, t_out=10
     query_results = None
     timeout = False
     no_matches = True
-
     try:
         results = client.get(
             res_dataset_identifier,
@@ -25,6 +24,7 @@ def get_res_data(zip, max_query_results=20, num_entries_to_search=2000, t_out=10
             limit=num_entries_to_search,
         )
         results_df = pd.DataFrame.from_records(results)
+        results_df = pd.DataFrame.dropna(results_df)
         results_df = results_df.loc[results_df["zipcode"] == str(zip)]
         if len(results_df) > 0:
             no_matches = False
