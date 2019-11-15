@@ -11,6 +11,8 @@ from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from external.googleapi.fetch import fetch_geocode
+from external.googleapi import g_utils
 
 
 class LocationView(generic.DetailView):
@@ -118,6 +120,7 @@ def apartment_upload(request):
         form = ApartmentUploadForm(request.POST, request.FILES)
         # check whether it's valid:
         if form.is_valid():
+            print("is valid")
             # process the data in form.cleaned_data as required
             city = form.cleaned_data["city"]
             state = form.cleaned_data["state"]
@@ -128,16 +131,19 @@ def apartment_upload(request):
             suite_num = form.cleaned_data["suite_num"]
             number_of_bed = form.cleaned_data["number_of_bed"]
 
-            # TODO use geocoding API to get latitude and longitude
+            g_data = fetch_geocode(f"{address}, {city} {state}, {zipcode}")
+
+            lat_lng = g_utils.parse_lat_lng(g_data[0])
 
             # create or retrieve an existing location
-            loc = Location.objects.get_or_create(
+            loc, created = Location.objects.get_or_create(
                 city=city, state=state, address=address, zipcode=zipcode
-            )[
-                0
-            ]  # using get_or_create avoids race condition
+            )  # using get_or_create avoids race condition
 
-            loc.save()
+            if created:
+                loc.latitude = lat_lng[0]
+                loc.longitude = lat_lng[1]
+                loc.save()
 
             # create an apartment and link it to that location
             apt = Apartment.objects.create(
@@ -152,7 +158,8 @@ def apartment_upload(request):
 
             # redirect to a new URL:
             return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
-
+        else:
+            print("not valid")
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ApartmentUploadForm()

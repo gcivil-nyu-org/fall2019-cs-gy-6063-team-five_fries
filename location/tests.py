@@ -1,11 +1,21 @@
 from django.test import TestCase
 from django.urls import reverse
+<<<<<<< HEAD
+=======
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
+from PIL import Image
+from io import BytesIO
+
+from datetime import datetime
+>>>>>>> added utility methods, api call, and tests
 from .models import Location, Apartment
 from mainapp.models import SiteUser
 from review.models import Review
 import string
 from unittest import mock
 from external.zillow.stub import fetch_zillow_housing
+from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 
 
 class LocationModelTests(TestCase):
@@ -217,3 +227,58 @@ class ClaimViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "successful")
+    def test_location_upload_not_logged_in(self):
+        """
+        tests a GET response against the apartment_upload page
+        while not logged in
+        """
+        response = self.client.get(reverse("apartment_upload"))
+        self.assertRedirects(
+            response, "/accounts/login/?next=/location/apartment_upload"
+        )
+
+    def test_location_upload_logged_in(self):
+        """
+        tests a GET requests against the apartment_upload page while
+        logged in
+        """
+        self.client.force_login(
+            SiteUser.objects.create(user_type="L", username="testuser")
+        )
+        response = self.client.get(reverse("apartment_upload"))
+        self.assertEqual(response.status_code, 200)
+
+    @mock.patch("external.googleapi.fetch.googlemaps.Client")
+    def test_location_upload_post(self, mock_client):
+        """
+        tests a POST against the apartment_upload page while
+        logged in as a landlord
+        """
+        mock_client().geocode = mock.MagicMock(return_value=fetch_geocode_stub("11103"))
+
+        self.client.force_login(
+            SiteUser.objects.create(user_type="L", username="testuser")
+        )
+
+        # Create a fake image
+        im = Image.new(mode="RGB", size=(200, 200))
+        im_io = BytesIO()
+        im.save(im_io, "JPEG")
+        im_io.seek(0)
+        mem_image = InMemoryUploadedFile(
+            im_io, None, "image.jpg", "image/jpeg", len(im_io.getvalue()), None
+        )
+
+        post_data = {
+            "city": "New York",
+            "state": "NY",
+            "address": "111 anytown st",
+            "zipcode": "10003",
+            "suite_num": "1",
+            "rent_price": 2500,
+            "number_of_bed": 1,
+            "image": mem_image,
+        }
+
+        response = self.client.post(reverse("apartment_upload"), post_data)
+        self.assertRedirects(response, reverse("apartment_upload_confirmation"))
