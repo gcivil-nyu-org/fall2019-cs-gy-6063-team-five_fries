@@ -27,7 +27,7 @@
 
           <!--Content-->
           <div class="p-4">
-            <p class="lead font-weight-bold">{{loc.address}}, {{loc.city}}, {{loc.state}}, {{loc.zipcode}}</p>
+            <p class="lead font-weight-bold">{{ apt.location.full_address }}</p>
 
             <div class="mb-3">
                 <span class="badge red mr-1">Suite: {{ apt.suite_num }}</span>
@@ -43,10 +43,14 @@
                 The apartment is in a walk-up building. It features an eat-in kitchen, hardwood floors and freshly
                 painted rooms. Good credit and proof of income are needed.</p>
 
-            <form class="d-flex justify-content-left">
+            <form class="d-flex justify-content-left mb-3">
               <button class="btn btn-primary btn-md my-0 p" type="submit">Apply!</button>
-
             </form>
+            {% if show_claim_button %}
+            <p>
+              <a href="{% url 'claim' pk=apt.location.id suite_num=apt.suite_num %}" class="italic">Are you a tenant or a landlord of this apartment?</a>
+            </p>
+            {% endif %}
 
           </div>
           <!--Content-->

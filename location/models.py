@@ -40,6 +40,12 @@ class Location(models.Model):
         else:
             return 0
 
+    def check_tenant(self, user):
+        return self.apartment_set.filter(tenant=user).exists()
+
+    def check_landlord(self, user):
+        return self.apartment_set.filter(landlord=user).exists()
+
 
 class Apartment(models.Model):
     suite_num = models.CharField(max_length=30, blank=True, null=True)
@@ -54,6 +60,21 @@ class Apartment(models.Model):
     number_of_bed = models.IntegerField(null=True, validators=[MinValueValidator(0)])
 
     last_modified = models.DateTimeField(auto_now=True)
+
+    landlord = models.ForeignKey(
+        "mainapp.SiteUser",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="landlord_apartment_set",
+    )
+    tenant = models.ForeignKey(
+        "mainapp.SiteUser",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="tenant_apartment_set",
+    )
 
     # Zillow
     zpid = models.CharField(max_length=255, unique=True, blank=True, null=True)

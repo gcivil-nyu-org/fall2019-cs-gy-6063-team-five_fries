@@ -6,7 +6,6 @@ from location.models import Location
 from review.models import Review
 from .models import SiteUser
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 
 class BaseTemplateTestCase(TestCase):
@@ -28,35 +27,13 @@ class BaseTemplateTestCase(TestCase):
         nav = soup.find("nav", class_="navbar")
         self.assertIn("Log In", nav.text)
 
-    def test_favorites_on_header_for_renter(self):
-        """If a Renter has been logged in, Favorites should be shown in the header"""
-        self.client.force_login(
-            SiteUser.objects.create(user_type="R", username="testuser")
-        )
+    def test_favorites_on_header(self):
+        """If a user has been logged in, Favorites should be shown in the header"""
+        self.client.force_login(SiteUser.objects.create(username="testuser"))
         response = self.client.get(reverse("index"))
         soup = BeautifulSoup(response.content, "html.parser")
         nav = soup.find("nav", class_="navbar")
         self.assertIn("Favorites", nav.text)
-
-    def test_favorites_on_header_for_tenant(self):
-        """If a Tenant has been logged in, Favorites should not be shown in the header"""
-        self.client.force_login(
-            SiteUser.objects.create(user_type="T", username="testuser")
-        )
-        response = self.client.get(reverse("index"))
-        soup = BeautifulSoup(response.content, "html.parser")
-        nav = soup.find("nav", class_="navbar")
-        self.assertNotIn("Favorites", nav.text)
-
-    def test_favorites_on_header_for_landlord(self):
-        """If a Landlord has been logged in, Favorites should not be shown in the header"""
-        self.client.force_login(
-            SiteUser.objects.create(user_type="L", username="testuser")
-        )
-        response = self.client.get(reverse("index"))
-        soup = BeautifulSoup(response.content, "html.parser")
-        nav = soup.find("nav", class_="navbar")
-        self.assertNotIn("Favorites", nav.text)
 
 
 class AccountViewTestCase(TestCase):
@@ -73,9 +50,7 @@ class AccountViewTestCase(TestCase):
     def test_show_review_view(self):
         s1 = SiteUser.objects.create(full_name="test_user")
         l1 = Location.objects.create(state="NY")
-        r1 = Review.objects.create(
-            location=l1, user=s1, content="test_content", time=datetime.now()
-        )
+        r1 = Review.objects.create(location=l1, user=s1, content="test_content")
         self.client.force_login(
             SiteUser.objects.get_or_create(full_name="test_user")[0]
         )
@@ -97,27 +72,3 @@ class SiteUserModelTests(TestCase):
         """
         user = SiteUser.objects.create(username="test_user")
         self.assertEqual("test_user", str(user))
-
-    def test_user_type_renter(self):
-        """
-        tests whether a user created with the "Renter" type
-        returns the correct value from its get_user_type method
-        """
-        user = SiteUser.objects.create(user_type="R", username="test_user")
-        self.assertEqual("Renter", user.user_type_string())
-
-    def test_user_type_tenant(self):
-        """
-        tests whether a user created with the "Tenant" type
-        returns the correct value from its get_user_type method
-        """
-        user = SiteUser.objects.create(user_type="T", username="test_user")
-        self.assertEqual("Tenant", user.user_type_string())
-
-    def test_user_type_landlord(self):
-        """
-        tests whether a user created with the "Landlord" type
-        returns the correct value from its get_user_type method
-        """
-        user = SiteUser.objects.create(user_type="L", username="test_user")
-        self.assertEqual("Landlord", user.user_type_string())

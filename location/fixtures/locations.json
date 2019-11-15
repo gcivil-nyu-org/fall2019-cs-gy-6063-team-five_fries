@@ -7,8 +7,9 @@
         "state": "NY",
         "address": "6 MetroTech Center",
         "zipcode": "11201",
-        "latitude": 40.694449,
-        "longitude": -73.986459
+        "latitude": "40.694449",
+        "longitude": "-73.986459",
+        "last_fetched_zillow": "2019-11-15T00:17:58.882Z"
     }
 },
 {
@@ -19,8 +20,9 @@
         "state": "NY",
         "address": "35-04 31st Ave",
         "zipcode": "11106",
-        "latitude": 40.762716,
-        "longitude": -73.920231
+        "latitude": "40.762716",
+        "longitude": "-73.920231",
+        "last_fetched_zillow": null
     }
 },
 {
@@ -31,8 +33,9 @@
         "state": "NY",
         "address": "721 Broadway",
         "zipcode": "10003",
-        "latitude": 40.729556,
-        "longitude": -73.993641
+        "latitude": "40.729556",
+        "longitude": "-73.993641",
+        "last_fetched_zillow": null
     }
 },
 {
@@ -43,8 +46,9 @@
         "state": "NY",
         "address": "625 Burke Ave",
         "zipcode": "10467",
-        "latitude": 40.871923,
-        "longitude": -73.869849
+        "latitude": "40.871923",
+        "longitude": "-73.869849",
+        "last_fetched_zillow": null
     }
 },
 {
@@ -55,8 +59,9 @@
         "state": "NY",
         "address": "279 83rd St",
         "zipcode": "11209",
-        "latitude": 40.626118,
-        "longitude": -74.030419
+        "latitude": "40.626118",
+        "longitude": "-74.030419",
+        "last_fetched_zillow": null
     }
 },
 {
@@ -67,8 +72,135 @@
         "state": "NY",
         "address": "146 Jefferson St",
         "zipcode": "11206",
-        "latitude": 40.700254,
-        "longitude": -73.929997
+        "latitude": "40.700254",
+        "longitude": "-73.929997",
+        "last_fetched_zillow": "2019-11-14T19:57:41.168Z"
+    }
+},
+{
+    "model": "location.apartment",
+    "pk": 1,
+    "fields": {
+        "suite_num": "2R",
+        "image": "",
+        "location": 6,
+        "rent_price": "2769.00",
+        "number_of_bed": null,
+        "last_modified": "2019-11-15T00:16:59.483Z",
+        "landlord": null,
+        "tenant": null,
+        "zpid": "2111495693",
+        "estimated_rent_price": "2769.00",
+        "last_estimated": "2019-11-13",
+        "zillow_url": "http://www.zillow.com/homes/2111495693_zpid/"
+    }
+},
+{
+    "model": "location.apartment",
+    "pk": 2,
+    "fields": {
+        "suite_num": "3L",
+        "image": "",
+        "location": 6,
+        "rent_price": "2799.00",
+        "number_of_bed": null,
+        "last_modified": "2019-11-14T19:57:41.139Z",
+        "landlord": null,
+        "tenant": null,
+        "zpid": "2109194321",
+        "estimated_rent_price": "2799.00",
+        "last_estimated": "2019-11-13",
+        "zillow_url": "http://www.zillow.com/homes/2109194321_zpid/"
+    }
+},
+{
+    "model": "location.apartment",
+    "pk": 3,
+    "fields": {
+        "suite_num": "2L",
+        "image": "",
+        "location": 6,
+        "rent_price": "2600.00",
+        "number_of_bed": null,
+        "last_modified": "2019-11-14T19:57:41.144Z",
+        "landlord": null,
+        "tenant": null,
+        "zpid": "2086868344",
+        "estimated_rent_price": "2600.00",
+        "last_estimated": "2019-11-13",
+        "zillow_url": "http://www.zillow.com/homes/2086868344_zpid/"
+    }
+},
+{
+    "model": "location.apartment",
+    "pk": 4,
+    "fields": {
+        "suite_num": "3R",
+        "image": "",
+        "location": 6,
+        "rent_price": "2659.00",
+        "number_of_bed": null,
+        "last_modified": "2019-11-14T19:57:41.149Z",
+        "landlord": null,
+        "tenant": null,
+        "zpid": "2111502921",
+        "estimated_rent_price": "2659.00",
+        "last_estimated": "2019-11-13",
+        "zillow_url": "http://www.zillow.com/homes/2111502921_zpid/"
+    }
+},
+{
+    "model": "location.apartment",
+    "pk": 5,
+    "fields": {
+        "suite_num": "4R",
+        "image": "",
+        "location": 6,
+        "rent_price": "2799.00",
+        "number_of_bed": null,
+        "last_modified": "2019-11-14T19:57:41.154Z",
+        "landlord": null,
+        "tenant": null,
+        "zpid": "2116942206",
+        "estimated_rent_price": "2799.00",
+        "last_estimated": "2019-11-13",
+        "zillow_url": "http://www.zillow.com/homes/2116942206_zpid/"
+    }
+},
+{
+    "model": "location.apartment",
+    "pk": 6,
+    "fields": {
+        "suite_num": "4L",
+        "image": "",
+        "location": 6,
+        "rent_price": "2799.00",
+        "number_of_bed": null,
+        "last_modified": "2019-11-14T19:57:41.160Z",
+        "landlord": null,
+        "tenant": null,
+        "zpid": "2122155078",
+        "estimated_rent_price": "2799.00",
+        "last_estimated": "2019-11-13",
+        "zillow_url": "http://www.zillow.com/homes/2122155078_zpid/"
+    }
+},
+{
+    "model": "location.apartment",
+    "pk": 7,
+    "fields": {
+        "suite_num": "1R",
+        "image": "",
+        "location": 6,
+        "rent_price": "2325.00",
+        "number_of_bed": null,
+        "last_modified": "2019-11-14T19:57:41.165Z",
+        "landlord": null,
+        "tenant": null,
+        "zpid": "2122897208",
+        "estimated_rent_price": "2325.00",
+        "last_estimated": "2019-11-13",
+        "zillow_url": "http://www.zillow.com/homes/2122897208_zpid/"
     }
 }
 ]

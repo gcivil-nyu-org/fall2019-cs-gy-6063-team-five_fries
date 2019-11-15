@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from datetime import datetime
 from .models import Location, Apartment
 from mainapp.models import SiteUser
 from review.models import Review
@@ -33,10 +32,10 @@ class LocationModelTests(TestCase):
         s1 = SiteUser.objects.create(full_name="test_user")
         l1 = Location.objects.create(state="NY")
         r1 = Review.objects.create(
-            location=l1, user=s1, content="test_content", time=datetime.now(), rating=1
+            location=l1, user=s1, content="test_content", rating=1
         )
         r2 = Review.objects.create(
-            location=l1, user=s1, content="test_content2", time=datetime.now(), rating=5
+            location=l1, user=s1, content="test_content2", rating=5
         )
         avg = (r1.rating + r2.rating) / 2
         self.assertEqual(l1.avg_rate(), avg)
@@ -55,9 +54,7 @@ class LocationViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_favorites_list_view(self):
-        self.client.force_login(
-            SiteUser.objects.create(user_type="R", username="testuser")
-        )
+        self.client.force_login(SiteUser.objects.create(username="testuser"))
         response = self.client.get(reverse("favlist"))
         self.assertEqual(response.status_code, 200)
 
@@ -66,17 +63,29 @@ class LocationViewTests(TestCase):
         response = self.client.get(reverse("review", args=(1,)))
         self.assertEqual(response.status_code, 302)
 
-    def test_is_not_tanant(self):
-        self.client.force_login(
-            SiteUser.objects.create(user_type="R", username="testuser")
-        )
+    def test_is_not_tenant(self):
+        loc = Location.objects.get(pk=1)
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        # user is not a tenant
+        self.assertFalse(loc.check_tenant(user))
+
         response = self.client.get(reverse("location", args=(1,)))
         self.assertNotContains(response, "Write something")
 
-    def test_is_tanant(self):
-        self.client.force_login(
-            SiteUser.objects.create(user_type="T", username="testuser")
-        )
+    def test_is_tenant(self):
+        loc = Location.objects.get(pk=1)
+        apt = Apartment.objects.create(location=loc)
+        user = SiteUser.objects.create(username="testuser")
+
+        apt.tenant = user
+        apt.save()
+        self.client.force_login(user)
+
+        # user is a tenant
+        self.assertTrue(loc.check_tenant(user))
+
         response = self.client.get(reverse("location", args=(1,)))
         self.assertContains(response, "Write something")
 
@@ -109,3 +118,102 @@ class LocationViewTests(TestCase):
             reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
         )
         self.assertEqual(response.status_code, 200)
+
+
+class ClaimViewTests(TestCase):
+    fixtures = ["locations.json"]
+
+    def test_200_if_logged_in(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        response = self.client.get(reverse("claim", args=(6, "2R")))
+        self.assertEqual(response.status_code, 200)
+
+    def test_redirect_if_not_logged_in(self):
+        response = self.client.get(reverse("claim", args=(6, "2R")))
+        self.assertEqual(response.status_code, 302)
+
+    def test_form_submit_tenant_without_note(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("claim", args=(6, "2R")), {"claim_type": "tenant"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "successful")
+
+    def test_form_submit_tenant_with_note(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("claim", args=(6, "2R")),
+            {"claim_type": "tenant", "note": "Please approve my request"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "successful")
+
+    def test_form_submit_landlord_without_note(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("claim", args=(6, "2R")), {"claim_type": "landlord"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "successful")
+
+    def test_form_submit_landlord_with_note(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("claim", args=(6, "2R")),
+            {"claim_type": "landlord", "note": "Please approve my request"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "successful")
+
+    def test_form_submit_invalid(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("claim", args=(6, "2R")),
+            {"claim_type": "HAHAHA", "note": "Please approve my request"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "successful")
+
+    def test_form_submit_tenant_when_tenant_already_exists(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        existing_user = SiteUser.objects.create(username="existing")
+        apt = Apartment.objects.get(location__id=6, suite_num="2R")
+        apt.tenant = existing_user
+        apt.save()
+
+        response = self.client.post(
+            reverse("claim", args=(6, "2R")),
+            {"claim_type": "tenant", "note": "Please approve my request"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "successful")
+
+    def test_form_submit_landlord_when_landlord_already_exists(self):
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        existing_user = SiteUser.objects.create(username="existing")
+        apt = Apartment.objects.get(location__id=6, suite_num="2R")
+        apt.landlord = existing_user
+        apt.save()
+
+        response = self.client.post(
+            reverse("claim", args=(6, "2R")),
+            {"claim_type": "landlord", "note": "Please approve my request"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "successful")

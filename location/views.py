@@ -2,11 +2,10 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from datetime import datetime
 
 from review.models import Review
 from review.form import ReviewForm
-from .forms import ApartmentUploadForm
+from .forms import ApartmentUploadForm, ClaimForm
 from .models import Location, Apartment
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
@@ -28,14 +27,49 @@ class LocationView(generic.DetailView):
         context["form"] = ReviewForm()
         context["zillow_list"] = self.object.apartment_set.exclude(zpid=None).all()
         context["landlord_list"] = self.object.apartment_set.filter(zpid=None).all()
+        if self.request.user.is_authenticated:
+            context["can_leave_a_review"] = self.object.check_tenant(self.request.user)
         return context
 
 
 def apartment_detail_view(request, pk, suite_num):
-    loc = Location.objects.get(pk=pk)
-    apt = loc.apartment_set.get(suite_num=suite_num)
+    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
 
-    return render(request, "apartment.html", {"loc": loc, "apt": apt})
+    show_claim_button = not apt.tenant or not apt.landlord
+    return render(
+        request, "apartment.html", {"apt": apt, "show_claim_button": show_claim_button}
+    )
+
+
+@login_required
+def claim_view(request, pk, suite_num):
+    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
+
+    if request.method == "POST":
+        form = ClaimForm(request.POST)
+        if form.is_valid():
+            claim_type = form.cleaned_data["claim_type"]
+            if claim_type == "tenant":
+                if apt.tenant:
+                    # TODO: note_from_user = form.cleaned_data["note"]
+                    pass
+                else:
+                    apt.tenant = request.user
+                    apt.save()
+                return render(request, "claim_result.html", {"apt": apt})
+            elif claim_type == "landlord":
+                if apt.landlord:
+                    # TODO: note_from_user = form.cleaned_data["note"]
+                    pass
+                else:
+                    apt.landlord = request.user
+                    apt.save()
+                return render(request, "claim_result.html", {"apt": apt})
+        else:
+            return render(request, "claim.html", {"apt": apt, "form": form})
+    else:
+        form = ClaimForm()
+        return render(request, "claim.html", {"apt": apt, "form": form})
 
 
 @login_required
@@ -70,7 +104,6 @@ def review(request, pk):
                 user=request.user,
                 location=Location.objects.only("id").get(id=pk),
                 content=form.cleaned_data["content"],
-                time=datetime.now(),
                 rating=form.cleaned_data["rating"],
             )
             r.save()
