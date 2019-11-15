@@ -120,7 +120,7 @@ def apartment_upload(request):
         form = ApartmentUploadForm(request.POST, request.FILES)
         # check whether it's valid:
         if form.is_valid():
-            print("is valid")
+
             # process the data in form.cleaned_data as required
             city = form.cleaned_data["city"]
             state = form.cleaned_data["state"]
@@ -158,8 +158,7 @@ def apartment_upload(request):
 
             # redirect to a new URL:
             return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
-        else:
-            print("not valid")
+
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ApartmentUploadForm()

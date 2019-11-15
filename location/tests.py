@@ -55,6 +55,9 @@ class LocationModelTests(TestCase):
         self.assertEqual(l1.avg_rate(), 0)
 
 
+@mock.patch(
+    "external.googleapi.fetch.get_google_api_key", mock.MagicMock(return_value="1111")
+)
 @mock.patch("external.zillow.fetch.fetch_zillow_housing", fetch_zillow_housing)
 class LocationViewTests(TestCase):
     fixtures = ["locations.json"]
