@@ -51,16 +51,16 @@ def claim_view(request, pk, suite_num):
             claim_type = form.cleaned_data["claim_type"]
             if claim_type == "tenant":
                 if apt.tenant:
-                    # TODO
-                    print(form.cleaned_data["note"])
+                    # TODO: note_from_user = form.cleaned_data["note"]
+                    pass
                 else:
                     apt.tenant = request.user
                     apt.save()
                 return render(request, "claim_result.html", {"apt": apt})
             elif claim_type == "landlord":
                 if apt.landlord:
-                    # TODO
-                    print(form.cleaned_data["note"])
+                    # TODO: note_from_user = form.cleaned_data["note"]
+                    pass
                 else:
                     apt.landlord = request.user
                     apt.save()
