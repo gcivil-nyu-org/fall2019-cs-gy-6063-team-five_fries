@@ -11,6 +11,8 @@ from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from external.googleapi.fetch import fetch_geocode
+from external.googleapi import g_utils
 
 
 class LocationView(generic.DetailView):
@@ -118,6 +120,7 @@ def apartment_upload(request):
         form = ApartmentUploadForm(request.POST, request.FILES)
         # check whether it's valid:
         if form.is_valid():
+
             # process the data in form.cleaned_data as required
             city = form.cleaned_data["city"]
             state = form.cleaned_data["state"]
@@ -128,16 +131,31 @@ def apartment_upload(request):
             suite_num = form.cleaned_data["suite_num"]
             number_of_bed = form.cleaned_data["number_of_bed"]
 
-            # TODO use geocoding API to get latitude and longitude
+            # retrieve the geocoded data from google
+            g_data = fetch_geocode(f"{address}, {city} {state}, {zipcode}")
+
+            # parse out the latitude and longitude from the response
+            lat_lng = g_utils.parse_lat_lng(g_data[0])
 
             # create or retrieve an existing location
-            loc = Location.objects.get_or_create(
+            loc, created = Location.objects.get_or_create(
                 city=city, state=state, address=address, zipcode=zipcode
-            )[
-                0
-            ]  # using get_or_create avoids race condition
+            )  # using get_or_create avoids race condition
 
-            loc.save()
+            if created:
+                # we add the location here instead of in the get_or_create method
+                # due to multiple locations being created from the same address
+                # this was happening due to the lat/lng returned from the API sometimes
+                # had more digits than what we stored in the DB
+                loc.latitude = lat_lng[0]
+                loc.longitude = lat_lng[1]
+                loc.save()
+            elif loc.latitude is None and loc.longitude is None:
+                # if the location exists but doesn't have lat/lng values
+                # add them
+                loc.latitude = lat_lng[0]
+                loc.longitude = lat_lng[1]
+                loc.save()
 
             # create an apartment and link it to that location
             apt = Apartment.objects.create(
@@ -150,7 +168,7 @@ def apartment_upload(request):
 
             apt.save()
 
-            # redirect to a new URL:
+            # redirect to the confirmation page
             return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
 
     # if a GET (or any other method) we'll create a blank form

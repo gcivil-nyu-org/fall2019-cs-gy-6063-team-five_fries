@@ -3,6 +3,7 @@ from unittest import mock
 import attr
 
 from .fetch import fetch_geocode, fetch_reverse_geocode
+from .g_utils import parse_lat_lng
 from .stub import fetch_geocode as fetch_geocode_stub
 from .stub import fetch_reverse_geocode as fetch_reverse_geocode_stub
 from .stub import fetch_geocode_no_zip, fetch_reverse_geocode_no_zip
@@ -420,3 +421,38 @@ class GeocodeTests(TestCase):
             GeocodeResponse(**results[0]),
             GeocodeResponse.from_any(precomputed_response),
         )
+
+
+class GUtilsTests(TestCase):
+    def test_parse_lat_lng_empty_param(self):
+        """
+        Tests the parse_lat_lng function with an empty
+        parameter
+        """
+        resp = parse_lat_lng(None)
+        self.assertTupleEqual(resp, (None, None), msg="Failed to return an empty tuple")
+
+    def test_parse_lat_lng_valid(self):
+        """
+        Tests the parse_lat_lng function with valid input
+        """
+        input = fetch_geocode_stub("1234")
+        valid_resp = (40.763374, -73.910995)
+        test = parse_lat_lng(input[0])
+        self.assertTupleEqual(test, valid_resp, msg="Failed to parse a valid response")
+
+    def test_parse_lat_lng_malformed(self):
+        """
+        tests the parse_lat_lng function with a malformed response object
+        """
+        malformed_response = {"geometry": {"lat": 40.763374, "lng": -73.910995}}
+
+        self.assertTupleEqual(parse_lat_lng(malformed_response), (None, None))
+
+    def test_parse_lat_lng_invalid_input(self):
+        """
+        tests the parse_lat_lng function with an incorrect input
+        """
+        input = fetch_geocode_stub("1234")
+        with self.assertRaises(AttributeError):
+            parse_lat_lng(input)
