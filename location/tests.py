@@ -55,9 +55,7 @@ class LocationViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_favorites_list_view(self):
-        self.client.force_login(
-            SiteUser.objects.create(user_type="R", username="testuser")
-        )
+        self.client.force_login(SiteUser.objects.create(username="testuser"))
         response = self.client.get(reverse("favlist"))
         self.assertEqual(response.status_code, 200)
 
@@ -66,17 +64,29 @@ class LocationViewTests(TestCase):
         response = self.client.get(reverse("review", args=(1,)))
         self.assertEqual(response.status_code, 302)
 
-    def test_is_not_tanant(self):
-        self.client.force_login(
-            SiteUser.objects.create(user_type="R", username="testuser")
-        )
+    def test_is_not_tenant(self):
+        loc = Location.objects.get(pk=1)
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+
+        # user is not a tenant
+        self.assertFalse(loc.check_tenant(user))
+
         response = self.client.get(reverse("location", args=(1,)))
         self.assertNotContains(response, "Write something")
 
-    def test_is_tanant(self):
-        self.client.force_login(
-            SiteUser.objects.create(user_type="T", username="testuser")
-        )
+    def test_is_tenant(self):
+        loc = Location.objects.get(pk=1)
+        apt = Apartment.objects.create(location=loc)
+        user = SiteUser.objects.create(username="testuser")
+
+        apt.tenant = user
+        apt.save()
+        self.client.force_login(user)
+
+        # user is a tenant
+        self.assertTrue(loc.check_tenant(user))
+
         response = self.client.get(reverse("location", args=(1,)))
         self.assertContains(response, "Write something")
 

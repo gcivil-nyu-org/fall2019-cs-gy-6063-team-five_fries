@@ -40,6 +40,12 @@ class Location(models.Model):
         else:
             return 0
 
+    def check_tenant(self, user):
+        return self.apartment_set.filter(tenant=user).exists()
+
+    def check_landlord(self, user):
+        return self.apartment_set.filter(landlord=user).exists()
+
 
 class Apartment(models.Model):
     suite_num = models.CharField(max_length=30, blank=True, null=True)
