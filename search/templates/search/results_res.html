@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Restraunts Data Results</h2><hr>
+<h5>Complaint Results</h5>
     {% if timeout %}
         <p style="color:red">Timeout occurred.</p>
     {% elif no_matches %}
@@ -8,8 +9,6 @@
     {% else %}
     {% for result in results %}
         {% if results.violation_description == nan %}
-            <h5>Apartment Results</h5>
-            <h5>Complaint Results</h5>
             <ul>
             <li>Name of the Restraunts: {{ result.dba }}</li>
                 <li>Borough: {{ result.boro }}</li>
