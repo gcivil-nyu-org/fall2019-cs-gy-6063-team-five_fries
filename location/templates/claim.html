@@ -19,7 +19,7 @@
     Are you a tenant or a landlord of <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">#{{ apt.suite_num }}</a>
     at <a href="{% url 'location' pk=apt.location.id %}"> {{ apt.location.full_address }}</a>? 
     <br>
-    Please claim your apartment by fillout this form.
+    Please claim your apartment by filling out this form.
 </p>
 <ul>
     <li>Suite: #{{ apt.suite_num }}</li>
