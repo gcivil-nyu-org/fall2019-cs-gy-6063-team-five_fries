@@ -6,7 +6,6 @@ from location.models import Location
 from review.models import Review
 from .models import SiteUser
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 
 class BaseTemplateTestCase(TestCase):
@@ -51,9 +50,7 @@ class AccountViewTestCase(TestCase):
     def test_show_review_view(self):
         s1 = SiteUser.objects.create(full_name="test_user")
         l1 = Location.objects.create(state="NY")
-        r1 = Review.objects.create(
-            location=l1, user=s1, content="test_content", time=datetime.now()
-        )
+        r1 = Review.objects.create(location=l1, user=s1, content="test_content")
         self.client.force_login(
             SiteUser.objects.get_or_create(full_name="test_user")[0]
         )

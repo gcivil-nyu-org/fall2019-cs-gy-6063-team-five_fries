@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.urls import reverse
-from datetime import datetime
 from .models import Location, Apartment
 from mainapp.models import SiteUser
 from review.models import Review
@@ -33,10 +32,10 @@ class LocationModelTests(TestCase):
         s1 = SiteUser.objects.create(full_name="test_user")
         l1 = Location.objects.create(state="NY")
         r1 = Review.objects.create(
-            location=l1, user=s1, content="test_content", time=datetime.now(), rating=1
+            location=l1, user=s1, content="test_content", rating=1
         )
         r2 = Review.objects.create(
-            location=l1, user=s1, content="test_content2", time=datetime.now(), rating=5
+            location=l1, user=s1, content="test_content2", rating=5
         )
         avg = (r1.rating + r2.rating) / 2
         self.assertEqual(l1.avg_rate(), avg)
