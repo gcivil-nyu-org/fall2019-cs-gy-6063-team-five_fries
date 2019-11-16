@@ -220,7 +220,26 @@ class LocationViewTests(TestCase):
         self.assertRedirects(response, reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}))
 
 
+    def test_display_interested_if_not_landlord(self):
+        loc, apt = self.create_location_and_apartment()
+        response = self.client.get(
+            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+        )
+        soup = BeautifulSoup(response.content, "html.parser")
+        content = soup.get_text()
+        self.assertNotIn("Interested?", content)
 
+    def test_display_interested_if_landlord(self):
+        loc, apt = self.create_location_and_apartment()
+        user = SiteUser.objects.create(username="testuser")
+        apt.landlord = user
+        apt.save()
+        response = self.client.get(
+            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+        )
+        soup = BeautifulSoup(response.content, "html.parser")
+        content = soup.get_text()
+        self.assertIn("Interested?", content)
 
 class ClaimViewTests(TestCase):
     fixtures = ["locations.json"]
