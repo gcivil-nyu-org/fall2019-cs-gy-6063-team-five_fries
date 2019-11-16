@@ -76,6 +76,9 @@ class Apartment(models.Model):
         related_name="tenant_apartment_set",
     )
 
+    # Craigslist
+    c_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
+
     # Zillow
     zpid = models.CharField(max_length=255, unique=True, blank=True, null=True)
     estimated_rent_price = models.DecimalField(
