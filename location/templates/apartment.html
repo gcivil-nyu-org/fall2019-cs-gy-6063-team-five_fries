@@ -52,7 +52,7 @@
             </p>
             {% endif %}
 
-          {% if apt.landlord %}
+          {% if apt.landlord and request.user.is_authenticated and apt.landlord != request.user %}
           <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id suite_num=apt.suite_num %}">
           {% csrf_token %}
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Interested?</button>
