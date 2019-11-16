@@ -12,7 +12,8 @@ import string
 from unittest import mock
 from external.zillow.stub import fetch_zillow_housing
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
-
+from bs4 import BeautifulSoup
+from django.conf import settings
 
 class LocationModelTests(TestCase):
     fixtures = ["locations.json"]
@@ -58,6 +59,31 @@ class LocationModelTests(TestCase):
 class LocationViewTests(TestCase):
     fixtures = ["locations.json"]
 
+    def create_location_and_apartment(self):
+        city = "Brooklyn"
+        state = "New York"
+        address = "1234 Coney Island Avenue"
+        zipcode = 11218
+        # using get_or_create avoids race condition
+        loc = Location.objects.get_or_create(
+            city=city, state=state, address=address, zipcode=zipcode
+        )[0]
+
+        # create an apartment and link it to that location
+        suite_num = "18C"
+        number_of_bed = 3
+        image = "Images/System_Data_Flow_Diagram.png"
+        rent_price = 3000
+        apt = Apartment.objects.create(
+            suite_num=suite_num,
+            number_of_bed=number_of_bed,
+            image=image,
+            rent_price=rent_price,
+            location=loc,
+        )
+
+        return loc, apt
+
     def test_location_view(self):
         response = self.client.get(reverse("location", args=(1,)))
         self.assertEqual(response.status_code, 200)
@@ -101,27 +127,7 @@ class LocationViewTests(TestCase):
     def test_apartment_view(self):
         """create location and apartment associated with that location.
         test checks if the apartment detail view is loaded"""
-        city = "Brooklyn"
-        state = "New York"
-        address = "1234 Coney Island Avenue"
-        zipcode = 11218
-        # using get_or_create avoids race condition
-        loc = Location.objects.get_or_create(
-            city=city, state=state, address=address, zipcode=zipcode
-        )[0]
-
-        # create an apartment and link it to that location
-        suite_num = "18C"
-        number_of_bed = 3
-        image = "Images/System_Data_Flow_Diagram.png"
-        rent_price = 3000
-        apt = Apartment.objects.create(
-            suite_num=suite_num,
-            number_of_bed=number_of_bed,
-            image=image,
-            rent_price=rent_price,
-            location=loc,
-        )
+        loc, apt = self.create_location_and_apartment()
 
         response = self.client.get(
             reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
@@ -179,6 +185,41 @@ class LocationViewTests(TestCase):
 
         response = self.client.post(reverse("apartment_upload"), post_data)
         self.assertRedirects(response, reverse("apartment_upload_confirmation"))
+
+    def test_contact_landlord_not_logged_in(self):
+        """
+        tests a GET response against the contact_landlord page
+        while not logged in
+        """
+        loc, apt = self.create_location_and_apartment()
+
+        response = self.client.get(
+            reverse("contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+        )
+
+        redirect_url = f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.suite_num}/contact_landlord"
+
+        self.assertRedirects(
+            response, redirect_url
+        )
+
+    def test_contact_landlord_logged_in(self):
+        """
+        tests a GET response against the contact_landlord page
+        while logged in
+        """
+        loc, apt = self.create_location_and_apartment()
+        user = SiteUser.objects.create(username="testuser",email=settings.EMAIL_HOST_USER)
+        self.client.force_login(user)
+        apt.landlord = user
+        apt.save()
+        response = self.client.get(
+            reverse("contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+        )
+
+        self.assertRedirects(response, reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}))
+
+
 
 
 class ClaimViewTests(TestCase):
