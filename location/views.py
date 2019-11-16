@@ -42,7 +42,13 @@ def apartment_detail_view(request, pk, suite_num):
 
     show_claim_button = not apt.tenant or not apt.landlord
     return render(
-        request, "apartment.html", {"apt": apt, "show_claim_button": show_claim_button, "contact_landlord_form": contact_landlord_form}
+        request,
+        "apartment.html",
+        {
+            "apt": apt,
+            "show_claim_button": show_claim_button,
+            "contact_landlord_form": contact_landlord_form,
+        },
     )
 
 
@@ -87,21 +93,22 @@ def contact_landlord(request, pk, suite_num):
     if request.method == "POST":
         form = ContactLandlordForm(request.POST)
         if form.is_valid():
-            subject = form.cleaned_data['subject']
-            absolute_url = request.build_absolute_uri().replace('/contact_landlord','')
-            message = f"You were contacted by {request.user.full_name} ({request.user.email}) " \
-                f"who is interested in your apartment ({absolute_url}). Please find below " \
+            subject = form.cleaned_data["subject"]
+            absolute_url = request.build_absolute_uri().replace("/contact_landlord", "")
+            message = (
+                f"You were contacted by {request.user.full_name} ({request.user.email}) "
+                f"who is interested in your apartment ({absolute_url}). Please find below "
                 f"the complete message.\n\nFrom {request.user.full_name}:\n\n"
-            message += form.cleaned_data['message']
+            )
+            message += form.cleaned_data["message"]
             send_mail(
-                subject,
-                message,
-                sender_email,
-                [landlord_email],
-                fail_silently=False,
+                subject, message, sender_email, [landlord_email], fail_silently=False
             )
 
-    return HttpResponseRedirect(reverse('apartment', kwargs={"pk": pk, "suite_num": suite_num}))
+    return HttpResponseRedirect(
+        reverse("apartment", kwargs={"pk": pk, "suite_num": suite_num})
+    )
+
 
 @login_required
 def favorites(request, pk):
