@@ -236,10 +236,25 @@ class LocationViewTests(TestCase):
         content = soup.get_text()
         self.assertNotIn("Interested?", content)
 
-    def test_display_interested_if_landlord(self):
+    def test_display_interested_if_landlord_and_renter_same(self):
         loc, apt = self.create_location_and_apartment()
         user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
         apt.landlord = user
+        apt.save()
+        response = self.client.get(
+            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+        )
+        soup = BeautifulSoup(response.content, "html.parser")
+        content = soup.get_text()
+        self.assertNotIn("Interested?", content)
+
+    def test_display_interested_if_landlord_and_renter_different(self):
+        loc, apt = self.create_location_and_apartment()
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        landlord = SiteUser.objects.create(username="landlord")
+        apt.landlord = landlord
         apt.save()
         response = self.client.get(
             reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
