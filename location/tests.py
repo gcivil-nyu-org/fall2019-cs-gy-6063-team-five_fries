@@ -15,6 +15,7 @@ from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 from bs4 import BeautifulSoup
 from django.conf import settings
 
+
 class LocationModelTests(TestCase):
     fixtures = ["locations.json"]
 
@@ -194,14 +195,14 @@ class LocationViewTests(TestCase):
         loc, apt = self.create_location_and_apartment()
 
         response = self.client.get(
-            reverse("contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse(
+                "contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
+            )
         )
 
         redirect_url = f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.suite_num}/contact_landlord"
 
-        self.assertRedirects(
-            response, redirect_url
-        )
+        self.assertRedirects(response, redirect_url)
 
     def test_contact_landlord_logged_in(self):
         """
@@ -209,16 +210,22 @@ class LocationViewTests(TestCase):
         while logged in
         """
         loc, apt = self.create_location_and_apartment()
-        user = SiteUser.objects.create(username="testuser",email=settings.EMAIL_HOST_USER)
+        user = SiteUser.objects.create(
+            username="testuser", email=settings.EMAIL_HOST_USER
+        )
         self.client.force_login(user)
         apt.landlord = user
         apt.save()
         response = self.client.get(
-            reverse("contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse(
+                "contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
+            )
         )
 
-        self.assertRedirects(response, reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}))
-
+        self.assertRedirects(
+            response,
+            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}),
+        )
 
     def test_display_interested_if_not_landlord(self):
         loc, apt = self.create_location_and_apartment()
@@ -240,6 +247,7 @@ class LocationViewTests(TestCase):
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
         self.assertIn("Interested?", content)
+
 
 class ClaimViewTests(TestCase):
     fixtures = ["locations.json"]

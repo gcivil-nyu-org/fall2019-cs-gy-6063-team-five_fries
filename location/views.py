@@ -16,6 +16,7 @@ from external.googleapi import g_utils
 from django.core.mail import send_mail
 from django.conf import settings
 
+
 class LocationView(generic.DetailView):
     model = Location
     template_name = "location.html"
