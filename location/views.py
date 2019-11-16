@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from review.models import Review
 from review.form import ReviewForm
-from .forms import ApartmentUploadForm, ClaimForm
+from .forms import ApartmentUploadForm, ClaimForm, ContactLandlordForm
 from .models import Location, Apartment
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
@@ -13,7 +13,9 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
-
+from django.core.mail import send_mail
+from django.shortcuts import redirect
+from django.conf import settings
 
 class LocationView(generic.DetailView):
     model = Location
@@ -36,10 +38,11 @@ class LocationView(generic.DetailView):
 
 def apartment_detail_view(request, pk, suite_num):
     apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
+    contact_landlord_form = ContactLandlordForm()
 
     show_claim_button = not apt.tenant or not apt.landlord
     return render(
-        request, "apartment.html", {"apt": apt, "show_claim_button": show_claim_button}
+        request, "apartment.html", {"apt": apt, "show_claim_button": show_claim_button, "contact_landlord_form": contact_landlord_form}
     )
 
 
@@ -73,6 +76,32 @@ def claim_view(request, pk, suite_num):
         form = ClaimForm()
         return render(request, "claim.html", {"apt": apt, "form": form})
 
+
+@login_required
+def contact_landlord(request, pk, suite_num):
+    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
+    landlord = apt.landlord
+    landlord_email = landlord.email
+    sender_email = settings.EMAIL_HOST_USER
+
+    if request.method == "POST":
+        form = ContactLandlordForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            absolute_url = request.build_absolute_uri().replace('/contact_landlord','')
+            message = f"You were contacted by {request.user.full_name} ({request.user.email}) " \
+                f"who is interested in your apartment ({absolute_url}). Please find below " \
+                f"the complete message.\n\nFrom {request.user.full_name}:\n\n"
+            message += form.cleaned_data['message']
+            send_mail(
+                subject,
+                message,
+                sender_email,
+                [landlord_email],
+                fail_silently=False,
+            )
+
+    return HttpResponseRedirect(reverse('apartment', kwargs={"pk": pk, "suite_num": suite_num}))
 
 @login_required
 def favorites(request, pk):
