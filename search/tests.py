@@ -7,7 +7,7 @@ import datetime
 from .models import CraigslistLocation, LastRetrievedData
 from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
-from external.res.stub inport fetch_res_data
+from external.res.stub import fetch_res_data
 
 
 def create_c_location(
