@@ -10,12 +10,9 @@ def fetch_res_data(
 ) -> Dict[str, any]:
     nyc_res_dataset_domain = "data.cityofnewyork.us"
     nyc_res_dataset_identifier = "43nn-pn8j"
-    try:
-        nyc_res_dataset_token = get_res_socrata_key()
-    except KeyError:
-        nyc_res_dataset_token = (
-            None  # works with None but lower number of requests can be made
-        )
+    nyc_res_dataset_token = (
+        None  # works with None but lower number of requests can be made
+    )
 
     client = Socrata(nyc_res_dataset_domain, nyc_res_dataset_token)
 
