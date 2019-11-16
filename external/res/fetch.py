@@ -6,7 +6,7 @@ from typing import List, Dict
 
 
 def fetch_res_data(
-    zip, max_query_results=None, num_entries_to_search=10000, t_out=10
+    zip, max_query_results=20, num_entries_to_search=10000, t_out=10
 ) -> Dict[str, any]:
     nyc_res_dataset_domain = "data.cityofnewyork.us"
     nyc_res_dataset_identifier = "43nn-pn8j"
