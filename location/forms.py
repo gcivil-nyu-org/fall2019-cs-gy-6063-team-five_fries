@@ -5,6 +5,7 @@ from .models import Location, Apartment
 
 
 class ApartmentUploadForm(forms.Form):
+
     city = forms.CharField(label="City", max_length=100)
     state = us_forms.USStateField(label="State")
     address = forms.CharField(label="Address", max_length=255)
@@ -68,3 +69,9 @@ class ClaimForm(forms.Form):
 class ContactLandlordForm(forms.Form):
     subject = forms.CharField(label="Subject", max_length=100)
     message = forms.CharField(label="Message", max_length=1000)
+
+
+class ApartmentUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Apartment
+        exclude = ["location", "landlord", "tenant", "c_id", "zpid", "last_estimated"]

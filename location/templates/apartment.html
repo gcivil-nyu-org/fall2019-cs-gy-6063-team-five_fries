@@ -52,6 +52,15 @@
             </p>
             {% endif %}
 
+            {% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
+            <p>
+              <!--<a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}">-->
+                <a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}">
+                <button class="btn btn-primary">Update</button>
+              </a>
+            </p>
+            {% endif %}
+
           {% if apt.landlord and request.user.is_authenticated and apt.landlord != request.user %}
           <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id suite_num=apt.suite_num %}">
           {% csrf_token %}
