@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block script %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.1.1/css/mdb.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
+
   <!--Main layout-->
   <main class="mt-5 pt-4">
     <div class="container dark-grey-text mt-5">
@@ -43,14 +45,38 @@
                 The apartment is in a walk-up building. It features an eat-in kitchen, hardwood floors and freshly
                 painted rooms. Good credit and proof of income are needed.</p>
 
-            <form class="d-flex justify-content-left mb-3">
-              <button class="btn btn-primary btn-md my-0 p" type="submit">Apply!</button>
-            </form>
+
             {% if show_claim_button %}
             <p>
               <a href="{% url 'claim' pk=apt.location.id suite_num=apt.suite_num %}" class="italic">Are you a tenant or a landlord of this apartment?</a>
             </p>
             {% endif %}
+
+          {% if apt.landlord and request.user.is_authenticated and apt.landlord != request.user %}
+          <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id suite_num=apt.suite_num %}">
+          {% csrf_token %}
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Interested?</button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Contact Landlord</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      {{ contact_landlord_form|crispy }}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Send message</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          {% endif %}
 
           </div>
           <!--Content-->
@@ -65,6 +91,10 @@
 
     </div>
 
-  </main>
+
+
+      </main>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 {% endblock %}

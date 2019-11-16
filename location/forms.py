@@ -63,3 +63,8 @@ class ClaimForm(forms.Form):
         required=True,
     )
     note = forms.CharField(widget=forms.Textarea, required=False)
+
+
+class ContactLandlordForm(forms.Form):
+    subject = forms.CharField(label="Subject", max_length=100)
+    message = forms.CharField(label="Message", max_length=1000)
