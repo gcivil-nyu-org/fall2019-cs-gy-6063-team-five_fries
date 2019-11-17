@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.core.exceptions import PermissionDenied
 
 from PIL import Image
 from io import BytesIO
@@ -194,16 +193,20 @@ class LocationViewTests(TestCase):
         Tests the 'apartment_edit' page redirects when the user is not logged in
         """
         loc, apt = self.create_location_and_apartment()
-        response = self.client.get(reverse("apartment_edit", kwargs={ "pk": loc.id, "suite_num": apt.suite_num}))
-        self.assertRedirects(response, 
-            f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.suite_num}/edit")
-    
+        response = self.client.get(
+            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+        )
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.suite_num}/edit",
+        )
+
     def test_location_edit_no_landlord(self):
         """
         Tests the 'apartment_edit' page when a user is logged in but
         the apartment doesn't have a landlord
         """
-        #with self.assertRaises(PermissionDenied):
+        # with self.assertRaises(PermissionDenied):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
         loc, apt = self.create_location_and_apartment()
@@ -211,7 +214,7 @@ class LocationViewTests(TestCase):
         apt.save()
 
         response = self.client.get(
-            reverse("apartment_edit", kwargs={ "pk": loc.id, "suite_num": apt.suite_num })
+            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
         )
         self.assertEqual(response.status_code, 403)
 
@@ -228,7 +231,7 @@ class LocationViewTests(TestCase):
         apt.save()
 
         response = self.client.get(
-            reverse("apartment_edit", kwargs={ "pk": loc.id, "suite_num": apt.suite_num })
+            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
         )
         self.assertEqual(response.status_code, 403)
 
@@ -244,7 +247,7 @@ class LocationViewTests(TestCase):
         apt.save()
 
         response = self.client.get(
-            reverse("apartment_edit", kwargs={ "pk": loc.id, "suite_num": apt.suite_num })
+            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
         )
         self.assertEqual(response.status_code, 200)
 
@@ -259,17 +262,22 @@ class LocationViewTests(TestCase):
         apt.save()
 
         form_data = {
-            'suite_num': apt.suite_num,
-            'rent_price': '2500',
-            'number_of_bed': '2',
-            'estimated_rent':'2500',
-            'description': 'A different description'
+            "suite_num": apt.suite_num,
+            "rent_price": "2500",
+            "number_of_bed": "2",
+            "estimated_rent": "2500",
+            "description": "A different description",
         }
         response = self.client.post(
-            reverse("apartment_edit", kwargs={ "pk": loc.id, "suite_num": apt.suite_num}),
-            form_data)
-        self.assertRedirects(response, reverse("apartment", kwargs={ "pk": loc.id, "suite_num": apt.suite_num}))
-
+            reverse(
+                "apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
+            ),
+            form_data,
+        )
+        self.assertRedirects(
+            response,
+            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}),
+        )
 
     def test_contact_landlord_not_logged_in(self):
         """
