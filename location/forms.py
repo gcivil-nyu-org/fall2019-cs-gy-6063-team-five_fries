@@ -21,6 +21,7 @@ class ApartmentUploadForm(forms.Form):
     # https://simpleisbetterthancomplex.com/tutorial/2016/08/01/how-to-upload-files-with-django.html
     image = forms.ImageField()
     suite_num = forms.CharField(label="Suite Number", max_length=30)
+    description = forms.CharField(widget=forms.Textarea)
 
     def clean_rent_price(self):
         rent_price = self.cleaned_data.get("rent_price")

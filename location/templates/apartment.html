@@ -39,12 +39,16 @@
             <p class="lead">
               <span>{{ apt.rent_price_for_display }}</span>
             </p>
-
+            {% if not apt.description %}
             <p>(Default Description) Bright one bedroom apartment in the heart of Bay Ridge. Located in the 80's near 3rd Avenue the property
                 is steps to shopping and restaurants and a short walk to the R train 86th Street station.
                 The apartment is in a walk-up building. It features an eat-in kitchen, hardwood floors and freshly
                 painted rooms. Good credit and proof of income are needed.</p>
-
+            {% else %}
+            <p>
+              {{ apt.description }}
+            </p>
+            {% endif %}
 
             {% if show_claim_button %}
             <p>
