@@ -3,7 +3,7 @@ from typing import Dict
 import os
 
 
-def fetch_311_data(
+def fetch_res_data(
     zip, max_query_results=None, num_entries_to_search=10000, t_out=10
 ) -> Dict[str, any]:
     filepath = os.path.join(os.path.dirname(__file__), "sample-response.json")
@@ -11,7 +11,7 @@ def fetch_311_data(
         return json.loads(f.read())
 
 
-def fetch_311_data_closed(
+def fetch_res_data_closed(
     zip, max_query_results=None, num_entries_to_search=10000, t_out=10
 ) -> Dict[str, any]:
     filepath = os.path.join(os.path.dirname(__file__), "sample-response-closed.json")
@@ -19,7 +19,7 @@ def fetch_311_data_closed(
         return json.loads(f.read())
 
 
-def fetch_311_data_single(
+def fetch_res_data_single(
     zip, max_query_results=None, num_entries_to_search=10000, t_out=10
 ) -> Dict[str, any]:
     filepath = os.path.join(os.path.dirname(__file__), "sample-response-single.json")
