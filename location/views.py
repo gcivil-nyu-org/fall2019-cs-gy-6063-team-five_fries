@@ -61,9 +61,7 @@ def apartment_detail_view(request, pk, suite_num):
 @login_required
 def apartment_edit(request, pk, suite_num):
 
-    # location = get_object_or_404(Location, pk=pk)
     object = get_object_or_404(Apartment, location__id=pk, suite_num=suite_num)
-    # object = get_object_or_404(Apartment, pk=pk)
     # if the apartment does not have a landlord or the current user is
     # not the landlord for the apartment, raise a Permission Exception
     if not object.landlord or (object.landlord != request.user):
