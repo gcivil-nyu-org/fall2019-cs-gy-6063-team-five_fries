@@ -58,7 +58,7 @@ class Apartment(models.Model):
         max_digits=20, decimal_places=2, null=True, validators=[MinValueValidator(0)]
     )
     number_of_bed = models.IntegerField(
-        verbose_name="Number of Beds", null=True, validators=[MinValueValidator(0)]
+        verbose_name="Bedrooms", null=True, validators=[MinValueValidator(0)]
     )
     description = models.TextField(default="")
 
