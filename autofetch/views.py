@@ -6,14 +6,13 @@ from external.googleapi.fetch import fetch_reverse_geocode
 from location.models import Location
 from location.models import Apartment
 
-# TODO: parse address from class: mapaddress in craiglisturl, and normalize w/ google map api
 def autofetch(request):
     #city_list = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
     city_list = ["brk"]
 
     for city_name in city_list:
         results = fetch_craigslist_housing(
-            limit=10,
+            #limit=10,
             site="newyork",
             category="apa",
             area=city_name,
@@ -24,7 +23,7 @@ def autofetch(request):
             lat, lon = None, None
             print(r)
 
-            # reverse (lat, lon) -> address
+            # reverse (lat, lon) to address
             if r["geotag"] is not None:
                 lat = r["geotag"][0]
                 lon = r["geotag"][1]
@@ -56,36 +55,15 @@ def autofetch(request):
             last_updated = r["last_updated"]
             bedrooms = r["bedrooms"]
 
-            apartment = Apartment.objects.get_or_create(
-                #c_id=c_id,
-                location=loc,
-                rent_price=price,
-                number_of_bed=bedrooms,
-                last_modified=last_updated,
+            apartment, apa_created = Apartment.objects.get_or_create(
+                c_id=c_id,
+                location=loc
             )
 
+            if apa_created:
+                apartment.rent_price = price
+                apartment.number_of_bed = bedrooms
+                apartment.last_modified = last_updated
+                apartment.save()
+
     return render(request, "account.html")
-
-
-
-
-
-
-
-
-
-
-# TODO: fetch img
-# def get_img_url(url):
-#     result = requests.get(url)
-#     if result.status_code == 200:
-#         soup = BeautifulSoup(result.content, "html.parser")
-#         img_tag = soup.find_all("a", {"class": "thumb"})
-#         # For now, get the first fullsize imgage.
-#         # Get the image id by imgtag[n].get('data-imgid')
-#         # Get the thumbnail image by imgtag[n].get('src')
-#
-#         if len(img_tag) == 0:
-#             return "../static/map/no_apa_pic.jpg"
-#         else:
-#             return str(img_tag[0].get("href"))
