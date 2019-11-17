@@ -29,7 +29,12 @@
 
         <!--Content-->
         <div class="p-4">
-          <p class="lead font-weight-bold">{{ apt.location.full_address }}</p>
+          <p class="lead font-weight-bold">
+            <span class="font-weight-bold">{{ apt.location.full_address }}</span>
+            {% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
+            <small><a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}" class="">Edit</a></small>
+            {% endif %}
+          </p>
 
           <div class="mb-3">
             <span class="badge red mr-1">Suite: {{ apt.suite_num }}</span>
@@ -58,13 +63,13 @@
           </p>
           {% endif %}
 
-          {% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
+          <!--{% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
           <p>
             <a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}">
               <button class="btn btn-primary">Update</button>
             </a>
           </p>
-          {% endif %}
+          {% endif %}-->
 
           {% if apt.landlord and request.user.is_authenticated and apt.landlord != request.user %}
           <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id suite_num=apt.suite_num %}">

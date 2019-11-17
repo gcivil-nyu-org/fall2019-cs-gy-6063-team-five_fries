@@ -57,7 +57,9 @@ class Apartment(models.Model):
     rent_price = models.DecimalField(
         max_digits=20, decimal_places=2, null=True, validators=[MinValueValidator(0)]
     )
-    number_of_bed = models.IntegerField(null=True, validators=[MinValueValidator(0)])
+    number_of_bed = models.IntegerField(
+        verbose_name="Number of Beds", null=True, validators=[MinValueValidator(0)]
+    )
     description = models.TextField(default="")
 
     last_modified = models.DateTimeField(auto_now=True)

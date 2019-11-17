@@ -1,6 +1,9 @@
 from django import forms
-from localflavor.us import forms as us_forms
 from django.core.validators import MinValueValidator
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Button, ButtonHolder
+
+from localflavor.us import forms as us_forms
 from .models import Location, Apartment
 
 
@@ -73,6 +76,30 @@ class ContactLandlordForm(forms.Form):
 
 
 class ApartmentUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            "suite_num",
+            "rent_price",
+            "number_of_bed",
+            "estimated_rent_price",
+            "zillow_url",
+            "description",
+            "image",
+            ButtonHolder(
+                Submit("update", "Update", css_class="btn btn-primary"),
+                Button(
+                    "cancel",
+                    "Cancel",
+                    css_class="btn btn-primary",
+                    onclick="window.location.href='history.back()'",
+                ),
+                css_class="row justify-content-between",
+            ),
+        )
+
+        super(ApartmentUpdateForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = Apartment
         exclude = ["location", "landlord", "tenant", "c_id", "zpid", "last_estimated"]
