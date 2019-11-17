@@ -5,36 +5,54 @@ from external.craigslist import fetch_craigslist_housing
 from external.googleapi.fetch import fetch_reverse_geocode
 from location.models import Location
 from location.models import Apartment
+from datetime import datetime
 
 def autofetch(request):
-    #city_list = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
-    city_list = ["brk"]
+    f = open("fetch_log.txt", "a")
+    start_time = f"Start: {str(datetime.now())} \n"
+    f.write(start_time)
+    city_list = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
+    #city_list = ["brx", "brk"]
 
     for city_name in city_list:
-        results = fetch_craigslist_housing(
-            #limit=10,
-            site="newyork",
-            category="apa",
-            area=city_name,
-        )
+        try:
+            results = fetch_craigslist_housing(
+                #limit=10,
+                site="newyork",
+                category="apa",
+                area=city_name,
+            )
+        except AttributeError:
+            err_msg = f" Cannot write into city: {city_name}, because one of the url not exist\n"
+            f.write(err_msg)
+            continue
 
         for r in results:
             # check if is_existed w/ address reversed from lat,lon
             lat, lon = None, None
-            print(r)
+
 
             # reverse (lat, lon) to address
             if r["geotag"] is not None:
+                address, city, state, zipcode, full_address = "", "", "NY", 11201, ""
                 lat = r["geotag"][0]
                 lon = r["geotag"][1]
                 reverse_response = fetch_reverse_geocode((lat, lon))
-                full_address = reverse_response[0]["formatted_address"]
+
+                if "formatted_address" in reverse_response[0].keys():
+                    full_address = reverse_response[0]["formatted_address"]
 
                 # example of formatted_address: 570 4th Ave, Brooklyn, NY 11215, USA
-                address = full_address.split(',')[0]
-                city = full_address.split(',')[1].split(' ')[1]
-                state = full_address.split(',')[2].split(' ')[1]
-                zipcode = reverse_response[0]["postal"]
+                addr_len = len(full_address.split(','))
+
+                if addr_len >= 1:
+                    address = full_address.split(',')[0]
+                if addr_len >= 2:
+                    city = full_address.split(',')[1].split(' ')[1]
+                if addr_len >= 3:
+                    state = full_address.split(',')[2].split(' ')[1]
+                if "postal" in reverse_response[0].keys():
+                    zipcode = reverse_response[0]["postal"]
 
             else:
                 continue
@@ -44,9 +62,12 @@ def autofetch(request):
                 city=city,
                 state=state,
                 zipcode=zipcode,
-                latitude=lat,
-                longitude=lon,
             )
+
+            if loc_created:
+                loc.latitude = lat
+                loc.longitude = lon
+                loc.save()
 
             c_id = r["id"]
             url = r["url"]
@@ -65,5 +86,10 @@ def autofetch(request):
                 apartment.number_of_bed = bedrooms
                 apartment.last_modified = last_updated
                 apartment.save()
+        f.write(" Finish query\n")
+
+    end_time = f"End at: {str(datetime.now())} \n"
+    f.write(end_time)
+    f.close()
 
     return render(request, "account.html")

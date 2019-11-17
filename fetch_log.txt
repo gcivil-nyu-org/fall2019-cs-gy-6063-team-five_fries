@@ -1,0 +1,1 @@
+Start: 0, 2019-11-17 16:00:41.116825Cannot write into city 0, because one of the url not exist, brx Finish queryEnd at: 0, 2019-11-17 16:22:07.700201
