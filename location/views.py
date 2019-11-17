@@ -66,11 +66,12 @@ def apartment_edit(request, pk, suite_num):
     # object = get_object_or_404(Apartment, pk=pk)
     # if the apartment does not have a landlord or the current user is
     # not the landlord for the apartment, raise a Permission Exception
-    if not object.landlord:
+    if not object.landlord or (object.landlord != request.user):
         raise PermissionDenied
 
     if request.POST:
-        form = ApartmentUpdateForm(instance=object, data=request.POST)
+        # the 'or None' is necessary in case the files were not updated
+        form = ApartmentUpdateForm(request.POST, request.FILES or None, instance=object)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(
