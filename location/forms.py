@@ -82,8 +82,6 @@ class ApartmentUpdateForm(forms.ModelForm):
             "suite_num",
             "rent_price",
             "number_of_bed",
-            "estimated_rent_price",
-            "zillow_url",
             "description",
             "image",
             ButtonHolder(
@@ -92,7 +90,7 @@ class ApartmentUpdateForm(forms.ModelForm):
                     "cancel",
                     "Cancel",
                     css_class="btn btn-primary",
-                    onclick="window.location.href='history.back()'",
+                    onclick="history.back()",
                 ),
                 css_class="row justify-content-between",
             ),
