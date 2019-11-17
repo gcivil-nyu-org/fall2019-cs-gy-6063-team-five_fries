@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+
 {% block content %}
-<h2>{{ object.location.address }} APT {{ object.suite_num }} </h2>
+<h2>
+    <div class="col">
+    Update {{ object.location.full_address }}
+    </div>
+    <div class="col">
+        <span class="badge badge-pill" style="background: red;">Suite: {{ object.suite_num }}</span>
+    </div>
+</h2>
 <div class="row">
     <div class="col-sm-8">
 

@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 {% block script %}
 <!-- Font Awesome Icon Library -->
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 {% block header %}
 {% load leaflet_tags %}
@@ -11,23 +12,29 @@
 {% leaflet_css %}
 
 <script type="text/javascript">
-  $(document).ready(function(){
-      $("#check_user").click(function(){
+    $(document).ready(function () {
+        $("#check_user").click(function () {
             $("#display_review").toggle();
         });
-  });
-  let latitude = {{ object.latitude }};
-  let longitude = {{ object.longitude }};
-  window.addEventListener("map:init", (event) => {
-    let zoomLevel = 13;
-    let map = event.detail.map.setView([latitude, longitude], zoomLevel);
-    L.marker([latitude, longitude])
-    .addTo(map)
-    .bindPopup(`<a target="_blank" href="{{object.google_map_url}}">Open Google Maps</a>`)
-    .openPopup();
-  });
-
-
+    });
+    let latitude = {
+        {
+            object.latitude
+        }
+    };
+    let longitude = {
+        {
+            object.longitude
+        }
+    };
+    window.addEventListener("map:init", (event) => {
+        let zoomLevel = 13;
+        let map = event.detail.map.setView([latitude, longitude], zoomLevel);
+        L.marker([latitude, longitude])
+            .addTo(map)
+            .bindPopup(`<a target="_blank" href="{{object.google_map_url}}">Open Google Maps</a>`)
+            .openPopup();
+    });
 </script>
 {% endblock%}
 
@@ -41,39 +48,53 @@
         <div class="col">
             <h2>Apartments</h2>
             <div class="location-results">
-            {% if zillow_list %}
-            <ul>
-            {% for apt in zillow_list %}
-            <li>
-              <h3>
-                {% if apt.suite_num %}
-                    <a href="{% url 'apartment' pk=object.id suite_num=apt.suite_num %}"><span class="badge badge-secondary">#{{apt.suite_num}}</span></a>
+                {% if zillow_list %}
+                <ul class="list-group">
+                    {% for apt in zillow_list %}
+                    <li class="list-group-item list-group-item-action">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col">
+                                {{apt.rent_price_for_display}}
+                            </div>
+                            <div class="col">
+                                {% if apt.suite_num %}
+                                <a href="{% url 'apartment' pk=object.id suite_num=apt.suite_num %}"><span
+                                        class="badge badge-secondary">{{ apt.location.address }}
+                                        #{{apt.suite_num}}</span></a>
+                                {% endif %}
+                            </div>
+                            <div class="col text-center">
+                                <a href="{{ apt.zillow_url }}"><span class="badge badge-secondary">Zillow</span></a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
                 {% endif %}
-                {{apt.rent_price_for_display}}
-                <a href="{{ apt.zillow_url }}"><span class="badge badge-secondary">Zillow</span></a>
-              </h3>
-            </li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-            {% if landlord_list %}
-            <ul>
-            {% for apt in landlord_list %}
-            <li>
-              <h3>
-                {% if apt.suite_num %}
-                    <a href="{% url 'apartment' pk=object.id suite_num=apt.suite_num %}"><span class="badge badge-secondary">#{{apt.suite_num}}</span></a>
+                {% if landlord_list %}
+                <ul class="list-group">
+                    {% for apt in landlord_list %}
+                    <li class="list-group-item list-group-item-action">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col">
+                                {{apt.rent_price_for_display}}
+                            </div>
+                            <div class="col">
+                                {% if apt.suite_num %}
+                                <a href="{% url 'apartment' pk=object.id suite_num=apt.suite_num %}"><span
+                                        class="badge badge-secondary">{{ apt.location.address }}
+                                        #{{apt.suite_num}}</span></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
                 {% endif %}
-                {{apt.rent_price_for_display}}
-              </h3>
-            </li>
-            {% endfor %}
-            </ul>
-            {% endif %}
 
-            {% if not zillow_list and not landlord_list %}
-            <p>No apartments</p>
-            {% endif %}
+                {% if not zillow_list and not landlord_list %}
+                <p>No apartments</p>
+                {% endif %}
             </div>
             <i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
         </div>
@@ -89,30 +110,30 @@
                     Average: {{ object.avg_rate }}
                 </li>
                 <li>
-                {% for idx in '12345' %}
+                    {% for idx in '12345' %}
                     {% if forloop.counter <= object.avg_rate %}
-                        <span class="fa fa-star checked"></span>
+                    <span class="fa fa-star checked"></span>
                     {% else %}
-                        <span class="fa fa-star"></span>
+                    <span class="fa fa-star"></span>
                     {% endif %}
-                {% endfor %}
+                    {% endfor %}
                 </li>
             </ul>
 
             <div class="mb-3 text-center location-results">
                 {% for review in object.review_set.all %}
-                <div class="card mb-4 shadow-sm "style="max-width: 27rem;">
+                <div class="card mb-4 shadow-sm " style="max-width: 27rem;">
                     <div class="card-header">
                         <ul class="list-unstyled">
                             <li>{{ review.user }}</li>
                             <li>
-                            {% for idx in '12345' %}
+                                {% for idx in '12345' %}
                                 {% if forloop.counter <= review.rating %}
-                                    <span class="fa fa-star checked"></span>
+                                <span class="fa fa-star checked"></span>
                                 {% else %}
-                                    <span class="fa fa-star"></span>
+                                <span class="fa fa-star"></span>
                                 {% endif %}
-                            {% endfor %}
+                                {% endfor %}
                             </li>
                         </ul>
                     </div>
@@ -125,7 +146,8 @@
                         </ul>
 
                         <h4 class=" mb-0">
-                            <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
+                            <small class="blockquote-footer"
+                                style="font-size: x-small"><cite>{{ review.time }}</cite></small>
                         </h4>
                     </div>
                 </div>
@@ -139,14 +161,14 @@
 
 
 {% if request.user.is_authenticated %}
-    <form action="{% url 'favorite' object.id %}" method="POST">
+<form action="{% url 'favorite' object.id %}" method="POST">
     {% csrf_token %}
     {% if object in request.user.favorites.all %}
-        <button type="submit"><img src="https://img.icons8.com/color/64/000000/hearts.png"></button>
+    <button type="submit"><img src="https://img.icons8.com/color/64/000000/hearts.png"></button>
     {% else %}
-        <button type="submit"><img src="https://img.icons8.com/material-outlined/64/000000/hearts.png"></button>
+    <button type="submit"><img src="https://img.icons8.com/material-outlined/64/000000/hearts.png"></button>
     {% endif %}
-    </form>
+</form>
 <!--
 Uncomment to display messages indicating confirmation of favorited/unfavorited apartment.
 {% if messages %}
@@ -164,16 +186,16 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 {% endif %}
 
 
-    {% if can_leave_a_review %}
-    <h2>Write some review:</h2>
-        <input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
-            <div id="display_review" class="hidden">
-                <form action="{% url "review" object.id %}" method="post">
-                    {% csrf_token %}
-                    {{ form | crispy}}
-                    <input type="submit" value="Submit" name="form_submit">
-                </form>
-            </div>
-    {% endif %}
+{% if can_leave_a_review %}
+<h2>Write some review:</h2>
+<input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
+<div id="display_review" class="hidden">
+    <form action="{% url "review" object.id %}" method="post">
+        {% csrf_token %}
+        {{ form | crispy}}
+        <input type="submit" value="Submit" name="form_submit">
+    </form>
+</div>
+{% endif %}
 
 {% endblock %}
