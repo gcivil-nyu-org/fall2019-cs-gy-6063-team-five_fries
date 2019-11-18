@@ -35,10 +35,6 @@ def bckgrndfetch():
 
         for r in results:
             # check if is_existed w/ address reversed from lat,lon
-            lat, lon = None, None
-
-
-            # reverse (lat, lon) to address
             if r["geotag"] is not None:
                 address, city, state, zipcode, full_address = "", "", "NY", 11201, ""
                 lat = r["geotag"][0]
@@ -95,5 +91,3 @@ def bckgrndfetch():
         print(" Finish query\n")
 
     print(f"End at: {str(datetime.now())} \n")
-
-    return render(request, "account.html")
