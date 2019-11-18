@@ -1,7 +1,7 @@
 from sodapy import Socrata
 import requests
 import pandas as pd
-from .models import NYCResComplaint
+from .models import ResComplaint
 from typing import List, Dict
 
 
@@ -39,7 +39,7 @@ def fetch_res_data_as_dataframe(
 
 def get_res_data(
     zip, max_query_results=None, num_entries_to_search=10000, t_out=10
-) -> List[NYCResComplaint]:
+) -> List[ResComplaint]:
     """Returns results based on a zip code. Validation for the zip code is done on the front-end.
     Timeout exception is raised if timeout period expires. Default timeout period is 10 seconds."""
 
@@ -47,11 +47,11 @@ def get_res_data(
     results_df = fetch_res_data_as_dataframe(
         zip, max_query_results, num_entries_to_search, t_out
     )
-    results_df = results_df.loc[results_df["incident_zip"] == str(zip)]
+    results_df = results_df.loc[results_df["zipcode"] == str(zip)]
 
     if max_query_results and len(results_df) > max_query_results:
         results_df = results_df[:max_query_results]
 
-    query_results = [NYCResComplaint(**dic) for dic in results_df.to_dict("records")]
+    query_results = [ResComplaint(**dic) for dic in results_df.to_dict("records")]
 
     return query_results
