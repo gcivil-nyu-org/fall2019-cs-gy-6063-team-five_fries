@@ -8,9 +8,9 @@ from location.models import Apartment
 from datetime import datetime
 
 def autofetch(request):
-    f = open("fetch_log.txt", "a")
-    start_time = f"Start: {str(datetime.now())} \n"
-    f.write(start_time)
+
+    print(f"Start: {str(datetime.now())} \n")
+
     city_list = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
     #city_list = ["brx", "brk"]
 
@@ -23,8 +23,8 @@ def autofetch(request):
                 area=city_name,
             )
         except AttributeError:
-            err_msg = f" Cannot write into city: {city_name}, because one of the url not exist\n"
-            f.write(err_msg)
+            print(f" Cannot write into city: {city_name}, because one of the url not exist\n")
+
             continue
 
         for r in results:
@@ -86,10 +86,8 @@ def autofetch(request):
                 apartment.number_of_bed = bedrooms
                 apartment.last_modified = last_updated
                 apartment.save()
-        f.write(" Finish query\n")
+        print(" Finish query\n")
 
-    end_time = f"End at: {str(datetime.now())} \n"
-    f.write(end_time)
-    f.close()
+    print(f"End at: {str(datetime.now())} \n")
 
     return render(request, "account.html")
