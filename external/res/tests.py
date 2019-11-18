@@ -8,21 +8,20 @@ from .models import NYCResComplaint
 
 
 class FetchNYCResConstraintsTests(TestCase):
-    @mock.patch("external.nycres.fetch.fetch_res_data", fetch_res_data_stub)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data_stub)
     def test_fetch_res_data_as_dataframe(self):
         df = fetch_res_data_as_dataframe("11201")
         self.assertTrue(isinstance(df, pd.DataFrame))
 
-    @mock.patch("external.nycres.fetch.fetch_res_data", fetch_res_data_stub)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data_stub)
     def test_get_res_data(self):
         results = get_res_data("11201")
         for complaint in results:
             self.assertTrue(isinstance(complaint, NYCResComplaint))
 
-    @mock.patch("external.nycres.fetch.Socrata")
+    @mock.patch("external.res.fetch.Socrata")
     def test_fetch_res_data(self, MockSocrata):  # noqa: N803
         fetch_res_data("11201")
-
         MockSocrata.assert_called_once()
         client = MockSocrata()
         client.get.assert_called_once()
