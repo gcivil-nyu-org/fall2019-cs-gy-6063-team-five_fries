@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "location.apps.LocationConfig",
     "external.apps.ExternalConfig",
     "review.apps.ReviewConfig",
+    "autofetch.apps.AutofetchConfig",
 ]
 
 MIDDLEWARE = [
@@ -175,3 +176,11 @@ LEAFLET_CONFIG = {
     "MIN_ZOOM": 3,
     "MAX_ZOOM": 18,
 }
+
+# Using Celery for Asyncronized Job
+CELERY_BROKER_URL = 'redis://localhost'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Nairobi'

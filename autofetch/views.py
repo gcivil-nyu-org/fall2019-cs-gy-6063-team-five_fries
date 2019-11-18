@@ -1,18 +1,24 @@
-import requests
-from bs4 import BeautifulSoup
 from django.shortcuts import render
 from external.craigslist import fetch_craigslist_housing
 from external.googleapi.fetch import fetch_reverse_geocode
 from location.models import Location
 from location.models import Apartment
 from datetime import datetime
+from celery import shared_task
+
 
 def autofetch(request):
+    bckgrndfetch.apply_async()
+    return render(request, "account.html")
+
+
+@shared_task
+def bckgrndfetch():
 
     print(f"Start: {str(datetime.now())} \n")
 
-    city_list = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
-    #city_list = ["brx", "brk"]
+    #city_list = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
+    city_list = ["brx"]
 
     for city_name in city_list:
         try:
