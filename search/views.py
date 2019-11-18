@@ -36,10 +36,7 @@ def search(request):
         # build the query parameter dictionary that will be used to
         # query the Location model
         query_params = build_search_query(
-            address=address,
-            max_price=max_price,
-            min_price=min_price,
-            bed_num=bed_num,
+            address=address, max_price=max_price, min_price=min_price, bed_num=bed_num
         )
 
         search_data = {}

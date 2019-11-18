@@ -53,7 +53,6 @@ def normalize_us_address(address) -> Optional[Address]:
         if "locality" in types or "sublocality_level_1" in types:
             city = comp.get("long_name")
 
-
     zip_code = response.get("postal")
     loc = response.get("geometry").get("location")
     lat, lon = loc["lat"], loc["lng"]
