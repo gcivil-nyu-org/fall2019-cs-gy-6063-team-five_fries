@@ -36,9 +36,7 @@ def search(request):
         # build the query parameter dictionary that will be used to
         # query the Location model
         query_params = build_search_query(
-            city=address.city,
-            state=address.state,
-            zip_code=address.zipcode,
+            address=address,
             max_price=max_price,
             min_price=min_price,
             bed_num=bed_num,
@@ -194,17 +192,15 @@ def css_color_for_complaint_level(level):
     return colors[level]
 
 
-def build_search_query(city, state, zip_code, min_price, max_price, bed_num):
+def build_search_query(address, min_price, max_price, bed_num):
     # builds a dictionary of query parameters used to pass values into
     # the Location model query
     query_params = {}
-    if city:
-        query_params["city"] = city
-    if state:
-        query_params["state"] = state
-    if zip_code:
-        # filter based on existence of locations with the specified zip code
-        query_params["zipcode"] = zip_code
+    if address:
+        # filter based on existence of locations with the specified address
+        query_params["city"] = address.city
+        query_params["state"] = address.state
+        query_params["zipcode"] = address.zipcode
     if max_price:
         # filter based on existence of apartments  with a rent_price less than or equal (lte)
         # than the max_price

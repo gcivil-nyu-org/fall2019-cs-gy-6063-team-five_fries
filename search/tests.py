@@ -7,6 +7,7 @@ import datetime
 from .models import CraigslistLocation, LastRetrievedData
 from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
+from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 
 
 def create_c_location(
@@ -95,6 +96,7 @@ class CraigslistLocationTests(TestCase):
         self.assertEqual(str(q), "123 - Test_Loc")
 
 
+@mock.patch("external.googleapi.g_utils.fetch_geocode", fetch_geocode_stub)
 class SearchIndexViewTests(TestCase):
     def test_search_index(self):
         """
@@ -104,38 +106,37 @@ class SearchIndexViewTests(TestCase):
         response = self.client.get(reverse("search"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Search All Locations")
-        self.assertContains(response, "Zip Code")
+        self.assertContains(response, "Address")
         self.assertContains(response, "Go")
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    def test_search_index_with_zip(self):
+    def test_search_index_with_query(self):
         """
-        Tests the search page being retrieved with a zip code
-        passed in
+        Tests the search page being retrieved with a query passed in
         """
-        response = self.client.get("/search/?zipcode=10000")
+        response = self.client.get("/search/?query=10000")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Search results")
-        self.assertContains(response, "Zipcode: 10000")
+        self.assertContains(response, "Address:")
 
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    def test_search_index_no_zip(self):
+    def test_search_index_no_query(self):
         """
-        tests the search page with an incomplete zip passed in
+        tests the search page with an incomplete query passed in
         """
-        response = self.client.get("/search/?zipcode=")
+        response = self.client.get("/search/?query=")
         self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response, "Zipcode:")
+        self.assertNotContains(response, "Address:")
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    def test_search_page_zip_only(self):
+    def test_search_page_query_only(self):
         """
-        tests the search page with only a zipcode passed in
+        tests the search page with only a query passed in
         """
-        response = self.client.get("/search/?zipcode=10000")
-        self.assertContains(response, "Zipcode: 10000")
+        response = self.client.get("/search/?query=10000")
+        self.assertContains(response, "Address:")
         self.assertNotContains(response, "Max Price:")
         self.assertNotContains(response, "Min Price:")
 
@@ -143,10 +144,10 @@ class SearchIndexViewTests(TestCase):
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_page_min_price(self):
         """
-        tests the search page with zipcode and min_price passed in
+        tests the search page with query and min_price passed in
         """
-        response = self.client.get("/search/?zipcode=10000&min_price=500")
-        self.assertContains(response, "Zipcode: 10000")
+        response = self.client.get("/search/?query=NY&min_price=500")
+        self.assertContains(response, "Address:")
         self.assertNotContains(response, "Max Price:")
         self.assertContains(response, "Min Price: 500")
 
@@ -154,10 +155,10 @@ class SearchIndexViewTests(TestCase):
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_page_max_price(self):
         """
-        tests the search page with zipcode and max_price passed in
+        tests the search page with query and max_price passed in
         """
-        response = self.client.get("/search/?zipcode=10000&min_price=&max_price=2000")
-        self.assertContains(response, "Zipcode: 10000")
+        response = self.client.get("/search/?query=NY&min_price=&max_price=2000")
+        self.assertContains(response, "Address:")
         self.assertContains(response, "Max Price: 2000")
         self.assertNotContains(response, "Min Price:")
 
@@ -165,12 +166,12 @@ class SearchIndexViewTests(TestCase):
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_page_bed_num(self):
         """
-        tests the search page with zipcode and bed_num passed in
+        tests the search page with query and bed_num passed in
         """
         response = self.client.get(
-            "/search/?zipcode=10000&min_price=&max_price=&bed_num=4"
+            "/search/?query=NY&min_price=&max_price=&bed_num=4"
         )
-        self.assertContains(response, "Zipcode: 10000")
+        self.assertContains(response, "Address:")
         self.assertContains(response, "Number of Bedroom: 4")
         self.assertNotContains(response, "Max Price:")
         self.assertNotContains(response, "Min Price:")
@@ -178,13 +179,10 @@ class SearchIndexViewTests(TestCase):
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_page_all_params(self):
-        """
-        tests the search page with only a zipcode passed in
-        """
         response = self.client.get(
-            "/search/?zipcode=10000&min_price=500&max_price=2000&bed_num=4"
+            "/search/?query=NY&min_price=500&max_price=2000&bed_num=4"
         )
-        self.assertContains(response, "Zipcode: 10000")
+        self.assertContains(response, "Address:")
         self.assertContains(response, "Max Price: 2000")
         self.assertContains(response, "Min Price: 500")
         self.assertContains(response, "Number of Bedroom: 4")
