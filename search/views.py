@@ -7,6 +7,7 @@ from location.models import Location
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
+from external.googleapi import fetch_geocode
 
 
 class CraigslistIndexView(generic.ListView):
@@ -21,8 +22,40 @@ def search(request):
         # pass the form data to the form class
         search_form = SearchForm(request.GET)
 
+        state = None
+        city = None
+        zip_code = None
+        full_address = None
+        if request.GET.get("query"):
+            geocode_response_list = fetch_geocode(request.GET.get("query"))
+            if geocode_response_list:
+                geocode_response = geocode_response_list[0]
+            else:
+                geocode_response = None
+
+            for comp in geocode_response.get("address_components"):
+                types = comp.get("types")
+                if not types:
+                    continue
+                if "administrative_area_level_1" in types:
+                    state = comp.get("short_name")
+            for comp in geocode_response.get("address_components"):
+                types = comp.get("types")
+                if not types:
+                    continue
+
+                # https://stackoverflow.com/a/49640066/1556838
+                if "locality" in types:
+                    city = comp.get("long_name")
+                    break
+                elif "sublocality_level_1" in types:
+                    city = comp.get("long_name")
+                    break
+
+            zip_code = geocode_response.get("postal")
+            full_address = geocode_response.get("formatted_address")
+
         timeout = False
-        zip_code = request.GET.get("zipcode")
         max_price = request.GET.get("max_price")
         min_price = request.GET.get("min_price")
         bed_num = request.GET.get("bed_num")
@@ -32,14 +65,19 @@ def search(request):
         # build the query parameter dictionary that will be used to
         # query the Location model
         query_params = build_search_query(
-            zip_code=zip_code, max_price=max_price, min_price=min_price, bed_num=bed_num
+            city=city,
+            state=state,
+            zip_code=zip_code,
+            max_price=max_price,
+            min_price=min_price,
+            bed_num=bed_num,
         )
 
         search_data = {}
         if query_params.keys() and search_form.is_valid():
 
-            if zip_code:
-                search_title = search_title + f"Zipcode: {zip_code} "
+            if full_address:
+                search_title = search_title + f"Address: {full_address} "
             if min_price:
                 search_title = search_title + f"Min Price: {min_price} "
             if max_price:
@@ -48,24 +86,26 @@ def search(request):
                 search_title = search_title + f"Number of Bedroom: {bed_num}"
 
             search_data["locations"] = Location.objects.filter(**query_params)
+
             # Get 311 statistics
-            try:
-                stats = get_311_statistics(str(zip_code))
-                search_data["stats"] = [
-                    (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
-                ]
-                average_complaint_level = sum(s.complaint_level for s in stats) / len(
-                    stats
-                )
-                search_data["average_complaint_level"] = average_complaint_level
-                search_data[
-                    "description_for_complaint_level"
-                ] = description_for_complaint_level(average_complaint_level)
-                search_data[
-                    "css_color_for_complaint_level"
-                ] = css_color_for_complaint_level(average_complaint_level)
-            except TimeoutError:
-                timeout = True
+            if zip_code:
+                try:
+                    stats = get_311_statistics(str(zip_code))
+                    search_data["stats"] = [
+                        (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
+                    ]
+                    average_complaint_level = sum(
+                        s.complaint_level for s in stats
+                    ) / len(stats)
+                    search_data["average_complaint_level"] = average_complaint_level
+                    search_data[
+                        "description_for_complaint_level"
+                    ] = description_for_complaint_level(average_complaint_level)
+                    search_data[
+                        "css_color_for_complaint_level"
+                    ] = css_color_for_complaint_level(average_complaint_level)
+                except TimeoutError:
+                    timeout = True
 
         return render(
             request,
@@ -183,10 +223,14 @@ def css_color_for_complaint_level(level):
     return colors[level]
 
 
-def build_search_query(zip_code, min_price, max_price, bed_num):
+def build_search_query(city, state, zip_code, min_price, max_price, bed_num):
     # builds a dictionary of query parameters used to pass values into
     # the Location model query
     query_params = {}
+    if city:
+        query_params["city"] = city
+    if state:
+        query_params["state"] = state
     if zip_code:
         # filter based on existence of locations with the specified zip code
         query_params["zipcode"] = zip_code
