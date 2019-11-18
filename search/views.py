@@ -7,7 +7,7 @@ from location.models import Location
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
-from external.googleapi import fetch_geocode
+from external.googleapi import normalize_us_address
 
 
 class CraigslistIndexView(generic.ListView):
@@ -22,38 +22,9 @@ def search(request):
         # pass the form data to the form class
         search_form = SearchForm(request.GET)
 
-        state = None
-        city = None
-        zip_code = None
-        full_address = None
+        address = None
         if request.GET.get("query"):
-            geocode_response_list = fetch_geocode(request.GET.get("query"))
-            if geocode_response_list:
-                geocode_response = geocode_response_list[0]
-            else:
-                geocode_response = None
-
-            for comp in geocode_response.get("address_components"):
-                types = comp.get("types")
-                if not types:
-                    continue
-                if "administrative_area_level_1" in types:
-                    state = comp.get("short_name")
-            for comp in geocode_response.get("address_components"):
-                types = comp.get("types")
-                if not types:
-                    continue
-
-                # https://stackoverflow.com/a/49640066/1556838
-                if "locality" in types:
-                    city = comp.get("long_name")
-                    break
-                elif "sublocality_level_1" in types:
-                    city = comp.get("long_name")
-                    break
-
-            zip_code = geocode_response.get("postal")
-            full_address = geocode_response.get("formatted_address")
+            address = normalize_us_address(request.GET.get("query"))
 
         timeout = False
         max_price = request.GET.get("max_price")
@@ -65,9 +36,9 @@ def search(request):
         # build the query parameter dictionary that will be used to
         # query the Location model
         query_params = build_search_query(
-            city=city,
-            state=state,
-            zip_code=zip_code,
+            city=address.city,
+            state=address.state,
+            zip_code=address.zipcode,
             max_price=max_price,
             min_price=min_price,
             bed_num=bed_num,
@@ -76,8 +47,8 @@ def search(request):
         search_data = {}
         if query_params.keys() and search_form.is_valid():
 
-            if full_address:
-                search_title = search_title + f"Address: {full_address} "
+            if address:
+                search_title = search_title + f"Address: {address.full_address} "
             if min_price:
                 search_title = search_title + f"Min Price: {min_price} "
             if max_price:
@@ -88,9 +59,9 @@ def search(request):
             search_data["locations"] = Location.objects.filter(**query_params)
 
             # Get 311 statistics
-            if zip_code:
+            if address and address.zipcode:
                 try:
-                    stats = get_311_statistics(str(zip_code))
+                    stats = get_311_statistics(str(address.zipcode))
                     search_data["stats"] = [
                         (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
                     ]
@@ -112,7 +83,7 @@ def search(request):
             "search/search.html",
             {
                 "search_data": search_data,
-                "zip": zip_code,
+                "address": address,
                 "search_title": search_title,
                 "search_form": search_form,
                 "timeout": timeout,
