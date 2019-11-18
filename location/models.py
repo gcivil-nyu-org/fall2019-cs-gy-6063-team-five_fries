@@ -53,7 +53,6 @@ class Apartment(models.Model):
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
-
     rent_price = models.DecimalField(
         max_digits=20, decimal_places=2, null=True, validators=[MinValueValidator(0)]
     )
@@ -61,9 +60,7 @@ class Apartment(models.Model):
         verbose_name="Bedrooms", null=True, validators=[MinValueValidator(0)]
     )
     description = models.TextField(default="")
-
     last_modified = models.DateTimeField(auto_now=True)
-
     landlord = models.ForeignKey(
         "mainapp.SiteUser",
         on_delete=models.CASCADE,
@@ -81,7 +78,6 @@ class Apartment(models.Model):
 
     # Craigslist
     c_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
-
     # Zillow
     zpid = models.CharField(max_length=255, unique=True, blank=True, null=True)
     estimated_rent_price = models.DecimalField(
@@ -89,6 +85,11 @@ class Apartment(models.Model):
     )
     last_estimated = models.DateField(blank=True, null=True)
     zillow_url = models.URLField(blank=True, null=True)
+
+    class Meta:
+        # enforces a uniqueness constraint on 'suite_num' and 'location' which
+        # is handy for the update form
+        unique_together = ("suite_num", "location")
 
     def __str__(self):
         return f"Apartment({self.suite_num}) - {self.location.address}"

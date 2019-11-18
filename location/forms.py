@@ -76,6 +76,10 @@ class ContactLandlordForm(forms.Form):
 
 
 class ApartmentUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Apartment
+        exclude = ["location", "landlord", "tenant", "c_id", "zpid", "last_estimated"]
+
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -95,9 +99,21 @@ class ApartmentUpdateForm(forms.ModelForm):
                 css_class="row justify-content-between",
             ),
         )
-
         super(ApartmentUpdateForm, self).__init__(*args, **kwargs)
 
-    class Meta:
-        model = Apartment
-        exclude = ["location", "landlord", "tenant", "c_id", "zpid", "last_estimated"]
+    def clean_suite_num(self):
+        suite_num = self.cleaned_data.get("suite_num")
+        # access the passed in instance of the Apartment model to get its location
+        location = self.instance.location
+
+        if (
+            self.instance.suite_num != suite_num
+            and Apartment.objects.filter(
+                suite_num=suite_num, location=location
+            ).exists()
+        ):
+            raise forms.ValidationError(
+                "Another apartment exists at that location with that Suite number."
+            )
+
+        return suite_num

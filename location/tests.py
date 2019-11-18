@@ -85,6 +85,22 @@ class LocationViewTests(TestCase):
 
         return loc, apt
 
+    def create_second_apartment(self, location):
+
+        # create a second apartment
+        suite_num = "19C"
+        number_of_bed = 2
+        image = "Images/System_Data_Flow_Diagram.png"
+        rent_price = 2500
+        apt2 = Apartment.objects.create(
+            suite_num=suite_num,
+            number_of_bed=number_of_bed,
+            image=image,
+            rent_price=rent_price,
+            location=location,
+        )
+        return apt2
+
     def test_location_view(self):
         response = self.client.get(reverse("location", args=(1,)))
         self.assertEqual(response.status_code, 200)
@@ -263,9 +279,8 @@ class LocationViewTests(TestCase):
 
         form_data = {
             "suite_num": apt.suite_num,
-            "rent_price": "2500",
-            "number_of_bed": "2",
-            "estimated_rent": "2500",
+            "rent_price": 2500,
+            "number_of_bed": 2,
             "description": "A different description",
         }
         response = self.client.post(
@@ -274,9 +289,74 @@ class LocationViewTests(TestCase):
             ),
             form_data,
         )
+        # insure the valid edit redirects successfully to the edit page
         self.assertRedirects(
             response,
             reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}),
+        )
+
+    def test_location_edit_num(self):
+        """
+        tests a POST request to the 'apartment_edit' URI where the suite_num
+        matches an existing apartment
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apt = self.create_location_and_apartment()
+        apt2 = self.create_second_apartment(loc)
+        apt.landlord = user
+        apt2.landlord = user
+        apt.save()
+        apt2.save()
+
+        form_data = {
+            "suite_num": apt2.suite_num,
+            "rent_price": 2500,
+            "number_of_bed": 2,
+            "description": "a different description",
+        }
+        response = self.client.post(
+            reverse(
+                "apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
+            ),
+            form_data,
+        )
+        # insure that it returns to the edit page due to validation failures
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            "Another apartment exists at that location with that Suite number.",
+        )
+
+    def test_location_edit_num_succcess(self):
+        """
+        tests a POST request to the 'apartment_edit' URI where the suite_num
+        matches an existing apartment
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apt = self.create_location_and_apartment()
+        apt2 = self.create_second_apartment(loc)
+        apt.landlord = user
+        apt2.landlord = user
+        apt.save()
+        apt2.save()
+
+        form_data = {
+            "suite_num": "20C",
+            "rent_price": 2500,
+            "number_of_bed": 2,
+            "description": "a different description",
+        }
+        response = self.client.post(
+            reverse(
+                "apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
+            ),
+            form_data,
+        )
+        # insure the valid number change redirects successfully to the new edit page
+        self.assertRedirects(
+            response, reverse("apartment", kwargs={"pk": loc.id, "suite_num": "20C"})
         )
 
     def test_contact_landlord_not_logged_in(self):
