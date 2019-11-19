@@ -178,8 +178,12 @@ LEAFLET_CONFIG = {
 }
 
 # Using Celery for Asyncronized Job
-CELERY_BROKER_URL = 'redis://localhost'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
+# Export this if run on local
+# export REDIS_URL=redis://localhost
+CELERY_BROKER_URL = os.environ['REDIS_URL']
+CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
+
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

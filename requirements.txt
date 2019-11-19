@@ -28,6 +28,5 @@ django-allauth
 django-localflavor
 googlemaps
 street-address
-rq
 celery
 redis
