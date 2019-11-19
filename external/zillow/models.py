@@ -2,28 +2,14 @@ import attr
 import decimal
 from datetime import datetime
 from attr.converters import optional
+from ..models import Address
 
 
 def parse_zillow_datetime(value):
     return datetime.strptime(value, "%m/%d/%Y")
 
 
-@attr.s
-class ZillowAddress(object):
-    street = attr.ib()
-    zipcode = attr.ib(converter=str)
-    city = attr.ib()
-    state = attr.ib()
-    latitude = attr.ib(converter=float)
-    longitude = attr.ib(converter=float)
-
-    @classmethod
-    def from_dict(cls, dic):
-        return cls(**dic)
-
-    @property
-    def full_address(self):
-        return f"{self.street}, {self.city}, {self.state}, {self.zipcode}"
+ZillowAddress = Address
 
 
 @attr.s
