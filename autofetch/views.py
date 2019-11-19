@@ -9,9 +9,9 @@ from celery import shared_task
 
 def autofetch(request):
     CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
-
+    # /autofetch/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch
     if request.method == "GET":
-        # allow get param in url /autofetch/?city=ny,bk
+        # allow get param in url /autofetch/?city=brk,brx
         city = request.GET.get("city").split(',')
         city_list = set()
         for c in city:
