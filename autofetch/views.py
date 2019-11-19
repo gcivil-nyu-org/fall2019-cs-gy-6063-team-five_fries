@@ -8,17 +8,23 @@ from celery import shared_task
 
 
 def autofetch(request):
-    bckgrndfetch.apply_async()
+    CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
+
+    if request.method == "GET":
+        # allow get param in url /autofetch/?city=ny,bk
+        city = request.GET.get("city").split(',')
+        city_list = set()
+        for c in city:
+            if c in CITY_LIST:
+                city_list.add(c)
+        bckgrndfetch.delay(list(city_list))
     return render(request, "account.html")
 
 
 @shared_task
-def bckgrndfetch():
+def bckgrndfetch(city_list):
 
     print(f"Start: {str(datetime.now())} \n")
-
-    #city_list = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
-    city_list = ["brx"]
 
     for city_name in city_list:
         try:
