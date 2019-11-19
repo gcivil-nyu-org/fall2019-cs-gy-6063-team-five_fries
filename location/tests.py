@@ -222,7 +222,7 @@ class LocationViewTests(TestCase):
         Tests the 'apartment_edit' page when a user is logged in but
         the apartment doesn't have a landlord
         """
-        # with self.assertRaises(PermissionDenied):
+
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
         loc, apt = self.create_location_and_apartment()
@@ -289,7 +289,7 @@ class LocationViewTests(TestCase):
             ),
             form_data,
         )
-        # insure the valid edit redirects successfully to the edit page
+        # insure the valid edit redirects successfully to the apartment page
         self.assertRedirects(
             response,
             reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}),
