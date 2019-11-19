@@ -5,6 +5,7 @@ from location.models import Location
 from location.models import Apartment
 from datetime import datetime
 from celery import shared_task
+import googlemaps
 
 
 def autofetch(request):
@@ -45,7 +46,10 @@ def bckgrndfetch(city_list):
                 address, city, state, zipcode, full_address = "", "", "NY", 11201, ""
                 lat = r["geotag"][0]
                 lon = r["geotag"][1]
-                reverse_response = fetch_reverse_geocode((lat, lon))
+                try:
+                    reverse_response = fetch_reverse_geocode((lat, lon))
+                except googlemaps.exceptions.TransportError:
+                    continue
 
                 if "formatted_address" in reverse_response[0].keys():
                     full_address = reverse_response[0]["formatted_address"]
