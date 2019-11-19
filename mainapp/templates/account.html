@@ -85,7 +85,11 @@
         <!--Section: Cards-->
         <section class="text-center">
         {% for apt in user.landlord_apartment_set.all %}
-
+            {% cycle 'odd' 'even' as odd_even silent %}
+            {% if odd_even == "odd" %}
+            <!--Grid row-->
+            <div class="row mb-4 wow fadeIn">
+            {% endif %}
             <!--Grid column-->
             <div class="col-md-6 mb-4">
             <!--Card-->
@@ -115,7 +119,9 @@
             <!--/.Card-->
             </div>
             <!--Grid column-->
-
+            {% if odd_even == "even" %}
+            </div>
+            {% endif %}
         {% endfor %}
 
 
