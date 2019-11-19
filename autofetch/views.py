@@ -94,6 +94,12 @@ def bckgrndfetch(city_list):
                 apartment.number_of_bed = bedrooms
                 apartment.last_modified = last_updated
                 apartment.save()
+            elif apartment.last_modified != last_updated:
+                apartment.rent_price = price
+                apartment.number_of_bed = bedrooms
+                apartment.last_modified = last_updated
+                apartment.save()
+
         print(" Finish query\n")
 
     print(f"End at: {str(datetime.now())} \n")
