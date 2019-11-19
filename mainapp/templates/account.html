@@ -2,13 +2,33 @@
 {% block script %}
 <!-- Font Awesome Icon Library -->
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+.badge{
+    color:#fff!important;
+}
+
+.red{
+    background-color:#f44336!important;
+}
+
+.blue{
+    background-color:#2196f3!important;
+}
+
+.green{
+    background-color:#4caf50!important;
+}
+
+.black-text{
+    color:#000!important;
+}
+</style>
 {% endblock %}
 {% load static %}
 {% block content %}
 <br>
 <div class="container">
     <div class="row justify-content-center">
-
         <div class="col col-7 " style="max-width:40%">
             <h1>Account</h1>
             <ul class="list-group location-results">
@@ -22,7 +42,7 @@
         </div>
         <div class="col">
         {% if user.review_set %}
-            <h1> Submitted Review: </h1>
+            <h1>Submitted Reviews</h1>
 
             <div class="mb-3 text-center location-results">
                 {% for review in user.review_set.all %}
@@ -44,11 +64,9 @@
                     <div class="card-body">
                         <h5 class="card-title pricing-card-title">
                         </h5>
-
                         <ul class="list-unstyled mt-3 mb-4">
                             <li>{{ review.content }}</li>
                         </ul>
-
                         <h4 class=" mb-0">
                             <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
                         </h4>
@@ -59,6 +77,38 @@
         {% endif %}
         </div>
     </div>
+
+    <!-- Landlord Apartments -->
+    {% if user.landlord_apartment_set %}
+        <hr>
+        <h1>Landlord Apartments</h1>
+        <!--Section: Cards-->
+        <section class="text-center">
+        {% for apt in user.landlord_apartment_set.all %}
+
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+            <!--Card-->
+            <div class="card">
+
+                <!--Card content-->
+                <div class="card-body">
+                <!--Title-->
+                <h4 class="card-title">{{ apt.location.full_address }}</h4>
+
+                </div>
+            </div>
+            <!--/.Card-->
+            </div>
+            <!--Grid column-->
+
+        {% endfor %}
+
+
+        </section>
+        <!--Section: Cards-->
+    {% endif %}
+
 
     <div class="row">
         <div class="col">
