@@ -90,7 +90,16 @@
             <div class="col-md-6 mb-4">
             <!--Card-->
             <div class="card">
-
+                <!--Card image-->
+                <div class="view overlay">
+                <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">
+                {% if apt.image %}
+                    <img src="{{ apt.image.url }} " class="card-img-top" alt="apartment image">
+                {% else %}
+                    <img src="/static/img/no_apa_pic.jpg" class="card-img-top" alt="apartment image">
+                {% endif %}
+                </a>
+                </div>
                 <!--Card content-->
                 <div class="card-body">
                 <!--Title-->
