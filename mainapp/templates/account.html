@@ -104,7 +104,12 @@
                 <div class="card-body">
                 <!--Title-->
                 <h4 class="card-title">{{ apt.location.full_address }}</h4>
-
+                <!--Text-->
+                <div class="mb-3">
+                    <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+                    <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
+                    <span class="badge green mr-1 black-text">Rent ($): {{ apt.rent_price }}</span>
+                </div>
                 </div>
             </div>
             <!--/.Card-->
