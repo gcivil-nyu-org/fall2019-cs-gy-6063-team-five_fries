@@ -2,7 +2,24 @@
 {% load crispy_forms_tags %}
 
 {% block script %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.1.1/css/mdb.min.css" rel="stylesheet">
+<style>
+.badge{
+    color:#fff!important;
+}
+
+.red{
+    background-color:#f44336!important;
+}
+.blue{
+    background-color:#2196f3!important;
+}
+.green{
+    background-color:#4caf50!important;
+}
+.black-text{
+    color:#000!important;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -35,6 +52,11 @@
             <small><a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}" class="">Edit</a></small>
             {% endif %}
           </p>
+
+            <div class="mb-3">
+                <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+                <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
+            </div>
 
           <div class="mb-3">
             <span class="badge red mr-1">Suite: {{ apt.suite_num }}</span>
