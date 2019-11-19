@@ -13,7 +13,6 @@ usage:
     python normalize_us_address.py "6 metrotech"
 
 output:
-    Address(street='6 MetroTech Center', zipcode='11201', city='Brooklyn', state='NY', latitude=40.6942793, longitude=-73.98649809999999)
     6 MetroTech Center, Brooklyn, NY, 11201
 """
 
