@@ -71,3 +71,7 @@ footer {
 .italic {
     font-style: italic;
 }
+
+div.custom-file {
+    padding-top: 50px;
+}
