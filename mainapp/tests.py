@@ -84,9 +84,7 @@ class AccountViewTestCase(TestCase):
         self.client.force_login(user)
         apt.landlord = user
         apt.save()
-        response = self.client.get(
-            reverse("account")
-        )
+        response = self.client.get(reverse("account"))
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
         self.assertIn(apt.suite_num, content)
