@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h2>Restraunts Data Query</h2>
+
+
+<form action="{% url 'data_res' %}" method="POST" class="form-signin">
+    {% csrf_token %}
+    Zip Code (5 digits): <input type="text" id="zipcode" name="zipcode" minlength="5" maxlength="5" required pattern="\d*">
+    <p></p>
+    <input type="submit" class="btn btn-primary" value="Display Complaints">
+</form>
+
+
+{% endblock %}
