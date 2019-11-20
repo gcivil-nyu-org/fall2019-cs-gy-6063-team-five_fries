@@ -68,7 +68,9 @@ def bckgrndfetch(city_list, limit):
             else:
                 continue
 
-            print(state)
+            # match the not null constraint of postgre
+            if state is None or address is None or city is None or zipcode is None:
+                continue
 
             loc, loc_created = Location.objects.get_or_create(
                 address=address,
