@@ -8,7 +8,7 @@ from location.models import Location
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
 from external.googleapi import normalize_us_address
-from external.res.get_res_data import get_res_data
+from external.res import get_res_data
 
 
 class CraigslistIndexView(generic.ListView):
@@ -218,7 +218,7 @@ def data_res(request):
     if request.method == "POST" and "data" in request.POST:
         zipcode = request.POST["zipcode"]
         try:
-            query_results, timeout, no_matches = get_res_data(str(zipcode))
+            query_results = get_res_data(str(zipcode))
         except TimeoutError:
             return render(request, "search/results_res.html", {"timeout": True})
 
