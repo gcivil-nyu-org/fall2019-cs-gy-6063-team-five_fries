@@ -7,7 +7,6 @@ import datetime
 from .models import CraigslistLocation, LastRetrievedData
 from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
-from external.res.stub import fetch_res_data
 
 
 def create_c_location(
@@ -85,7 +84,6 @@ class LastRetrieveDataModelTests(TestCase):
         old_retrieval = LastRetrievedData(time=time)
         self.assertIs(old_retrieval.should_retrieve(), True)
 
-
 class CraigslistLocationTests(TestCase):
     def test_loc_name(self):
         """
@@ -110,7 +108,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
+
     def test_search_index_with_zip(self):
         """
         Tests the search page being retrieved with a zip code
@@ -122,7 +120,6 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Zipcode: 10000")
 
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_index_no_zip(self):
         """
         tests the search page with an incomplete zip passed in
@@ -133,7 +130,6 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_zip_only(self):
         """
         tests the search page with only a zipcode passed in
@@ -145,7 +141,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
+
     def test_search_page_min_price(self):
         """
         tests the search page with zipcode and min_price passed in
@@ -157,7 +153,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
+
     def test_search_page_max_price(self):
         """
         tests the search page with zipcode and max_price passed in
@@ -169,7 +165,6 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_bed_num(self):
         """
         tests the search page with zipcode and bed_num passed in
@@ -184,7 +179,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
+
     def test_search_page_all_params(self):
         """
         tests the search page with only a zipcode passed in

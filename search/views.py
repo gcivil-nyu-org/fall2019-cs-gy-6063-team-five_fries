@@ -7,7 +7,7 @@ from location.models import Location
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
-from external.res.get_res_data import get_res_data
+from cli.get_res_data import get_res_data
 
 
 class CraigslistIndexView(generic.ListView):
