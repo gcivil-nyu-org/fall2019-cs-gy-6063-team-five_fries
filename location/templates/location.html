@@ -17,16 +17,8 @@
             $("#display_review").toggle();
         });
     });
-    let latitude = {
-        {
-            object.latitude
-        }
-    };
-    let longitude = {
-        {
-            object.longitude
-        }
-    };
+    let latitude = object.latitude;
+    let longitude = object.longitude;
     window.addEventListener("map:init", (event) => {
         let zoomLevel = 13;
         let map = event.detail.map.setView([latitude, longitude], zoomLevel);
@@ -187,13 +179,13 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 
 
 {% if can_leave_a_review %}
-<h2>Write some review:</h2>
-<input class="btn btn-outline-primary" id="check_user" name="check_user" value="Write something">
+<h2>Write a review:</h2>
+<button class="btn btn-outline-primary" id="check_user" name="check_user">Write something!</button>
 <div id="display_review" class="hidden">
-    <form action="{% url "review" object.id %}" method="post">
+    <form action="{% url 'review' object.id %}" method="post">
         {% csrf_token %}
         {{ form | crispy}}
-        <input type="submit" value="Submit" name="form_submit">
+        <input type="submit" value="Submit" class="btn btn-primary" name="form_submit">
     </form>
 </div>
 {% endif %}
