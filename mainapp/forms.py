@@ -10,7 +10,7 @@ class SiteUserSignupForm(SignupForm):
     full_name = forms.CharField(max_length=255, label="Full Name")
     current_location = forms.CharField(max_length=255, label="Current Location")
     work_location = forms.CharField(max_length=255, label="Work Location")
-    phone_number = PhoneNumberField()
+    phone_number = PhoneNumberField(required=False)
 
     def save(self, request):
         user = super(SiteUserSignupForm, self).save(request)
