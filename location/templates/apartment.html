@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block script %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.1.1/css/mdb.min.css" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
 
 <!--Main layout-->
@@ -17,9 +13,11 @@
       <!--Grid column-->
       <div class="col-md-6 mb-4">
 
-        {% if apt.image %}
-        <img src="{{ apt.image.url }} " class="img-fluid" alt="apartment image">
-        {% endif %}
+      {% if apt.image %}
+          <img src="{{ apt.image.url }}" class="card-img-top contain" alt="apartment image">
+      {% else %}
+          <img src="/static/img/no_apa_pic.jpg" class="card-img-top contain" alt="apartment image">
+      {% endif %}
 
       </div>
       <!--Grid column-->
@@ -37,8 +35,8 @@
           </p>
 
           <div class="mb-3">
-            <span class="badge red mr-1">Suite: {{ apt.suite_num }}</span>
-            <span class="badge blue mr-1">Bedrooms: {{ apt.number_of_bed }}</span>
+            <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+            <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
           </div>
 
           <p class="lead">
