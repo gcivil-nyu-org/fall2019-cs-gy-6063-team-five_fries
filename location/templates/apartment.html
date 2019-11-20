@@ -13,9 +13,11 @@
       <!--Grid column-->
       <div class="col-md-6 mb-4">
 
-        {% if apt.image %}
-        <img src="{{ apt.image.url }} " class="img-fluid" alt="apartment image">
-        {% endif %}
+      {% if apt.image %}
+          <img src="{{ apt.image.url }}" class="card-img-top contain" alt="apartment image">
+      {% else %}
+          <img src="/static/img/no_apa_pic.jpg" class="card-img-top contain" alt="apartment image">
+      {% endif %}
 
       </div>
       <!--Grid column-->

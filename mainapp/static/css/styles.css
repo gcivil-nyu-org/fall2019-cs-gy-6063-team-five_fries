@@ -101,3 +101,9 @@ div.custom-file {
     width: 100%;
     height: 20rem;
 }
+
+.contain {
+    object-fit: contain;
+    width: 100%;
+    height: 20rem;
+}
