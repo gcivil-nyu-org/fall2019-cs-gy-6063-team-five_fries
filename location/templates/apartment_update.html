@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+<h2>
+    <div class="col">
+        {{ object.location.full_address }}
+    </div>
+    <div class="col">
+        <span class="badge badge-pill red mr-1 black-text">Suite: {{ object.suite_num }}</span>
+    </div>
+</h2>
+<div class="row">
+    <div class="col-sm-8">
+
+        {% crispy apartment_form %}
+
+    </div>
+    <div class="col-sm-4">
+        {% if object.image %}
+        <img src="{{ object.image.url }} " class="img-fluid" alt="apartment image">
+        {% else %}
+        <span>No Image Available</span>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

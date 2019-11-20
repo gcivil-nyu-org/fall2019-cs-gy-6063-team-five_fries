@@ -1,62 +1,81 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block script %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.1.1/css/mdb.min.css" rel="stylesheet">
-{% endblock %}
-
 {% block content %}
 
-  <!--Main layout-->
-  <main class="mt-5 pt-4">
-    <div class="container dark-grey-text mt-5">
+<!--Main layout-->
+<main class="mt-5 pt-4">
+  <div class="container dark-grey-text mt-5">
 
-      <!--Grid row-->
-      <div class="row wow fadeIn">
+    <!--Grid row-->
+    <div class="row wow fadeIn">
 
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
+      <!--Grid column-->
+      <div class="col-md-6 mb-4">
 
-            {% if apt.image %}
-                <img src="{{ apt.image.url }} " class="img-fluid" alt="apartment image">
+      {% if apt.image %}
+          <img src="{{ apt.image.url }}" class="card-img-top contain" alt="apartment image">
+      {% else %}
+          <img src="/static/img/no_apa_pic.jpg" class="card-img-top contain" alt="apartment image">
+      {% endif %}
+
+      </div>
+      <!--Grid column-->
+
+      <!--Grid column-->
+      <div class="col-md-6 mb-4">
+
+        <!--Content-->
+        <div class="p-4">
+          <p class="lead font-weight-bold">
+            <span class="font-weight-bold">{{ apt.location.full_address }}</span>
+            {% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
+            <small><a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}" class="">Edit</a></small>
             {% endif %}
+          </p>
 
-        </div>
-        <!--Grid column-->
+          <div class="mb-3">
+            <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+            <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
+          </div>
 
-        <!--Grid column-->
-        <div class="col-md-6 mb-4">
+          <p class="lead">
+            <span>{{ apt.rent_price_for_display }}</span>
+          </p>
+          {% if not apt.description %}
+          <p>(Default Description) Bright one bedroom apartment in the heart of Bay Ridge. Located in the 80's near 3rd
+            Avenue the property
+            is steps to shopping and restaurants and a short walk to the R train 86th Street station.
+            The apartment is in a walk-up building. It features an eat-in kitchen, hardwood floors and freshly
+            painted rooms. Good credit and proof of income are needed.</p>
+          {% else %}
+          <p>
+            {{ apt.description }}
+          </p>
+          {% endif %}
 
-          <!--Content-->
-          <div class="p-4">
-            <p class="lead font-weight-bold">{{ apt.location.full_address }}</p>
+          {% if show_claim_button %}
+          <p>
+            <a href="{% url 'claim' pk=apt.location.id suite_num=apt.suite_num %}" class="italic">Are you a tenant or a
+              landlord of this apartment?</a>
+          </p>
+          {% endif %}
 
-            <div class="mb-3">
-                <span class="badge red mr-1">Suite: {{ apt.suite_num }}</span>
-                <span class="badge blue mr-1">Bedrooms: {{ apt.number_of_bed }}</span>
-            </div>
-
-            <p class="lead">
-              <span>{{ apt.rent_price_for_display }}</span>
-            </p>
-
-            <p>(Default Description) Bright one bedroom apartment in the heart of Bay Ridge. Located in the 80's near 3rd Avenue the property
-                is steps to shopping and restaurants and a short walk to the R train 86th Street station.
-                The apartment is in a walk-up building. It features an eat-in kitchen, hardwood floors and freshly
-                painted rooms. Good credit and proof of income are needed.</p>
-
-
-            {% if show_claim_button %}
-            <p>
-              <a href="{% url 'claim' pk=apt.location.id suite_num=apt.suite_num %}" class="italic">Are you a tenant or a landlord of this apartment?</a>
-            </p>
-            {% endif %}
+          <!--{% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
+          <p>
+            <a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}">
+              <button class="btn btn-primary">Update</button>
+            </a>
+          </p>
+          {% endif %}-->
 
           {% if apt.landlord and request.user.is_authenticated and apt.landlord != request.user %}
           <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id suite_num=apt.suite_num %}">
-          {% csrf_token %}
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Interested?</button>
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            {% csrf_token %}
+            <button type="button" class="btn btn-primary" data-toggle="modal"
+              data-target="#exampleModal">Interested?</button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -66,7 +85,7 @@
                     </button>
                   </div>
                   <div class="modal-body">
-                      {{ contact_landlord_form|crispy }}
+                    {{ contact_landlord_form|crispy }}
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -78,23 +97,24 @@
           </form>
           {% endif %}
 
-          </div>
-          <!--Content-->
-
         </div>
-        <!--Grid column-->
+        <!--Content-->
 
       </div>
-      <!--Grid row-->
-
-      <hr>
+      <!--Grid column-->
 
     </div>
+    <!--Grid row-->
+
+    <hr>
+
+  </div>
 
 
 
-      </main>
+</main>
 
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 {% endblock %}

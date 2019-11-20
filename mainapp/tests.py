@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 # from django.contrib.auth.models import User
-from location.models import Location
+from location.models import Location, Apartment
 from review.models import Review
 from .models import SiteUser
 from bs4 import BeautifulSoup
@@ -56,6 +56,40 @@ class AccountViewTestCase(TestCase):
         )
         response = self.client.get(reverse("account"))
         self.assertContains(response, r1.content)
+
+    def test_show_landlord_apartments(self):
+        city = "Brooklyn"
+        state = "New York"
+        address = "1234 Coney Island Avenue"
+        zipcode = 11218
+        # using get_or_create avoids race condition
+        loc = Location.objects.get_or_create(
+            city=city, state=state, address=address, zipcode=zipcode
+        )[0]
+
+        # create an apartment and link it to that location
+        suite_num = "18C"
+        number_of_bed = 3
+        image = "Images/System_Data_Flow_Diagram.png"
+        rent_price = 3000
+        apt = Apartment.objects.create(
+            suite_num=suite_num,
+            number_of_bed=number_of_bed,
+            image=image,
+            rent_price=rent_price,
+            location=loc,
+        )
+
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        apt.landlord = user
+        apt.save()
+        response = self.client.get(reverse("account"))
+        soup = BeautifulSoup(response.content, "html.parser")
+        content = soup.get_text()
+        self.assertIn(apt.suite_num, content)
+        self.assertIn(str(apt.rent_price), content)
+        self.assertIn(str(apt.number_of_bed), content)
 
 
 class MainIndexViewTestCase(TestCase):

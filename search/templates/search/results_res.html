@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Restraunts Data Results</h2><hr>
+<h5>Complaint Results</h5>
+    {% if timeout %}
+        <p style="color:red">Timeout occurred.</p>
+    {% elif no_matches %}
+        <p style="color:red">No matches were found.</p>
+    {% else %}
+    {% for result in results %}
+        {% if results.violation_description == nan %}
+            <ul>
+            <li>Name of the Restraunts: {{ result.dba }}</li>
+                <li>Borough: {{ result.boro }}</li>
+                <li>ZIP Code: {{ result.zipcode }}</li>
+            <li>Complaint</li>
+                <ul>
+                <li>Violation Description: {{ result.violation_description }}</li>
+                </ul>
+            </ul>
+            <hr>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+{% endblock %}

@@ -8,6 +8,7 @@ from .models import CraigslistLocation, LastRetrievedData
 from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
+from external.res.stub import fetch_res_data
 
 
 def create_c_location(
@@ -111,6 +112,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_index_with_query(self):
         """
         Tests the search page being retrieved with a query passed in
@@ -121,6 +123,7 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Address:")
 
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_index_no_query(self):
         """
         tests the search page with an incomplete query passed in
@@ -131,6 +134,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_query_only(self):
         """
         tests the search page with only a query passed in
@@ -142,6 +146,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_min_price(self):
         """
         tests the search page with query and min_price passed in
@@ -153,6 +158,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_max_price(self):
         """
         tests the search page with query and max_price passed in
@@ -164,6 +170,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_bed_num(self):
         """
         tests the search page with query and bed_num passed in
@@ -176,6 +183,7 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_all_params(self):
         response = self.client.get(
             "/search/?query=NY&min_price=500&max_price=2000&bed_num=4"
@@ -195,3 +203,19 @@ class SearchCraigsTests(TestCase):
         pass
         response = self.client.get(reverse("clist_results"))
         self.assertEqual(response.status_code, 200)
+
+
+@mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
+class DataResViewTests(TestCase):
+    def test_data_res_page(self):
+        response = self.client.get(reverse("data_res"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Restraunts Data Query")
+
+    def test_data_res_form_submit(self):
+        post_data = {"zipcode": "10003"}
+
+        response = self.client.post(reverse("data_res"), post_data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Restraunts Data Results")
