@@ -5,6 +5,7 @@ from location.models import Location
 from location.models import Apartment
 from datetime import datetime
 from celery import shared_task
+from external.googleapi.g_utils import normalize_us_address
 import googlemaps
 
 
@@ -57,25 +58,17 @@ def bckgrndfetch(city_list, limit):
                 if "formatted_address" in reverse_response[0].keys():
                     full_address = reverse_response[0]["formatted_address"]
 
-                # example of formatted_address: 570 4th Ave, Brooklyn, NY 11215, USA
-                addr_len = len(full_address.split(','))
+                normalize_addr_dic = normalize_us_address(full_address)
 
-                if addr_len >= 1:
-                    address = full_address.split(',')[0]
-                if addr_len >= 2:
-                    city = full_address.split(',')[1].strip()
-                if addr_len >= 3:
-                    state = full_address.split(',')[2].split(' ')[1]
-                if "postal" in reverse_response[0].keys():
-                    zipcode = reverse_response[0]["postal"]
+                state = normalize_addr_dic.state
+                address = normalize_addr_dic.street
+                city = normalize_addr_dic.city
+                zipcode = normalize_addr_dic.zipcode
 
             else:
                 continue
 
-            print(address)
-            print(city)
             print(state)
-            print(zipcode)
 
             loc, loc_created = Location.objects.get_or_create(
                 address=address,
