@@ -203,3 +203,19 @@ class SearchCraigsTests(TestCase):
         pass
         response = self.client.get(reverse("clist_results"))
         self.assertEqual(response.status_code, 200)
+
+
+@mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
+class DataResViewTests(TestCase):
+    def test_data_res_page(self):
+        response = self.client.get(reverse("data_res"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Restraunts Data Query")
+
+    def test_data_res_form_submit(self):
+        post_data = {"zipcode": "10003"}
+
+        response = self.client.post(reverse("data_res"), post_data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Restraunts Data Results")

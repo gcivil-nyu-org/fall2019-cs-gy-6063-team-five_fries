@@ -215,7 +215,7 @@ def build_search_query(address, min_price, max_price, bed_num):
 
 
 def data_res(request):
-    if request.method == "POST" and "data" in request.POST:
+    if request.method == "POST":
         zipcode = request.POST["zipcode"]
         try:
             query_results = get_res_data(str(zipcode))
