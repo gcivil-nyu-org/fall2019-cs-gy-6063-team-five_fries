@@ -2,15 +2,21 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-
-from review.models import Review
-from review.form import ReviewForm
-from .forms import ApartmentUploadForm, ClaimForm, ContactLandlordForm
-from .models import Location, Apartment
-from external.cache.zillow import refresh_zillow_housing_if_needed
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+
+from review.models import Review
+from review.form import ReviewForm
+from .forms import (
+    ApartmentUploadForm,
+    ClaimForm,
+    ContactLandlordForm,
+    ApartmentUpdateForm,
+)
+from .models import Location, Apartment
+from external.cache.zillow import refresh_zillow_housing_if_needed
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
 from django.core.mail import send_mail
@@ -49,6 +55,34 @@ def apartment_detail_view(request, pk, suite_num):
             "show_claim_button": show_claim_button,
             "contact_landlord_form": contact_landlord_form,
         },
+    )
+
+
+@login_required
+def apartment_edit(request, pk, suite_num):
+
+    object = get_object_or_404(Apartment, location__id=pk, suite_num=suite_num)
+    # if the apartment does not have a landlord or the current user is
+    # not the landlord for the apartment, raise a Permission Exception
+    if not object.landlord or (object.landlord != request.user):
+        raise PermissionDenied
+
+    if request.POST:
+        # the 'or None' is necessary in case the files were not updated
+        form = ApartmentUpdateForm(request.POST, request.FILES or None, instance=object)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(
+                reverse(
+                    "apartment",
+                    kwargs={"pk": object.location.id, "suite_num": object.suite_num},
+                )
+            )
+    else:
+        form = ApartmentUpdateForm(instance=object)
+
+    return render(
+        request, "apartment_update.html", {"object": object, "apartment_form": form}
     )
 
 

@@ -13,6 +13,11 @@ urlpatterns = [
         views.contact_landlord,
         name="contact_landlord",
     ),
+    path(
+        "<int:pk>/apartment/<suite_num>/edit",
+        views.apartment_edit,
+        name="apartment_edit",
+    ),
     path("<int:pk>/favorite", views.favorites, name="favorite"),
     path("favlist", views.favlist, name="favlist"),
     path("<int:pk>/review", views.review, name="review"),
