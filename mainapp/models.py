@@ -6,7 +6,7 @@ from location.models import Location
 
 class SiteUser(AbstractUser):
     full_name = models.CharField(max_length=255, default="")
-    phone_number = PhoneNumberField(default="")
+    phone_number = PhoneNumberField(default="", blank=True, null=True)
     current_location = models.CharField(max_length=255, default="")
     work_location = models.CharField(max_length=255, default="")
 

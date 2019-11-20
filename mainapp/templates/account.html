@@ -14,7 +14,9 @@
                 <li class="list-group-item">Username: {{ user.username }}</li>
                 <li class="list-group-item">Name: {{ user.full_name }}</li>
                 <li class="list-group-item">Email: {{ user.email }}</li>
+                {% if user.phone_number %}
                 <li class="list-group-item">Phone number: {{ user.phone_number }}</li>
+                {% endif%}
                 <li class="list-group-item">Current location: {{ user.current_location }}</li>
                 <li class="list-group-item">Work location: {{ user.work_location }}</li>
             </ul>
