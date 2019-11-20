@@ -11,7 +11,7 @@ class Review(models.Model):
     user = models.ForeignKey(SiteUser, on_delete=models.CASCADE)
 
     content = models.TextField()
-    time = models.DateTimeField()
+    time = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(
         default=1,
         validators=[MinValueValidator(1), MaxValueValidator(5)],

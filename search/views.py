@@ -7,6 +7,7 @@ from location.models import Location
 
 from external.nyc311 import get_311_data, get_311_statistics
 from external.craigslist import fetch_craigslist_housing
+from external.googleapi import normalize_us_address
 
 
 class CraigslistIndexView(generic.ListView):
@@ -21,8 +22,11 @@ def search(request):
         # pass the form data to the form class
         search_form = SearchForm(request.GET)
 
+        address = None
+        if request.GET.get("query"):
+            address = normalize_us_address(request.GET.get("query"))
+
         timeout = False
-        zip_code = request.GET.get("zipcode")
         max_price = request.GET.get("max_price")
         min_price = request.GET.get("min_price")
         bed_num = request.GET.get("bed_num")
@@ -32,14 +36,14 @@ def search(request):
         # build the query parameter dictionary that will be used to
         # query the Location model
         query_params = build_search_query(
-            zip_code=zip_code, max_price=max_price, min_price=min_price, bed_num=bed_num
+            address=address, max_price=max_price, min_price=min_price, bed_num=bed_num
         )
 
         search_data = {}
         if query_params.keys() and search_form.is_valid():
 
-            if zip_code:
-                search_title = search_title + f"Zipcode: {zip_code} "
+            if address:
+                search_title = search_title + f"Address: {address.full_address} "
             if min_price:
                 search_title = search_title + f"Min Price: {min_price} "
             if max_price:
@@ -48,31 +52,33 @@ def search(request):
                 search_title = search_title + f"Number of Bedroom: {bed_num}"
 
             search_data["locations"] = Location.objects.filter(**query_params)
+
             # Get 311 statistics
-            try:
-                stats = get_311_statistics(str(zip_code))
-                search_data["stats"] = [
-                    (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
-                ]
-                average_complaint_level = sum(s.complaint_level for s in stats) / len(
-                    stats
-                )
-                search_data["average_complaint_level"] = average_complaint_level
-                search_data[
-                    "description_for_complaint_level"
-                ] = description_for_complaint_level(average_complaint_level)
-                search_data[
-                    "css_color_for_complaint_level"
-                ] = css_color_for_complaint_level(average_complaint_level)
-            except TimeoutError:
-                timeout = True
+            if address and address.zipcode:
+                try:
+                    stats = get_311_statistics(str(address.zipcode))
+                    search_data["stats"] = [
+                        (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
+                    ]
+                    average_complaint_level = sum(
+                        s.complaint_level for s in stats
+                    ) / len(stats)
+                    search_data["average_complaint_level"] = average_complaint_level
+                    search_data[
+                        "description_for_complaint_level"
+                    ] = description_for_complaint_level(average_complaint_level)
+                    search_data[
+                        "css_color_for_complaint_level"
+                    ] = css_color_for_complaint_level(average_complaint_level)
+                except TimeoutError:
+                    timeout = True
 
         return render(
             request,
             "search/search.html",
             {
                 "search_data": search_data,
-                "zip": zip_code,
+                "address": address,
                 "search_title": search_title,
                 "search_form": search_form,
                 "timeout": timeout,
@@ -183,13 +189,15 @@ def css_color_for_complaint_level(level):
     return colors[level]
 
 
-def build_search_query(zip_code, min_price, max_price, bed_num):
+def build_search_query(address, min_price, max_price, bed_num):
     # builds a dictionary of query parameters used to pass values into
     # the Location model query
     query_params = {}
-    if zip_code:
-        # filter based on existence of locations with the specified zip code
-        query_params["zipcode"] = zip_code
+    if address:
+        # filter based on existence of locations with the specified address
+        query_params["city"] = address.city
+        query_params["state"] = address.state
+        query_params["zipcode"] = address.zipcode
     if max_price:
         # filter based on existence of apartments  with a rent_price less than or equal (lte)
         # than the max_price

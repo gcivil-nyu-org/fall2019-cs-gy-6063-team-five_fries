@@ -1,20 +1,10 @@
 from django import forms
-from django.core import validators
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Field
 
 
 class SearchForm(forms.Form):
-    zipcode = forms.CharField(
-        max_length=5,
-        min_length=5,
-        required=True,
-        validators=[
-            validators.RegexValidator(
-                regex="^\d*$", message="Please use numbers"
-            )  # noqa : W605
-        ],
-    )
+    query = forms.CharField(required=True)
     min_price = forms.IntegerField(min_value=0, required=False)
     max_price = forms.IntegerField(min_value=0, required=False)
     bed_num = forms.IntegerField(min_value=0, required=False)
@@ -32,9 +22,7 @@ class SearchForm(forms.Form):
         self.helper.field_template = "bootstrap4/layout/inline_field.html"
         self.helper.layout = Layout(
             Field(
-                "zipcode",
-                css_class="form-control-sm mb-2 mr-sm-2",
-                placeholder="Zip Code",
+                "query", css_class="form-control-sm mb-2 mr-sm-2", placeholder="Address"
             ),
             Field(
                 "min_price",

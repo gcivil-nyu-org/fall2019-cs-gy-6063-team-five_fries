@@ -55,15 +55,15 @@
 <main role="main" class="searchbg h-100" id="main">
     <div id="centered">
 
-        <h1 id="title" class="logo">NYCityStreet</h1>
+        <h1 id="title" class="logo">NYCityStreets</h1>
 
         <div id="search-container" class="row form-group">
             <div class="col">
                 <form action="{% url 'search' %}" method="GET">
                     <div class="form-row">
                         <div class="col-12 col-md-9 mb-2 mb-md-0">
-                            <input type="text" class="form-control form-control-lg" name="zipcode"
-                                placeholder="Search for a Location...">
+                            <input type="text" class="form-control form-control-lg" name="query"
+                                placeholder="Search for a Location" minlength="2">
                         </div>
                         <div class="col-12 col-md-3">
                             <button type="submit" class="btn btn-block btn-lg btn-primary">Search!</button>
