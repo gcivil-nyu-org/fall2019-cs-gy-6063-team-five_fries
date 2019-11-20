@@ -97,16 +97,17 @@ def bckgrndfetch(city_list, limit):
             bedrooms = r["bedrooms"]
 
             apartment, apa_created = Apartment.objects.get_or_create(
-                c_id=c_id,
-                location=loc
+                c_id=c_id
             )
 
             if apa_created:
+                apartment.location = loc
                 apartment.rent_price = price
                 apartment.number_of_bed = bedrooms
                 apartment.last_modified = last_updated
                 apartment.save()
             elif apartment.last_modified != last_updated:
+                apartment.location = loc
                 apartment.rent_price = price
                 apartment.number_of_bed = bedrooms
                 apartment.last_modified = last_updated
