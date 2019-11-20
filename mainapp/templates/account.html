@@ -2,27 +2,6 @@
 {% block script %}
 <!-- Font Awesome Icon Library -->
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-.badge{
-    color:#fff!important;
-}
-
-.red{
-    background-color:#f44336!important;
-}
-
-.blue{
-    background-color:#2196f3!important;
-}
-
-.green{
-    background-color:#4caf50!important;
-}
-
-.black-text{
-    color:#000!important;
-}
-</style>
 {% endblock %}
 {% load static %}
 {% block content %}
@@ -79,7 +58,7 @@
     </div>
 
     <!-- Landlord Apartments -->
-    {% if user.landlord_apartment_set %}
+    {% if user.landlord_apartment_set.count > 0 %}
         <hr>
         <h1>Landlord Apartments</h1>
         <!--Section: Cards-->
