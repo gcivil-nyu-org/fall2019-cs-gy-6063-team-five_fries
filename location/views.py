@@ -236,7 +236,7 @@ def apartment_upload(request):
                 rent_price=rent_price,
                 location=loc,
                 description=description,
-                landlord=request.user
+                landlord=request.user,
             )
 
             apt.save()
