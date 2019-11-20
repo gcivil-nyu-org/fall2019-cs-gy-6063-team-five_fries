@@ -17,8 +17,8 @@
             $("#display_review").toggle();
         });
     });
-    let latitude = object.latitude;
-    let longitude = object.longitude;
+    let latitude = "{{ object.latitude }}";
+    let longitude = "{{ object.longitude }}";
     window.addEventListener("map:init", (event) => {
         let zoomLevel = 13;
         let map = event.detail.map.setView([latitude, longitude], zoomLevel);
