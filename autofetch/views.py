@@ -10,27 +10,30 @@ import googlemaps
 
 def autofetch(request):
     CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
-    # /autofetch/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch
+    # The huge query: /autofetch/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch&limit=1000000
     if request.method == "GET":
-        # allow get param in url /autofetch/?city=brk,brx
-        city = request.GET.get("city").split(',')
-        city_list = set()
+        # allow get param in url /autofetch/?city=brk,brx&limit=100
+        city_list, city, limit = set(), list(), 100
+        if "city" in request.GET:
+            city = request.GET.get("city").split(',')
+        if "limit" in request.GET:
+            limit = request.GET.get("limit")
         for c in city:
             if c in CITY_LIST:
                 city_list.add(c)
-        bckgrndfetch.delay(list(city_list))
+        bckgrndfetch.delay(list(city_list), int(limit))
     return render(request, "account.html")
 
 
 @shared_task
-def bckgrndfetch(city_list):
+def bckgrndfetch(city_list, limit):
 
     print(f"Start: {str(datetime.now())} \n")
 
     for city_name in city_list:
         try:
             results = fetch_craigslist_housing(
-                #limit=10,
+                limit=limit,
                 site="newyork",
                 category="apa",
                 area=city_name,
