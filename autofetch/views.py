@@ -63,7 +63,7 @@ def bckgrndfetch(city_list, limit):
                 if addr_len >= 1:
                     address = full_address.split(',')[0]
                 if addr_len >= 2:
-                    city = full_address.split(',')[1].split(' ')[1]
+                    city = full_address.split(',')[1].strip()
                 if addr_len >= 3:
                     state = full_address.split(',')[2].split(' ')[1]
                 if "postal" in reverse_response[0].keys():
@@ -71,6 +71,11 @@ def bckgrndfetch(city_list, limit):
 
             else:
                 continue
+
+            print(address)
+            print(city)
+            print(state)
+            print(zipcode)
 
             loc, loc_created = Location.objects.get_or_create(
                 address=address,
