@@ -34,18 +34,3 @@ def get_res_data(zip, max_query_results=20, num_entries_to_search=2000, t_out=10
     except requests.exceptions.Timeout:
         timeout = True
     return query_results, timeout, no_matches
-
-
-if __name__ == "__main__":
-    query_results, timeout, no_matches = get_res_data(10009)  # valid zip code
-    print(type(query_results))
-    print(len(query_results))
-    print(query_results)
-    print(timeout)
-    print(no_matches)
-    query_results, timeout, no_matches = get_res_data(100099)  # invalid zip code
-    print(type(query_results))
-    print(len(query_results))
-    print(query_results)
-    print(timeout)
-    print(no_matches)
