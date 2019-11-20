@@ -52,6 +52,6 @@ def get_res_data(
     if max_query_results and len(results_df) > max_query_results:
         results_df = results_df[:max_query_results]
 
-    query_results = [ResComplaint(**dic) for dic in results_df.to_dict("records")]
+    query_results = [ResComplaint.from_dict(dic) for dic in results_df.to_dict("records")]
 
     return query_results
