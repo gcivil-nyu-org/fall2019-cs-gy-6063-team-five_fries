@@ -200,6 +200,7 @@ def apartment_upload(request):
             image = form.cleaned_data["image"]
             suite_num = form.cleaned_data["suite_num"]
             number_of_bed = form.cleaned_data["number_of_bed"]
+            description = form.cleaned_data["description"]
 
             # retrieve the geocoded data from google
             g_data = fetch_geocode(f"{address}, {city} {state}, {zipcode}")
@@ -234,6 +235,8 @@ def apartment_upload(request):
                 image=image,
                 rent_price=rent_price,
                 location=loc,
+                description=description,
+                landlord=request.user,
             )
 
             apt.save()
