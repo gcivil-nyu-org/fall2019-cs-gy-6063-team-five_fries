@@ -196,9 +196,12 @@ def build_search_query(address, min_price, max_price, bed_num):
     query_params = {}
     if address:
         # filter based on existence of locations with the specified address
-        query_params["city"] = address.city
-        query_params["state"] = address.state
-        query_params["zipcode"] = address.zipcode
+        if address.city:
+            query_params["city"] = address.city
+        if address.state:
+            query_params["state"] = address.state
+        if address.zipcode:
+            query_params["zipcode"] = address.zipcode
     if max_price:
         # filter based on existence of apartments  with a rent_price less than or equal (lte)
         # than the max_price
