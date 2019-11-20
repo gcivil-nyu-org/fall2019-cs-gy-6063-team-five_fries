@@ -2,6 +2,7 @@ from django.db import models
 from localflavor.us import models as us_models
 from urllib.parse import quote
 from django.core.validators import MinValueValidator
+from mainapp.models import SiteUser
 
 
 class Location(models.Model):
@@ -69,3 +70,10 @@ class Apartment(models.Model):
     @property
     def rent_price_for_display(self):
         return f"${self.rent_price}"
+
+class Rented(models.Model) :
+    user = models.OneToOneField(SiteUser)
+    rented_property = models.OneToOneField(Apartment)
+    def rented_property_for_display(self):
+        if (user_type_string_map=="T"):
+            return f"Rented{ self.full_name, self.suite_num, self.location }"

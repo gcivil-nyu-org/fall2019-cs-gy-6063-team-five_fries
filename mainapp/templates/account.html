@@ -20,7 +20,7 @@
                 <li class="list-group-item">Work location: {{ user.work_location }}</li>
                 <li class="list-group-item">User type: {{ user.user_type_string }}</li>\
                 {% if user.user_type_string=="Tenant"%}
-                <li class="list-group-item">Apartment Rented: <a href="{% url 'location' .id %}"></a></li>
+                <li class="list-group-item">Rented Property: {{Rented.suite_num, Rented.location}}</li>
             </ul>
         </div>
         <div class="col">
