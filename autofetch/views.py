@@ -60,6 +60,9 @@ def bckgrndfetch(city_list, limit):
 
                 normalize_addr_dic = normalize_us_address(full_address)
 
+                if not normalize_addr_dic:
+                    continue
+
                 state = normalize_addr_dic.state
                 address = normalize_addr_dic.street
                 city = normalize_addr_dic.city
