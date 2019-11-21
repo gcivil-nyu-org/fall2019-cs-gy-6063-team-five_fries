@@ -32,6 +32,7 @@ def bckgrndfetch(city_list, limit):
     print(f"Start: {str(datetime.now())} \n")
 
     for city_name in city_list:
+        print(f"Fetching {city_name}............")
         try:
             results = fetch_craigslist_housing(
                 limit=limit,
@@ -41,7 +42,6 @@ def bckgrndfetch(city_list, limit):
             )
         except AttributeError:
             print(f" Cannot write into city: {city_name}, because one of the url not exist\n")
-
             continue
 
         for r in results:
@@ -53,6 +53,7 @@ def bckgrndfetch(city_list, limit):
                 try:
                     reverse_response = fetch_reverse_geocode((lat, lon))
                 except googlemaps.exceptions.TransportError:
+                    print(googlemaps.exceptions.TransportError)
                     continue
 
                 if "formatted_address" in reverse_response[0].keys():
@@ -61,6 +62,8 @@ def bckgrndfetch(city_list, limit):
                 normalize_addr_dic = normalize_us_address(full_address)
 
                 if not normalize_addr_dic:
+                    print("return None from nomalize_us_address")
+                    print(f"The address input is: {full_address}")
                     continue
 
                 state = normalize_addr_dic.state
@@ -69,10 +72,12 @@ def bckgrndfetch(city_list, limit):
                 zipcode = normalize_addr_dic.zipcode
 
             else:
+                print("No geotag in craiglist results")
                 continue
 
             # match the not null constraint of postgre
             if state is None or address is None or city is None or zipcode is None:
+                print("state, address, city or zipcode is None")
                 continue
 
             loc, loc_created = Location.objects.get_or_create(
