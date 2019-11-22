@@ -45,6 +45,8 @@ def bckgrndfetch(city_list, limit):
             continue
 
         for r in results:
+            if len(Apartment.objects.filter(c_id=r["id"])) > 0:
+                continue
             # check if is_existed w/ address reversed from lat,lon
             if r["geotag"] is not None:
                 address, city, state, zipcode, full_address = "", "", "NY", 11201, ""
