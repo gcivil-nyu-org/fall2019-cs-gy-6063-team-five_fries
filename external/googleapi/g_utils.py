@@ -19,7 +19,7 @@ def parse_lat_lng(geo_result_obj):
 
 
 def normalize_us_address(address) -> Optional[Address]:
-    if not address or address == "":
+    if not address:
         return None
 
     # want to get rid of extraneous spaces and uppercase letters
