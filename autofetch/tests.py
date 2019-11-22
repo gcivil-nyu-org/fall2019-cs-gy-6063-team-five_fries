@@ -27,7 +27,7 @@ class AutoFetchTests(TestCase):
 
         response = self.client.get("/autofetch/?city=brk,mnh&limit=100")
         self.assertEqual(response.status_code, 200)
-        city_list = ["brk", "mnh"]
+        city_list = ["mnh", "brk"]
         mockbckgrndfetch.delay.assert_called_with(city_list, 100)
 
     @mock.patch("autofetch.views.bckgrndfetch")
@@ -36,7 +36,7 @@ class AutoFetchTests(TestCase):
         Tests the valid input for autofetch/?city=<city,>&limit=<limit>/
         """
         response = self.client.get("/autofetch/?city=brk,mnh")
-        city_list = ["brk", "mnh"]
+        city_list = ["mnh", "brk"]
         self.assertEqual(response.status_code, 200)
         mockbckgrndfetch.delay.assert_called_with(city_list, 100)
 
