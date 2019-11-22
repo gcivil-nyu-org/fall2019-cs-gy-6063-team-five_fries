@@ -9,6 +9,8 @@ class CachedSearch(models.Model):
     our usage of the Geocode API down
     """
 
+    # we set db_index=True here since we will be exclusively searching on this table
+    # against this field, and we want to make those searches as fast as possible.
     search_string = models.CharField(max_length=255, db_index=True)
     street = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)
