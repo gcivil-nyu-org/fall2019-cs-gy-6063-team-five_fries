@@ -30,7 +30,9 @@ def autofetch(request):
             if c in CITY_LIST:
                 city_list.add(c)
 
-        city_list = sorted(city_list)  # sorted for pass the test by having foreseeable order
+        city_list = sorted(
+            city_list
+        )  # sorted for pass the test by having foreseeable order
 
         bckgrndfetch.delay(list(city_list), int(limit))
 
