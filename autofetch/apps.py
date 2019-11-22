@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class AutofetchConfig(AppConfig):
-    name = 'autofetch'
+    name = "autofetch"

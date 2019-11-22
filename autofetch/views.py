@@ -9,9 +9,10 @@ from external.googleapi.g_utils import normalize_us_address
 import googlemaps
 
 
-def autofetch(request):
+CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
 
-    CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
+
+def autofetch(request):
 
     # The huge query: /autofetch/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch&limit=1000000
     if request.method == "GET":
@@ -20,7 +21,7 @@ def autofetch(request):
         city_list, city, limit = set(), list(), 100
 
         if "city" in request.GET:
-            city = request.GET.get("city").split(',')
+            city = request.GET.get("city").split(",")
 
         if "limit" in request.GET:
             limit = request.GET.get("limit")
@@ -45,14 +46,13 @@ def bckgrndfetch(city_list, limit):
 
         try:
             results = fetch_craigslist_housing(
-                limit=limit,
-                site="newyork",
-                category="apa",
-                area=city_name,
+                limit=limit, site="newyork", category="apa", area=city_name
             )
 
         except AttributeError:
-            print(f" Cannot write into city: {city_name}, because one of the url not exist\n")
+            print(
+                f" Cannot write into city: {city_name}, because one of the url not exist\n"
+            )
             continue
 
         for r in results:
@@ -100,10 +100,7 @@ def bckgrndfetch(city_list, limit):
                 continue
 
             loc, loc_created = Location.objects.get_or_create(
-                address=address,
-                city=city,
-                state=state,
-                zipcode=zipcode,
+                address=address, city=city, state=state, zipcode=zipcode
             )
 
             if loc_created:
@@ -112,15 +109,12 @@ def bckgrndfetch(city_list, limit):
                 loc.save()
 
             c_id = r["id"]
-            url = r["url"]
-            has_image = r["has_image"]
             price = int(r["price"].split("$")[1])
             last_updated = r["last_updated"]
             bedrooms = r["bedrooms"]
 
             apartment, apa_created = Apartment.objects.get_or_create(
-                c_id=c_id,
-                location=loc,
+                c_id=c_id, location=loc
             )
 
             if apa_created:
