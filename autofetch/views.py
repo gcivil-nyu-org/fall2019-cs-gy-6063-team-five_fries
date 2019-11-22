@@ -10,19 +10,27 @@ import googlemaps
 
 
 def autofetch(request):
+
     CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
+
     # The huge query: /autofetch/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch&limit=1000000
     if request.method == "GET":
         # allow get param in url /autofetch/?city=brk,brx&limit=100
+
         city_list, city, limit = set(), list(), 100
+
         if "city" in request.GET:
             city = request.GET.get("city").split(',')
+
         if "limit" in request.GET:
             limit = request.GET.get("limit")
+
         for c in city:
             if c in CITY_LIST:
                 city_list.add(c)
+
         bckgrndfetch.delay(list(city_list), int(limit))
+
     return render(request, "account.html")
 
 
@@ -32,7 +40,9 @@ def bckgrndfetch(city_list, limit):
     print(f"Start: {str(datetime.now())} \n")
 
     for city_name in city_list:
+
         print(f"Fetching {city_name}............")
+
         try:
             results = fetch_craigslist_housing(
                 limit=limit,
@@ -40,20 +50,27 @@ def bckgrndfetch(city_list, limit):
                 category="apa",
                 area=city_name,
             )
+
         except AttributeError:
             print(f" Cannot write into city: {city_name}, because one of the url not exist\n")
             continue
 
         for r in results:
+
             if len(Apartment.objects.filter(c_id=r["id"])) > 0:
                 continue
+
             # check if is_existed w/ address reversed from lat,lon
             if r["geotag"] is not None:
+
                 address, city, state, zipcode, full_address = "", "", "NY", 11201, ""
+
                 lat = r["geotag"][0]
                 lon = r["geotag"][1]
+
                 try:
                     reverse_response = fetch_reverse_geocode((lat, lon))
+
                 except googlemaps.exceptions.TransportError:
                     print(googlemaps.exceptions.TransportError)
                     continue
