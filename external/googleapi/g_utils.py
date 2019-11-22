@@ -1,5 +1,5 @@
 from typing import Optional
-from ..models import Address
+from ..models import Address, CachedSearch
 from .fetch import fetch_geocode
 
 
@@ -19,8 +19,24 @@ def parse_lat_lng(geo_result_obj):
 
 
 def normalize_us_address(address) -> Optional[Address]:
-    if not address:
+    if not address or address == "":
         return None
+
+    # want to get rid of extraneous spaces and uppercase letters
+    # as those don't matter to the Geocode API and will reduce the number
+    # of extra Cache objects
+    address = (" ".join(address.split())).lower()
+    cache, created = CachedSearch.objects.get_or_create(search_string=address)
+
+    if not created:
+        return Address(
+            street=cache.street,
+            city=cache.city,
+            state=cache.state,
+            zipcode=cache.zipcode,
+            latitude=cache.latitude,
+            longitude=cache.longitude,
+        )
 
     response_list = fetch_geocode(address, region="us")
 
@@ -56,6 +72,16 @@ def normalize_us_address(address) -> Optional[Address]:
     zip_code = response.get("postal")
     loc = response.get("geometry").get("location")
     lat, lon = loc["lat"], loc["lng"]
+
+    # save the search and it's return value from the Geocode API so next time
+    # it is searched we do not need to requery
+    cache.street = " ".join(filter(lambda x: x, [street_num, route]))
+    cache.city = city
+    cache.state = state
+    cache.zipcode = zip_code
+    cache.latitude = lat
+    cache.longitude = lon
+    cache.save()
 
     return Address(
         street=" ".join(filter(lambda x: x, [street_num, route])),
