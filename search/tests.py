@@ -5,6 +5,7 @@ from unittest import mock
 
 import datetime
 from .models import CraigslistLocation, LastRetrievedData
+
 # from location.models import Location, Apartment
 from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
