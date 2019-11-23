@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load custom_tags %}
 {% load crispy_forms_tags %}
 
 
@@ -108,7 +109,7 @@
         <h5>Locations</h5>
         <hr class="mt-0 mb-2 mt-2">
         {% if search_data.locations %}
-            
+
         <div class="row h-65">
             <div class="col">
                 <ul>
