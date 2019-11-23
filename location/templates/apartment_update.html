@@ -38,9 +38,6 @@
         {% endif %}
     </div>
 </div>
-<<<<<<< HEAD
-{% endblock %}
-=======
 <!-- Modal -->
 <form method="POST" action="{% url 'apartment_delete' pk=object.location.id suite_num=object.suite_num %}" novalidate>
     <!-- For some reason this form MUST be placed under the {% crispy apartment_form %} or you will -->
@@ -69,4 +66,3 @@
     </div>
 </form>
 {% endblock %}
->>>>>>> added UI
