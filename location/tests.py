@@ -484,6 +484,20 @@ class LocationViewTests(TestCase):
         )
         self.assertRedirects(response, reverse("location", kwargs={"pk": loc.id}))
 
+    def test_apartment_delete_no_apartment(self):
+        """
+        insures that a 404 is thrown if the apartment doesn't exist
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apa = self.create_location_and_apartment()
+        suite = apa.suite_num
+        apa.delete()
+        response = self.client.post(
+            reverse("apartment_delete", kwargs={"pk": loc.id, "suite_num": suite}), {}
+        )
+        self.assertEqual(response.status_code, 404)
+
     def test_contact_landlord_not_logged_in(self):
         """
         tests a GET response against the contact_landlord page
