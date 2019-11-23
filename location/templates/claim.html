@@ -1,4 +1,12 @@
 {% extends 'base.html' %}
+
+{% block breadcrumbs %}
+<a href="{% url 'search' %}">Search</a>
+<a href="{% url 'location' pk=apt.location.id %}">{{ apt.location.full_address }}</a>
+<a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">{{ apt.suite_num }}</a>
+<span>Claim</span>
+{% endblock %}
+
 {% load crispy_forms_tags %}
 
 {% block script %}

@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 
+{% block breadcrumbs %}
+<a href="{% url 'search' %}">Search</a>
+<a href="{% url 'location' pk=object.location.id %}">{{ object.location.full_address }}</a>
+<a href="{% url 'apartment' pk=object.location.id suite_num=object.suite_num %}">{{ object.suite_num }}</a>
+<span>Edit</span>
+{% endblock %}
+
+{% load crispy_forms_tags %}
 
 {% block content %}
 <h2>

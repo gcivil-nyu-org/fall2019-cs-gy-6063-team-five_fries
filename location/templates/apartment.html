@@ -1,10 +1,18 @@
 {% extends 'base.html' %}
+
+{% block breadcrumbs %}
+<a href="{% url 'search' %}">Search</a>
+<a href="{% url 'location' pk=apt.location.id %}">{{ apt.location.full_address }}</a>
+<span>{{ apt.suite_num }}</span>
+{% endblock %}
+
 {% load crispy_forms_tags %}
 
 {% block content %}
 
 <!--Main layout-->
 <main class="mt-5 pt-4">
+
   <div class="container dark-grey-text mt-5">
 
     <!--Grid row-->
