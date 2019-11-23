@@ -59,6 +59,7 @@ def search(request):
 
             search_data["locations"] = Location.objects.filter(**query_params)
 
+            # paginate the search results
             page = request.GET.get("page", 1)
 
             paginator = Paginator(search_data["locations"], 2)
@@ -217,9 +218,10 @@ def build_search_query(address, min_price, max_price, bed_num):
     if address:
         # filter based on existence of locations with the specified address
         if address.city:
-            query_params["city"] = address.city
+            # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
+            query_params["city__iexact"] = address.city
         if address.state:
-            query_params["state"] = address.state
+            query_params["state__iexact"] = address.state
         if address.zipcode:
             query_params["zipcode"] = address.zipcode
     if max_price:
