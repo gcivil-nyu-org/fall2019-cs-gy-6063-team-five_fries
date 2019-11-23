@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
+
+{% block header %}
 {% load custom_tags %}
 {% load crispy_forms_tags %}
-
+{% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
 
 {%  block script %}
 <script>
@@ -10,6 +15,21 @@
             $("#complaints").toggle();
         });
     });
+
+    var markerList = []
+    {% for item in search_data.locations %}
+        var latitude = "{{ item.latitude }}";
+        var longitude = "{{ item.longitude }}";
+        markerList.push([latitude, longitude]);
+    {% endfor %}
+    window.addEventListener("map:init", (event) => {
+        var zoomLevel = 13;
+        var map = event.detail.map.setView(markerList[0], zoomLevel);
+        for (var i=0; i<markerList.length; i++){
+            marker = new L.marker([markerList[i][0], markerList[i][1]]).addTo(map);
+        }
+    });
+
 </script>
 
 <style>
