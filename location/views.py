@@ -88,27 +88,19 @@ def apartment_edit(request, pk, suite_num):
 
 @login_required
 def apartment_delete(request, pk, suite_num):
-    print("actual delete")
+    
     object = get_object_or_404(Apartment, location__id=pk, suite_num=suite_num)
     # check permissions
     if not object.landlord or (object.landlord != request.user):
         raise PermissionDenied
-    print("blah 1")
-    print(f"request.post: {str(request.POST)}")
-    # if request.POST:
-    print("blah two")
-    result = object.delete()
 
-    print(f"number deleted: {result[0]}")
-    print("Reason: " + str(result[1]))
-    return HttpResponseRedirect(reverse("location", kwargs={"pk": pk}))
-
-
-# else:
-#    print("blah 3")
-#   return HttpResponseRedirect(
-#      reverse("apartment", kwargs={"pk": pk, "suite_num": suite_num})
-# )
+    if request.method == "POST":
+        result = object.delete()
+        return HttpResponseRedirect(reverse("location", kwargs={"pk": pk}))
+    else:
+        return HttpResponseRedirect(
+            reverse("apartment", kwargs={"pk": pk, "suite_num": suite_num})
+        )
 
 
 @login_required

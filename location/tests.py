@@ -410,24 +410,24 @@ class LocationViewTests(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    # def test_apartment_delete_get(self):
-    #     """
-    #     tests the apartment delete when it receives a GET instead of a POST
-    #     """
-    #     user = SiteUser.objects.create(username="testuser")
-    #     self.client.force_login(user)
-    #     loc, apa = self.create_location_and_apartment()
-    #     apa.landlord = user
-    #     apa.save()
-    #     response = self.client.get(
-    #         reverse(
-    #             "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
-    #         )
-    #     )
-    #     self.assertRedirects(
-    #         response,
-    #         reverse("apartment", kwargs={"pk": loc.id, "suite_num": apa.suite_num}),
-    #     )
+    def test_apartment_delete_get(self):
+        """
+        tests the apartment delete when it receives a GET instead of a POST
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apa = self.create_location_and_apartment()
+        apa.landlord = user
+        apa.save()
+        response = self.client.get(
+            reverse(
+                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
+            )
+        )
+        self.assertRedirects(
+            response,
+            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apa.suite_num}),
+        )
 
     def test_apartment_delete(self):
         """
