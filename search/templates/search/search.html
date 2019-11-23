@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-
 {% load crispy_forms_tags %}
+
 
 {%  block script %}
 <script>
@@ -108,10 +108,11 @@
         <h5>Locations</h5>
         <hr class="mt-0 mb-2 mt-2">
         {% if search_data.locations %}
+            
         <div class="row h-65">
             <div class="col">
                 <ul>
-                    {% for item in search_data.locations %}
+                    {% for item in search_data.locations_page %}
                     <li>
                         <a href="{% url 'location' item.id %}">{{ item.full_address }}</a>
                     </li>
@@ -119,9 +120,33 @@
                 </ul>
             </div>
         </div>
+
+        {% if search_data.locations_page.has_other_pages %}
+          <ul class="pagination pg-gray">
+            {% if search_data.locations_page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=search_data.locations_page.previous_page_number %}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+            {% for i in search_data.locations_page.paginator.page_range %}
+              {% if search_data.locations_page.number == i %}
+                  <li class="active page-item"><a class="page-link">{{ i }}</a></li>
+              {% else %}
+                  <li class="page-item"><a class="page-link" href="?{% query_transform page=i %}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if search_data.locations_page.has_next %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=search_data.locations_page.next_page_number %}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
+
         {% else %}
         No locations
         {% endif %}
+
     </div>
 
 </div>
