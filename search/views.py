@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views import generic
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import CraigslistLocation, LastRetrievedData
 from .forms import SearchForm
 from location.models import Location
@@ -57,6 +58,18 @@ def search(request):
                 search_title = search_title + f"Number of Bedroom: {bed_num}"
 
             search_data["locations"] = Location.objects.filter(**query_params)
+
+            page = request.GET.get('page', 1)
+
+            paginator = Paginator(search_data["locations"], 2)
+            try:
+                locations_page = paginator.page(page)
+            except PageNotAnInteger:
+                locations_page = paginator.page(1)
+            except EmptyPage:
+                locations_page = paginator.page(paginator.num_pages)
+
+            search_data["locations_page"] = locations_page
 
             # Get 311 statistics
             if zipcode:
