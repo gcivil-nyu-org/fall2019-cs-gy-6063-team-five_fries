@@ -16,17 +16,38 @@
         });
     });
 
-    var markerList = []
+    var markerList = [];
+    var mapCenter = [0,0];
+
+
     {% for item in search_data.locations %}
+
         var latitude = "{{ item.latitude }}";
         var longitude = "{{ item.longitude }}";
-        markerList.push([latitude, longitude]);
+        var gmapUrl = "{{ item.google_map_url }}";
+
+        mapCenter[0] += parseFloat(latitude);
+        mapCenter[1] += parseFloat(longitude);
+
+        console.log(gmapUrl);
+
+        markerList.push([latitude, longitude, gmapUrl]);
+
     {% endfor %}
+
+    mapCenter[0] = mapCenter[0] / markerList.length;
+    mapCenter[1] = mapCenter[1] / markerList.length;
+
     window.addEventListener("map:init", (event) => {
         var zoomLevel = 13;
-        var map = event.detail.map.setView(markerList[0], zoomLevel);
-        for (var i=0; i<markerList.length; i++){
-            marker = new L.marker([markerList[i][0], markerList[i][1]]).addTo(map);
+        var map = event.detail.map.setView(mapCenter, zoomLevel);
+
+        for (var i=0; i < markerList.length; i++){
+            let g_url = markerList[i][2];
+
+            marker = new L.marker([markerList[i][0], markerList[i][1]])
+            .addTo(map)
+            .bindPopup(`<a target="_blank" href="${ g_url }">Open Google Maps</a>`);
         }
     });
 
