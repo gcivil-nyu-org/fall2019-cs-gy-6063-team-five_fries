@@ -57,8 +57,8 @@ def search(request):
             if bed_num:
                 search_title = search_title + f"Number of Bedroom: {bed_num}"
 
-            search_data["locations"] = Location.objects.filter(**query_params)
-
+            search_data["locations"] = Location.objects.filter(**query_params).distinct()
+            
             # paginate the search results
             page = request.GET.get("page", 1)
 
