@@ -3,7 +3,7 @@ from unittest import mock
 import attr
 
 from .fetch import fetch_geocode, fetch_reverse_geocode
-from .g_utils import parse_lat_lng
+from .g_utils import parse_lat_lng, normalize_us_address
 from .stub import fetch_geocode as fetch_geocode_stub
 from .stub import fetch_reverse_geocode as fetch_reverse_geocode_stub
 from .stub import fetch_geocode_no_zip, fetch_reverse_geocode_no_zip
@@ -14,6 +14,7 @@ from .models import (
     GeocodeLocation,
     GeocodeViewport,
 )
+from ..models import CachedSearch
 
 
 @mock.patch(
@@ -424,6 +425,26 @@ class GeocodeTests(TestCase):
 
 
 class GUtilsTests(TestCase):
+    def create_search_cache(
+        self,
+        search_string,
+        street="123 Anystreet",
+        city="Anytown",
+        state="Anystate",
+        zipcode="00000",
+        lat=0.0,
+        lon=0.0,
+    ):
+        return CachedSearch.objects.create(
+            search_string=search_string,
+            street=street,
+            city=city,
+            state=state,
+            zipcode=zipcode,
+            latitude=lat,
+            longitude=lon,
+        )
+
     def test_parse_lat_lng_empty_param(self):
         """
         Tests the parse_lat_lng function with an empty
@@ -456,3 +477,95 @@ class GUtilsTests(TestCase):
         input = fetch_geocode_stub("1234")
         with self.assertRaises(AttributeError):
             parse_lat_lng(input)
+
+    def test_normalize_no_input(self):
+        """
+        tests the return value of normalize_us_address with no input
+        """
+        input = normalize_us_address(address=None)
+        self.assertIsNone(input)
+
+    def test_normalize_empty_input(self):
+        """
+        tests the return value of normalize_us_address with empty input
+        """
+        input = normalize_us_address(address="")
+        self.assertIsNone(input)
+
+    @mock.patch("external.googleapi.g_utils.fetch_geocode")
+    def test_normalize_cached_search(self, mock_fetch):
+        """
+        tests the normalize_us_address function when there is an existing
+        cached search
+        """
+        search_string = "123 USA Street, Anytown, Anystate 00000"
+        search_string_norm = " ".join(search_string.split()).lower()
+        mock_fetch.return_value = None
+        cache = self.create_search_cache(
+            search_string=search_string_norm,
+            street="123 Anystreet",
+            city="Anytown",
+            state="Anystate",
+            zipcode="00000",
+        )
+        self.assertEqual(cache.search_string, search_string_norm)
+        self.assertEqual(cache.street, "123 Anystreet")
+        self.assertEqual(cache.city, "Anytown")
+        self.assertEqual(cache.state, "Anystate")
+        self.assertEqual(cache.zipcode, "00000")
+
+        normalize_us_address(search_string)
+        self.assertFalse(
+            mock_fetch.called,
+            "the geocode method was called from the normalize_us_address function when it shouldn't have",
+        )
+
+    @mock.patch("external.googleapi.g_utils.fetch_geocode")
+    def test_normalize_no_cache(self, mock_fetch):
+        """
+        tests the normalize function when nothing is cached but nothing
+        is returned from the api
+        """
+        search_string = "123 USA Street, Anytown, Anystate 00000"
+        search_string_norm = " ".join(search_string.split()).lower()
+        mock_fetch.return_value = None
+
+        input = normalize_us_address(search_string)
+        mock_fetch.assert_called_with(search_string_norm, region="us")
+        self.assertTrue(
+            mock_fetch.called,
+            "The fetch_geocode method was not called from the normalize_us_address function when it should have",
+        )
+        self.assertIsNone(
+            input,
+            "the normalize_us_address function didn't return None when it was supposed to",
+        )
+
+    @mock.patch("external.googleapi.g_utils.fetch_geocode")
+    def test_cache_normalize(self, mock_fetch):
+        """
+        tests that the cache function is correctly mapping to the same string
+        """
+        search_string = "123     USA STREET,   AnyTOwn, anySTAte  00000  "
+        search_string_norm = "123 usa street, anytown, anystate 00000"
+        cache = self.create_search_cache(
+            search_string=search_string_norm,
+            street="123 USA Street",
+            city="Anytown",
+            state="Anystate",
+            zipcode="00000",
+        )
+        mock_fetch.return_value = None
+        normalize_us_address(search_string)
+
+        self.assertFalse(mock_fetch.called)
+        self.assertEqual(
+            cache.street, "123 USA Street", "The cached street value was incorrect"
+        )
+        self.assertEqual(cache.city, "Anytown", "The cached city value was incorrect")
+        self.assertEqual(
+            cache.state, "Anystate", "The cached state value was incorrect"
+        )
+        self.assertEqual(
+            cache.zipcode, "00000", "The cached zipcode value was incorrect"
+        )
