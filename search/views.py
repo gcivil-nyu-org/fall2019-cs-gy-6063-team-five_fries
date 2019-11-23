@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import CraigslistLocation, LastRetrievedData
 from .forms import SearchForm
-from location.models import Location, Apartment
+from location.models import Location
 
 from external.nyc311 import get_311_data
 from external.craigslist import fetch_craigslist_housing
@@ -57,14 +57,18 @@ def search(request):
             if bed_num:
                 search_title = search_title + f"Number of Bedroom: {bed_num}"
 
-            search_data["locations"] = Location.objects.filter(**query_params_location).distinct()
+            search_data["locations"] = Location.objects.filter(
+                **query_params_location
+            ).distinct()
 
-
-            matching_apartments = {} # calculate the number of matching apartments at each location
-            thumbnails = {} # thumbnail for each location
+            # calculate the number of matching apartments at each location
+            matching_apartments = {}
+            thumbnails = {}  # thumbnail for each location
             for loc in search_data["locations"]:
-                matching_apartments[loc.id]=0
-                thumbnails[loc.id]="/static/img/no_img.png" # default image if no image exists
+                matching_apartments[loc.id] = 0
+                thumbnails[
+                    loc.id
+                ] = "/static/img/no_img.png"  # default image if no image exists
 
             # number of apartments at each location satisfying the given criteria
             for loc in search_data["locations"]:
@@ -73,14 +77,11 @@ def search(request):
                 matching_apartments[loc.id] = num_matches
                 for apt in matches:
                     if apt.image:
-                        thumbnails[loc.id]=apt.image.url
+                        thumbnails[loc.id] = apt.image.url
                         break
-
-
 
             search_data["matching_apartments"] = matching_apartments
             search_data["thumbnails"] = thumbnails
-
 
             # paginate the search location results
             page = request.GET.get("page", 1)
