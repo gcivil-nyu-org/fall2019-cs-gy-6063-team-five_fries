@@ -110,18 +110,43 @@
         <hr class="mt-0 mb-2 mt-2">
         {% if search_data.locations %}
 
-        <div class="row h-65">
-            <div class="col">
-                <ul>
-                    {% for item in search_data.locations_page %}
-                    <li>
-                        <a href="{% url 'location' item.id %}">{{ item.full_address }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+            <!--Section: Cards-->
+            <section class="text-center">
+            {% for loc in search_data.locations_page %}
+                {% cycle 'odd' 'even' as odd_even silent %}
+                {% if odd_even == "odd" %}
+                <!--Grid row-->
+                <div class="row mb-4 wow fadeIn">
+                {% endif %}
+                <!--Grid column-->
+                <div class="col-md-6 mb-4">
+                <!--Card-->
+                <div class="card">
+                    <!--Card image-->
+                    <div class="view overlay">
+                    <a href="{% url 'location' loc.id %}">
+                        <img src={{ search_data.thumbnails|get_item:loc.id }} class="card-img-top cover" alt="apartment image">
+                    </a>
+                    </div>
+                    <!--Card content-->
+                    <div class="card-body">
+                    <!--Title-->
+                    <h4 class="card-title">{{ loc.full_address }}</h4>
+                    </div>
+                </div>
+                <!--/.Card-->
+                </div>
+                <!--Grid column-->
+                {% if odd_even == "even" %}
+                </div>
+                {% endif %}
+            {% endfor %}
 
+            </section>
+            <!--Section: Cards-->
+
+
+        <!-- Pagination -->
         {% if search_data.locations_page.has_other_pages %}
           <ul class="pagination pg-gray">
             {% if search_data.locations_page.has_previous %}
