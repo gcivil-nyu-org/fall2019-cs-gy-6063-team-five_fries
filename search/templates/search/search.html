@@ -132,6 +132,10 @@
                     <div class="card-body">
                     <!--Title-->
                     <h4 class="card-title">{{ loc.full_address }}</h4>
+                    <!--Text-->
+                    <div class="mb-3">
+                        <span class="badge green mr-1 black-text">Matching Apartments: {{ search_data.matching_apartments|get_item:loc.id }}</span>
+                    </div>
                     </div>
                 </div>
                 <!--/.Card-->
