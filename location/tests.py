@@ -359,6 +359,99 @@ class LocationViewTests(TestCase):
             response, reverse("apartment", kwargs={"pk": loc.id, "suite_num": "20C"})
         )
 
+    def test_apartment_delete_not_logged_in(self):
+        """
+        Tests the apartments delete function when the user is not logged in
+        """
+        loc, apa = self.create_location_and_apartment()
+        response = self.client.post(
+            reverse(
+                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
+            ),
+            {},
+        )
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/location/{loc.id}/apartment/{apa.suite_num}/delete",
+        )
+
+    def test_apartment_delete_no_landlord(self):
+        """
+        Tests the apartment delete function when the apartment doesn't have a
+        landlord
+        """
+
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apa = self.create_location_and_apartment()
+        response = self.client.post(
+            reverse(
+                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
+            ),
+            {},
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_apartment_delete_dif_landlord(self):
+        """
+        tests the apartment delete when the current user is not the landlord of the building
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        landlord = SiteUser.objects.create(username="landlord")
+        loc, apa = self.create_location_and_apartment()
+        apa.landlord = landlord
+        apa.save()
+        response = self.client.post(
+            reverse(
+                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
+            ),
+            {},
+        )
+        self.assertEqual(response.status_code, 403)
+
+    # def test_apartment_delete_get(self):
+    #     """
+    #     tests the apartment delete when it receives a GET instead of a POST
+    #     """
+    #     user = SiteUser.objects.create(username="testuser")
+    #     self.client.force_login(user)
+    #     loc, apa = self.create_location_and_apartment()
+    #     apa.landlord = user
+    #     apa.save()
+    #     response = self.client.get(
+    #         reverse(
+    #             "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
+    #         )
+    #     )
+    #     self.assertRedirects(
+    #         response,
+    #         reverse("apartment", kwargs={"pk": loc.id, "suite_num": apa.suite_num}),
+    #     )
+
+    def test_apartment_delete(self):
+        """
+        tests a successful delete
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apa = self.create_location_and_apartment()
+        apa.landlord = user
+        apa.save()
+        response = self.client.post(
+            reverse(
+                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
+            ),
+            {},
+        )
+        self.assertFalse(
+            Apartment.objects.filter(
+                location__id=loc.id, suite_num=apa.suite_num
+            ).exists(),
+            msg="Apartment wasn't deleted",
+        )
+        self.assertRedirects(response, reverse("location", kwargs={"pk": loc.id}))
+
     def test_contact_landlord_not_logged_in(self):
         """
         tests a GET response against the contact_landlord page
