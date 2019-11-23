@@ -59,7 +59,7 @@ def search(request):
 
             search_data["locations"] = Location.objects.filter(**query_params)
 
-            page = request.GET.get('page', 1)
+            page = request.GET.get("page", 1)
 
             paginator = Paginator(search_data["locations"], 2)
             try:
