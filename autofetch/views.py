@@ -80,7 +80,13 @@ def bckgrndfetch(city_list, limit):
                 # check if is_existed w/ address reversed from lat,lon
                 if r["geotag"] is not None:
 
-                    address, city, state, zipcode, full_address = "", "", "NY", 11201, ""
+                    address, city, state, zipcode, full_address = (
+                        "",
+                        "",
+                        "NY",
+                        11201,
+                        "",
+                    )
 
                     lat = r["geotag"][0]
                     lon = r["geotag"][1]
