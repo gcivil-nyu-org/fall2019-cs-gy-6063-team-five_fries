@@ -266,7 +266,6 @@ def build_search_query(address, min_price, max_price, bed_num):
         query_params_location["apartment_set__number_of_bed"] = bed_num
         query_params_apartment["number_of_bed"] = bed_num
 
-
     # rented apartments shouldn't show up in general search
     query_params_location["apartment_set__is_rented"] = False
     query_params_apartment["is_rented"] = False
