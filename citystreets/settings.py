@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "location.apps.LocationConfig",
     "external.apps.ExternalConfig",
     "review.apps.ReviewConfig",
-    "autofetch.apps.AutofetchConfig",
+    "refresh_apartment.apps.AutofetchConfig",
 ]
 
 MIDDLEWARE = [

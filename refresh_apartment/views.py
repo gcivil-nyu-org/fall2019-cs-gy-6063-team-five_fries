@@ -14,9 +14,9 @@ CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
 
 def autofetch(request):
 
-    # The huge query: /autofetch/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch&limit=1000000
+    # The huge query: /refresh_apartment/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch&limit=1000000
     if request.method == "GET":
-        # allow get param in url /autofetch/?city=brk,brx&limit=100
+        # allow get param in url /refresh_apartment/?city=brk,brx&limit=100
 
         city_list, city, limit = set(), list(), 100
 
