@@ -83,7 +83,7 @@ Once Redis has been installed, the local redis URL must be added to the system v
 
 #### For Local Testing
 
-Open up 3 separate terminal windows. In one start up the Django local server, `python manage.py runserver`. In the second one start up the redis server, `redis server`. And finally start up the Celery worker, `celery -A citystreets.celery worker`.
+Open up 3 separate terminal windows. In one start up the Django local server, `python manage.py runserver`. In the second one start up the redis server, `redis-server`. And finally start up the Celery worker, `celery -A citystreets.celery worker`.
 
 Now you are able to test/run the Celery worker.
 
