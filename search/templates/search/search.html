@@ -125,7 +125,7 @@
                     <!--Card image-->
                     <div class="view overlay">
                     <a href="{% url 'location' loc.id %}">
-                        <img src={{ search_data.thumbnails|get_item:loc.id }} class="card-img-top cover" alt="apartment image">
+                        <img src={{ search_data.thumbnails|get_item:loc.id }} class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
                     </a>
                     </div>
                     <!--Card content-->

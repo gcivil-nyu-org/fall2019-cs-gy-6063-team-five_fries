@@ -180,7 +180,7 @@ LEAFLET_CONFIG = {
 # Using Celery for Asyncronized Job
 
 # Export this if run on local
-# export REDIS_URL=redis://localhost
+# export REDIS_URL="redis://localhost"
 CELERY_BROKER_URL = os.environ["REDIS_URL"]
 CELERY_RESULT_BACKEND = os.environ["REDIS_URL"]
 
