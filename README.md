@@ -98,3 +98,6 @@ Some sample queries to kick off the worker
 - Larger query (may take over an hour to complete)
 
 `{host}/refresh_apartment/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch&limit=1000`
+
+Please note that very large queries may result in a large number of requests made against the Geocode API, so it pays
+to be mindful to not go over the API's free limits.
