@@ -48,6 +48,7 @@ def get_res_data(
         zip, max_query_results, num_entries_to_search, t_out
     )
     results_df = results_df.loc[results_df["zipcode"] == str(zip)]
+    results_df = pd.DataFrame.dropna(results_df)
 
     if max_query_results and len(results_df) > max_query_results:
         results_df = results_df[:max_query_results]

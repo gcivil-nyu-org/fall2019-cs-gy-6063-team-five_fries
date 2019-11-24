@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+
+{% block breadcrumbs %}
+<a href="{% url 'search' %}">Search</a>
+<span>{{ location.full_address }}</span>
+{% endblock %}
+
 {% block script %}
 <!-- Font Awesome Icon Library -->
 <link rel="stylesheet" type="text/css"

@@ -1,6 +1,19 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
+{% block breadcrumbs %}
+<a href="{% url 'search' %}">Search</a>
+<a href="{% url 'location' pk=object.location.id %}">{{ object.location.full_address }}</a>
+<a href="{% url 'apartment' pk=object.location.id suite_num=object.suite_num %}">{{ object.suite_num }}</a>
+<span>Edit</span>
+{% endblock %}
+
+{% block script %}
+<!-- Allows us to show the Modal -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+{% endblock %}
+
 
 {% block content %}
 <h2>
@@ -25,4 +38,31 @@
         {% endif %}
     </div>
 </div>
+<!-- Modal -->
+<form method="POST" action="{% url 'apartment_delete' pk=object.location.id suite_num=object.suite_num %}" novalidate>
+    <!-- For some reason this form MUST be placed under the {% crispy apartment_form %} or you will -->
+    <!-- Get CSRF Violations when you try to submit this form -->
+    {% csrf_token %}
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalTitle">Are you sure?</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>The apartment will be permenantly removed and will no longer show up in search results or in your
+                        account view.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 {% endblock %}

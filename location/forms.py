@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import MinValueValidator
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Button, ButtonHolder
+from crispy_forms.layout import Layout, Submit, Button, ButtonHolder, Div
 
 from localflavor.us import forms as us_forms
 from .models import Location, Apartment
@@ -89,12 +89,37 @@ class ApartmentUpdateForm(forms.ModelForm):
             "description",
             "image",
             ButtonHolder(
-                Submit("update", "Update", css_class="btn btn-primary"),
-                Button(
-                    "cancel",
-                    "Cancel",
-                    css_class="btn btn-primary",
-                    onclick="history.back()",
+                Div(
+                    Div(
+                        Submit("update", "Update", css_class="btn btn-primary"),
+                        css_class="text-left",
+                    ),
+                    css_class="col col-sm-3",
+                ),
+                Div(
+                    Div(
+                        Button(
+                            "delete",
+                            "Delete",
+                            css_class="btn btn-primary",
+                            data_toggle="modal",
+                            data_target="#deleteModal",
+                        ),
+                        css_class="text-left",
+                    ),
+                    css_class="col-sm-3",
+                ),
+                Div(
+                    Div(
+                        Button(
+                            "cancel",
+                            "Cancel",
+                            css_class="btn btn-primary",
+                            onclick="history.back()",
+                        ),
+                        css_class="text-right",
+                    ),
+                    css_class="col col-sm-6",
                 ),
                 css_class="row justify-content-between",
             ),
