@@ -26,8 +26,10 @@ def search(request):
         search_form = SearchForm(request.GET)
 
         address = None
+        zipcode = None
         if request.GET.get("query"):
             address = normalize_us_address(request.GET.get("query"))
+            zipcode = address.zipcode
 
         timeout = False
         max_price = request.GET.get("max_price")
@@ -57,10 +59,10 @@ def search(request):
             search_data["locations"] = Location.objects.filter(**query_params)
 
             # Get 311 statistics
-            if address and address.zipcode:
+            if zipcode:
                 try:
-                    refresh_nyc311_statistics_if_needed(address.zipcode)
-                    stats = NYC311Statistics.objects.filter(zipcode=address.zipcode)
+                    refresh_nyc311_statistics_if_needed(zipcode)
+                    stats = NYC311Statistics.objects.filter(zipcode=zipcode)
                     search_data["stats"] = [
                         (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
                     ]
@@ -86,7 +88,7 @@ def search(request):
                 "search_title": search_title,
                 "search_form": search_form,
                 "timeout": timeout,
-                "zipcode": address.zipcode,
+                "zipcode": zipcode,
             },
         )
     else:
