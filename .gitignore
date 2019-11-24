@@ -67,6 +67,7 @@ local_settings.py
 db.sqlite3
 /staticfiles
 /media
+dump.rdb
 
 # Flask stuff:
 instance/
