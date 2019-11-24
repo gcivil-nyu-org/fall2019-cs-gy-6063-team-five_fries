@@ -71,3 +71,30 @@ pip is the preferred way to install dependencies, including Django.  Documentati
 Once virtualenv has been installed, navigate to the cloned project directory and create a local virtualenv folder with `virtualenv venv`.  If virtualenv is included in your Python installation, then the command is `python3 -m venv venv`. This will create a folder in you project directory called `venv/` which will store your local project dependencies.  Activate you virtual environment by typing `source venv/bin/activate`, and install your local dependencies in the virtual environment by typing `pip install -r requirements.txt`, which will download and install all the project required software listed in the `requirements.txt` file that was cloned with the project. The virtual environment can be turned off anytime by typing `deactivate` in the Terminal in the project base directory.
 
 On some versions of MacOS, the dependencies installation process may be interrupted by a failure to install the dependency `psycopg`. If that happens and dependency installation is aborted, run `pip install psycopg2==2.7.5`, and then run `pip install -r requirements.txt` again.
+
+
+
+### Testing/Local run instructions for Celery/Redis
+
+Firstly, to run the celery/redis data worker locally there are a couple of dependencies to install.
+
+The `Redis` components can be installed easily via `HomeBrew` on MacOS.  Merely type in `brew install redis`.
+Once Redis has been installed, the local redis URL must be added to the system variables. Run `export REDIS_URL=redis://localhost`.
+
+#### For Local Testing
+
+Open up 3 separate terminal windows. In one start up the Django local server, `python manage.py runserver`. In the second one start up the redis server, `redis server`. And finally start up the Celery worker, `celery -A citystreets.celery worker`.
+
+Now you are able to test/run the Celery worker.
+
+To view the logs on heroku, run: `heroku logs --tail --app APP_NAME --dyno worker`.
+
+Some sample queries to kick off the worker
+
+- Small Query
+
+`{host}/refresh_apartment/?city=bk&limit=10`
+
+- Larger query (may take over an hour to complete)
+
+`{host}/refresh_apartment/?city=brx,brk,fct,lgi,mnh,jsy,que,stn,wch&limit=1000`
