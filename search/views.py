@@ -5,10 +5,12 @@ from .models import CraigslistLocation, LastRetrievedData
 from .forms import SearchForm
 from location.models import Location
 
-from external.nyc311 import get_311_data, get_311_statistics
+from external.nyc311 import get_311_data
 from external.craigslist import fetch_craigslist_housing
 from external.googleapi import normalize_us_address
 from external.res import get_res_data
+from external.models import NYC311Statistics
+from external.cache.nyc311 import refresh_nyc311_statistics_if_needed
 
 
 class CraigslistIndexView(generic.ListView):
@@ -57,7 +59,8 @@ def search(request):
             # Get 311 statistics
             if address and address.zipcode:
                 try:
-                    stats = get_311_statistics(str(address.zipcode))
+                    refresh_nyc311_statistics_if_needed(address.zipcode)
+                    stats = NYC311Statistics.objects.filter(zipcode=address.zipcode)
                     search_data["stats"] = [
                         (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
                     ]
@@ -94,13 +97,14 @@ def search(request):
 
 def data_311(request):
     if request.method == "GET" and "zip_code" in request.GET:
-        zip_code = request.GET["zip_code"]
+        zip_code = str(request.GET["zip_code"])
 
         results = {}
         timeout = False
         # Get 311 statistics
         try:
-            results["stats"] = get_311_statistics(str(zip_code))
+            refresh_nyc311_statistics_if_needed(zip_code)
+            results["stats"] = NYC311Statistics.objects.filter(zipcode=zip_code)
         except TimeoutError:
             timeout = True
 
