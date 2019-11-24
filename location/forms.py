@@ -83,6 +83,7 @@ class ApartmentUpdateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
         self.helper.layout = Layout(
+            "is_rented",
             "suite_num",
             "rent_price",
             "number_of_bed",

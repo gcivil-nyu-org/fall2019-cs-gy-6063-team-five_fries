@@ -75,6 +75,9 @@ class Apartment(models.Model):
         null=True,
         related_name="tenant_apartment_set",
     )
+    is_rented = models.BooleanField(
+        verbose_name="Apartment has been rented?", default=False
+    )
 
     # Craigslist
     c_id = models.CharField(max_length=255, unique=True, blank=True, null=True)
