@@ -25,6 +25,7 @@ urlpatterns = [
     path("search/", include("search.urls")),
     path("map/", include("map.urls")),
     path("location/", include("location.urls")),
+    path("refresh_apartment/", include("refresh_apartment.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
