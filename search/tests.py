@@ -5,8 +5,8 @@ from unittest import mock
 
 import datetime
 from .models import CraigslistLocation, LastRetrievedData
-
-# from location.models import Location, Apartment
+from external.models import Address
+from location.models import Location, Apartment
 from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
@@ -51,6 +51,32 @@ def create_c_location(
 def create_last_pulled(days, model):
     time = timezone.now() + datetime.timedelta(days=days)
     return LastRetrievedData.objects.create(time=time, model=model)
+
+
+def create_location_and_apartment():
+    city = "Brooklyn"
+    state = "New York"
+    address = "1234 Coney Island Avenue"
+    zipcode = 11218
+    # using get_or_create avoids race condition
+    loc = Location.objects.get_or_create(
+        city=city, state=state, address=address, zipcode=zipcode
+    )[0]
+
+    # create an apartment and link it to that location
+    suite_num = "18C"
+    number_of_bed = 3
+    image = "Images/System_Data_Flow_Diagram.png"
+    rent_price = 3000
+    apt = Apartment.objects.create(
+        suite_num=suite_num,
+        number_of_bed=number_of_bed,
+        image=image,
+        rent_price=rent_price,
+        location=loc,
+    )
+
+    return loc, apt
 
 
 class LastRetrieveDataModelTests(TestCase):
@@ -195,39 +221,25 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Min Price: 500")
         self.assertContains(response, "Number of Bedroom: 4")
 
-    # @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
-    # @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    # @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
-    # def test_search_page_matching_apartments(self):
-    #     # create a location
-    #     city = "Brooklyn"
-    #     state = "NY"
-    #     address = "1234 Coney Island Avenue"
-    #     zipcode = 11218
-    #     # using get_or_create avoids race condition
-    #     loc = Location.objects.get_or_create(
-    #         city=city, state=state, address=address, zipcode=zipcode
-    #     )[0]
-    #
-    #     # create an apartment and link it to that location
-    #     suite_num = "18C"
-    #     number_of_bed = 4
-    #     image = "Images/System_Data_Flow_Diagram.png"
-    #     rent_price = 1500
-    #     apt = Apartment.objects.create(
-    #         suite_num=suite_num,
-    #         number_of_bed=number_of_bed,
-    #         image=image,
-    #         rent_price=rent_price,
-    #         location=loc,
-    #     )
-    #     apt.save()
-    #
-    #     response = self.client.get(
-    #         "/search/?query=11218&min_price=500&max_price=2000&bed_num=4"
-    #     )
-    #     print(response.content)
-    #     self.assertContains(response, "Matching Apartments:")
+    @mock.patch("search.views.normalize_us_address")
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    def test_search_page_matching_apartments(self, mock_norm):
+        """
+        tests to make sure that "matching apartments" is displayed for each location
+        in the search results
+        """
+        mock_norm.return_value = Address(
+            street="",
+            city="Brooklyn",
+            state="New York",
+            zipcode=11218,
+            latitude=0.0,
+            longitude=0.0,
+        )
+        loc, apa = create_location_and_apartment()
+        response = self.client.get("/search/?query=Brooklyn%2C+New+York+11218")
+
+        self.assertContains(response, "Matching Apartments:")
 
 
 class SearchCraigsTests(TestCase):
