@@ -11,6 +11,7 @@ from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 from external.res.stub import fetch_res_data
+from .templatetags.custom_tags import get_item, get_modulo
 
 
 def create_c_location(
@@ -267,3 +268,16 @@ class DataResViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Restraunts Data Results")
+
+
+class CustomTemplatesTestCases(TestCase):
+    def test_get_item(self):
+        tmp_dict = {"city": "Brooklyn"}
+        result = get_item(tmp_dict, "city")
+        self.assertEqual(result, "Brooklyn")
+
+    def test_get_modulo(self):
+        value = 5
+        key = 3
+        result = get_modulo(value, key)
+        self.assertEqual(result, 2)
