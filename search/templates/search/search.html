@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-
+{% load custom_tags %}
 {% load crispy_forms_tags %}
+
 
 {%  block script %}
 <script>
@@ -108,20 +109,74 @@
         <h5>Locations</h5>
         <hr class="mt-0 mb-2 mt-2">
         {% if search_data.locations %}
-        <div class="row h-65">
-            <div class="col">
-                <ul>
-                    {% for item in search_data.locations %}
-                    <li>
-                        <a href="{% url 'location' item.id %}">{{ item.full_address }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+
+            <!--Section: Cards-->
+            <section class="text-center" >
+            {% for loc in search_data.locations_page %}
+                {% if forloop.counter|get_modulo:3 == 1 %}
+                <!--Grid row-->
+                <div class="row mb-4 wow fadeIn">
+                {% endif %}
+
+                <!--Grid column-->
+                <div class="col-md-4 mb-4">
+                <!--Card-->
+                <div class="card shadow">
+                    <!--Card image-->
+                    <div class="view overlay">
+                    <a href="{% url 'location' loc.id %}">
+                        <img src={{ search_data.thumbnails|get_item:loc.id }} class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+                    </a>
+                    </div>
+                    <!--Card content-->
+                    <div class="card-body">
+                    <!--Title-->
+                    <h4 class="card-title">{{ loc.full_address }}</h4>
+                    <!--Text-->
+                    <div class="mb-3">
+                        <span class="badge green mr-1 black-text">Matching Apartments: {{ search_data.matching_apartments|get_item:loc.id }}</span>
+                    </div>
+                    </div>
+                </div>
+                <!--/.Card-->
+                </div>
+                <!--Grid column-->
+                {% if forloop.counter|get_modulo:3 == 0 %}
+                </div>
+                {% endif %}
+            {% endfor %}
+
+            </section>
+            <!--Section: Cards-->
+
+
+        <!-- Pagination -->
+        {% if search_data.locations_page.has_other_pages %}
+          <ul class="pagination pg-gray">
+            {% if search_data.locations_page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=search_data.locations_page.previous_page_number %}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+            {% for i in search_data.locations_page.paginator.page_range %}
+              {% if search_data.locations_page.number == i %}
+                  <li class="active page-item"><a class="page-link">{{ i }}</a></li>
+              {% else %}
+                  <li class="page-item"><a class="page-link" href="?{% query_transform page=i %}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+            {% if search_data.locations_page.has_next %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=search_data.locations_page.next_page_number %}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
+
         {% else %}
         No locations
         {% endif %}
+
     </div>
 
 </div>

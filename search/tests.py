@@ -5,10 +5,13 @@ from unittest import mock
 
 import datetime
 from .models import CraigslistLocation, LastRetrievedData
+from external.models import Address
+from location.models import Location, Apartment
 from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 from external.res.stub import fetch_res_data
+from .templatetags.custom_tags import get_item, get_modulo
 
 
 def create_c_location(
@@ -49,6 +52,32 @@ def create_c_location(
 def create_last_pulled(days, model):
     time = timezone.now() + datetime.timedelta(days=days)
     return LastRetrievedData.objects.create(time=time, model=model)
+
+
+def create_location_and_apartment():
+    city = "Brooklyn"
+    state = "New York"
+    address = "1234 Coney Island Avenue"
+    zipcode = 11218
+    # using get_or_create avoids race condition
+    loc = Location.objects.get_or_create(
+        city=city, state=state, address=address, zipcode=zipcode
+    )[0]
+
+    # create an apartment and link it to that location
+    suite_num = "18C"
+    number_of_bed = 3
+    image = "Images/System_Data_Flow_Diagram.png"
+    rent_price = 3000
+    apt = Apartment.objects.create(
+        suite_num=suite_num,
+        number_of_bed=number_of_bed,
+        image=image,
+        rent_price=rent_price,
+        location=loc,
+    )
+
+    return loc, apt
 
 
 class LastRetrieveDataModelTests(TestCase):
@@ -193,6 +222,26 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Min Price: 500")
         self.assertContains(response, "Number of Bedroom: 4")
 
+    @mock.patch("search.views.normalize_us_address")
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    def test_search_page_matching_apartments(self, mock_norm):
+        """
+        tests to make sure that "matching apartments" is displayed for each location
+        in the search results
+        """
+        mock_norm.return_value = Address(
+            street="",
+            city="Brooklyn",
+            state="New York",
+            zipcode=11218,
+            latitude=0.0,
+            longitude=0.0,
+        )
+        loc, apa = create_location_and_apartment()
+        response = self.client.get("/search/?query=Brooklyn%2C+New+York+11218")
+
+        self.assertContains(response, "Matching Apartments:")
+
 
 class SearchCraigsTests(TestCase):
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
@@ -219,3 +268,16 @@ class DataResViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Restraunts Data Results")
+
+
+class CustomTemplatesTestCases(TestCase):
+    def test_get_item(self):
+        tmp_dict = {"city": "Brooklyn"}
+        result = get_item(tmp_dict, "city")
+        self.assertEqual(result, "Brooklyn")
+
+    def test_get_modulo(self):
+        value = 5
+        key = 3
+        result = get_modulo(value, key)
+        self.assertEqual(result, 2)
