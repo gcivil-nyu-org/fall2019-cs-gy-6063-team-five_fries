@@ -87,6 +87,23 @@ def apartment_edit(request, pk, suite_num):
 
 
 @login_required
+def apartment_delete(request, pk, suite_num):
+
+    object = get_object_or_404(Apartment, location__id=pk, suite_num=suite_num)
+    # check permissions
+    if not object.landlord or (object.landlord != request.user):
+        raise PermissionDenied
+
+    if request.method == "POST":
+        object.delete()
+        return HttpResponseRedirect(reverse("location", kwargs={"pk": pk}))
+    else:
+        return HttpResponseRedirect(
+            reverse("apartment", kwargs={"pk": pk, "suite_num": suite_num})
+        )
+
+
+@login_required
 def claim_view(request, pk, suite_num):
     apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
 
