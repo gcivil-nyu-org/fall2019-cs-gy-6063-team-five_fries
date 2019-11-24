@@ -86,7 +86,7 @@ def search(request):
             # paginate the search location results
             page = request.GET.get("page", 1)
 
-            paginator = Paginator(search_data["locations"], 2)
+            paginator = Paginator(search_data["locations"], 6)
             try:
                 locations_page = paginator.page(page)
             except PageNotAnInteger:

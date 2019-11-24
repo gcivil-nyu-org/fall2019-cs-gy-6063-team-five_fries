@@ -2,7 +2,7 @@ from django import template
 
 register = template.Library()
 
-
+# custom template tags: https://test-driven-django-development.readthedocs.io/en/latest/07-templatetags.html
 @register.simple_tag(takes_context=True)
 def query_transform(context, **kwargs):
     """
@@ -25,3 +25,8 @@ def query_transform(context, **kwargs):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+
+@register.filter
+def get_modulo(value, key):
+    return value % key
