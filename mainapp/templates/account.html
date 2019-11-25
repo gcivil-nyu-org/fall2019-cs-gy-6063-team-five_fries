@@ -59,11 +59,13 @@
         </div>
     </div>
 
-    {% if user_type_string_map=="T" %}
+    <!-- Tenant Apartments -->
+    {% if user.tenant_apartment_set.count > 0 %}
         <hr>
-        <h1>Rented Apartment</h1>
+        <h1>Tenant's Apartment</h1>
+        <!--Section: Cards-->
         <section class="text-center">
-       {% for apt in user.tenant_apartment_set.all %}
+        {% for apt in user.tenant_apartment_set.all %}
             {% cycle 'odd' 'even' as odd_even silent %}
             {% if odd_even == "odd" %}
             <!--Grid row-->
@@ -102,6 +104,9 @@
             </div>
             {% endif %}
         {% endfor %}
+        </section>
+        <!--Section: Cards-->
+    {% endif %}
 
 
 
