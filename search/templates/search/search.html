@@ -9,6 +9,7 @@
 {% endblock %}
 
 {%  block script %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
         $("#complaints_button").click(function () {
@@ -28,8 +29,6 @@
         mapCenter[0] += parseFloat(latitude);
         mapCenter[1] += parseFloat(longitude);
 
-        console.log(gmapUrl);
-
         markerList.push([latitude, longitude, gmapUrl]);
 
     {% endfor %}
@@ -39,7 +38,7 @@
 
     window.addEventListener("map:init", (event) => {
         var zoomLevel = 13;
-        var map = event.detail.map.setView(mapCenter, zoomLevel);
+        var map = event.detail.map.setView(mapCenter,zoomLevel);
 
         for (var i=0; i < markerList.length; i++){
             let g_url = markerList[i][2];
@@ -47,6 +46,14 @@
             marker = new L.marker([markerList[i][0], markerList[i][1]])
             .addTo(map)
             .bindPopup(`<a target="_blank" href="${ g_url }">Open Google Maps</a>`);
+        }
+
+        <!-- Solution to Rendering Leaflet map displaying inside the Modal -->
+        document.getElementById("mapTrigger").onclick = function () {
+            document.getElementById('mapModal').style.display = 'block';
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 100);
         }
     });
 
@@ -103,6 +110,14 @@
     margin: 0;
     padding: 0;
 }
+.modal-full {
+    min-width: 100%;
+    margin: 0;
+}
+
+.modal-full .modal-content {
+    min-height:50 vh;
+}
 </style>
 {% endblock %}
 
@@ -117,6 +132,7 @@
                     {% crispy search_form %}
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -124,7 +140,9 @@
     <div>
         <h3>Search results</h3>
         <p>{{ search_title }}</p>
+
     </div>
+
     {% if search_data.stats %}
     <p>
         <hr class="mt-0 mb-2 mt-2">
