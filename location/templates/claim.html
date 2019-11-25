@@ -3,7 +3,13 @@
 {% block breadcrumbs %}
 <a href="{% url 'search' %}">Search</a>
 <a href="{% url 'location' pk=apt.location.id %}">{{ apt.location.full_address }}</a>
-<a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">{{ apt.suite_num }}</a>
+<a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
+    {% if apt.suite_num %}
+    {{ apt.suite_num }}
+    {% else %}
+    1
+    {% endif %}
+</a>
 <span>Claim</span>
 {% endblock %}
 
@@ -24,13 +30,21 @@
 {% block content %}
 <h1>Claim</h1>
 <p>
-    Are you a tenant or a landlord of <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">#{{ apt.suite_num }}</a>
+    Are you a tenant or a landlord of <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
+        {% if apt.suite_num %}
+        #{{ apt.suite_num }}
+        {% else %}
+        this apartment
+        {% endif %}
+    </a>
     at <a href="{% url 'location' pk=apt.location.id %}"> {{ apt.location.full_address }}</a>? 
     <br>
     Please claim your apartment by filling out this form.
 </p>
 <ul>
+    {% if apt.suite_num %}
     <li>Suite: #{{ apt.suite_num }}</li>
+    {% endif %}
     <li>Address: {{ apt.location.full_address }}</li>
 {% if apt.tenant %}
     <li>Current tenant: {{ apt.tenant.full_name }}</li>
@@ -40,12 +54,12 @@
 {% endif %}
 </ul>
 <div class="flex-column" id="button_container">
-    <form method="POST" action="{% url 'claim' pk=apt.location.id suite_num=apt.suite_num %}">
+    <form method="POST" action="{% url 'claim' pk=apt.location.id apk=apt.id %}">
         {% csrf_token %}
         {{ form | crispy }}
         <button class="btn btn-primary" type="submit">Claim</button>
     </form>
-    <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">
+    <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
         <button class="btn btn-secondary" type="button">No, bring me back to the apartment</button>
     </a>
 </div>

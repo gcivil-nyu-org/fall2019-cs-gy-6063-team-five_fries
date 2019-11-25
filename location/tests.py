@@ -147,7 +147,7 @@ class LocationViewTests(TestCase):
         loc, apt = self.create_location_and_apartment()
 
         response = self.client.get(
-            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
         )
         self.assertEqual(response.status_code, 200)
 
@@ -242,11 +242,11 @@ class LocationViewTests(TestCase):
         """
         loc, apt = self.create_location_and_apartment()
         response = self.client.get(
-            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id})
         )
         self.assertRedirects(
             response,
-            f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.suite_num}/edit",
+            f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.id}/edit",
         )
 
     def test_location_edit_no_landlord(self):
@@ -262,7 +262,7 @@ class LocationViewTests(TestCase):
         apt.save()
 
         response = self.client.get(
-            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id})
         )
         self.assertEqual(response.status_code, 403)
 
@@ -279,7 +279,7 @@ class LocationViewTests(TestCase):
         apt.save()
 
         response = self.client.get(
-            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id})
         )
         self.assertEqual(response.status_code, 403)
 
@@ -295,7 +295,7 @@ class LocationViewTests(TestCase):
         apt.save()
 
         response = self.client.get(
-            reverse("apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id})
         )
         self.assertEqual(response.status_code, 200)
 
@@ -316,15 +316,11 @@ class LocationViewTests(TestCase):
             "description": "A different description",
         }
         response = self.client.post(
-            reverse(
-                "apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
-            ),
-            form_data,
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id}), form_data
         )
         # insure the valid edit redirects successfully to the apartment page
         self.assertRedirects(
-            response,
-            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}),
+            response, reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
         )
 
     def test_location_edit_num(self):
@@ -348,10 +344,7 @@ class LocationViewTests(TestCase):
             "description": "a different description",
         }
         response = self.client.post(
-            reverse(
-                "apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
-            ),
-            form_data,
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id}), form_data
         )
         # insure that it returns to the edit page due to validation failures
         self.assertEqual(response.status_code, 200)
@@ -381,14 +374,11 @@ class LocationViewTests(TestCase):
             "description": "a different description",
         }
         response = self.client.post(
-            reverse(
-                "apartment_edit", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
-            ),
-            form_data,
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id}), form_data
         )
         # insure the valid number change redirects successfully to the new edit page
         self.assertRedirects(
-            response, reverse("apartment", kwargs={"pk": loc.id, "suite_num": "20C"})
+            response, reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
         )
 
     def test_apartment_delete_not_logged_in(self):
@@ -397,14 +387,11 @@ class LocationViewTests(TestCase):
         """
         loc, apa = self.create_location_and_apartment()
         response = self.client.post(
-            reverse(
-                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
-            ),
-            {},
+            reverse("apartment_delete", kwargs={"pk": loc.id, "apk": apa.id}), {}
         )
         self.assertRedirects(
             response,
-            f"/accounts/login/?next=/location/{loc.id}/apartment/{apa.suite_num}/delete",
+            f"/accounts/login/?next=/location/{loc.id}/apartment/{apa.id}/delete",
         )
 
     def test_apartment_delete_no_landlord(self):
@@ -417,10 +404,7 @@ class LocationViewTests(TestCase):
         self.client.force_login(user)
         loc, apa = self.create_location_and_apartment()
         response = self.client.post(
-            reverse(
-                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
-            ),
-            {},
+            reverse("apartment_delete", kwargs={"pk": loc.id, "apk": apa.id}), {}
         )
         self.assertEqual(response.status_code, 403)
 
@@ -435,10 +419,7 @@ class LocationViewTests(TestCase):
         apa.landlord = landlord
         apa.save()
         response = self.client.post(
-            reverse(
-                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
-            ),
-            {},
+            reverse("apartment_delete", kwargs={"pk": loc.id, "apk": apa.id}), {}
         )
         self.assertEqual(response.status_code, 403)
 
@@ -452,13 +433,10 @@ class LocationViewTests(TestCase):
         apa.landlord = user
         apa.save()
         response = self.client.get(
-            reverse(
-                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
-            )
+            reverse("apartment_delete", kwargs={"pk": loc.id, "apk": apa.id})
         )
         self.assertRedirects(
-            response,
-            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apa.suite_num}),
+            response, reverse("apartment", kwargs={"pk": loc.id, "apk": apa.id})
         )
 
     def test_apartment_delete(self):
@@ -471,15 +449,10 @@ class LocationViewTests(TestCase):
         apa.landlord = user
         apa.save()
         response = self.client.post(
-            reverse(
-                "apartment_delete", kwargs={"pk": loc.id, "suite_num": apa.suite_num}
-            ),
-            {},
+            reverse("apartment_delete", kwargs={"pk": loc.id, "apk": apa.id}), {}
         )
         self.assertFalse(
-            Apartment.objects.filter(
-                location__id=loc.id, suite_num=apa.suite_num
-            ).exists(),
+            Apartment.objects.filter(location__id=loc.id, id=apa.id).exists(),
             msg="Apartment wasn't deleted",
         )
         self.assertRedirects(response, reverse("location", kwargs={"pk": loc.id}))
@@ -491,10 +464,10 @@ class LocationViewTests(TestCase):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
         loc, apa = self.create_location_and_apartment()
-        suite = apa.suite_num
+        id = apa.id
         apa.delete()
         response = self.client.post(
-            reverse("apartment_delete", kwargs={"pk": loc.id, "suite_num": suite}), {}
+            reverse("apartment_delete", kwargs={"pk": loc.id, "apk": id}), {}
         )
         self.assertEqual(response.status_code, 404)
 
@@ -506,12 +479,10 @@ class LocationViewTests(TestCase):
         loc, apt = self.create_location_and_apartment()
 
         response = self.client.get(
-            reverse(
-                "contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
-            )
+            reverse("contact_landlord", kwargs={"pk": loc.id, "apk": apt.id})
         )
 
-        redirect_url = f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.suite_num}/contact_landlord"
+        redirect_url = f"/accounts/login/?next=/location/{loc.id}/apartment/{apt.id}/contact_landlord"
 
         self.assertRedirects(response, redirect_url)
 
@@ -528,20 +499,17 @@ class LocationViewTests(TestCase):
         apt.landlord = user
         apt.save()
         response = self.client.get(
-            reverse(
-                "contact_landlord", kwargs={"pk": loc.id, "suite_num": apt.suite_num}
-            )
+            reverse("contact_landlord", kwargs={"pk": loc.id, "apk": apt.id})
         )
 
         self.assertRedirects(
-            response,
-            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num}),
+            response, reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
         )
 
     def test_display_interested_if_not_landlord(self):
         loc, apt = self.create_location_and_apartment()
         response = self.client.get(
-            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
         )
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
@@ -554,7 +522,7 @@ class LocationViewTests(TestCase):
         apt.landlord = user
         apt.save()
         response = self.client.get(
-            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
         )
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
@@ -568,7 +536,7 @@ class LocationViewTests(TestCase):
         apt.landlord = landlord
         apt.save()
         response = self.client.get(
-            reverse("apartment", kwargs={"pk": loc.id, "suite_num": apt.suite_num})
+            reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
         )
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
@@ -581,19 +549,21 @@ class ClaimViewTests(TestCase):
     def test_200_if_logged_in(self):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
-        response = self.client.get(reverse("claim", args=(6, "2R")))
+        apa = Apartment.objects.get(location__id=6, suite_num="2R")
+        response = self.client.get(reverse("claim", args=(6, apa.id)))
         self.assertEqual(response.status_code, 200)
 
     def test_redirect_if_not_logged_in(self):
-        response = self.client.get(reverse("claim", args=(6, "2R")))
+        response = self.client.get(reverse("claim", args=(6, 1)))
         self.assertEqual(response.status_code, 302)
 
     def test_form_submit_tenant_without_note(self):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
+        apa = Apartment.objects.get(location__id=6, suite_num="2R")
 
         response = self.client.post(
-            reverse("claim", args=(6, "2R")), {"claim_type": "tenant"}
+            reverse("claim", args=(6, apa.id)), {"claim_type": "tenant"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "successful")
@@ -601,9 +571,10 @@ class ClaimViewTests(TestCase):
     def test_form_submit_tenant_with_note(self):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
+        apa = Apartment.objects.get(location__id=6, suite_num="2R")
 
         response = self.client.post(
-            reverse("claim", args=(6, "2R")),
+            reverse("claim", args=(6, apa.id)),
             {"claim_type": "tenant", "note": "Please approve my request"},
         )
         self.assertEqual(response.status_code, 200)
@@ -612,9 +583,10 @@ class ClaimViewTests(TestCase):
     def test_form_submit_landlord_without_note(self):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
+        apa = Apartment.objects.get(location__id=6, suite_num="2R")
 
         response = self.client.post(
-            reverse("claim", args=(6, "2R")), {"claim_type": "landlord"}
+            reverse("claim", args=(6, apa.id)), {"claim_type": "landlord"}
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "successful")
@@ -622,9 +594,10 @@ class ClaimViewTests(TestCase):
     def test_form_submit_landlord_with_note(self):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
+        apa = Apartment.objects.get(location__id=6, suite_num="2R")
 
         response = self.client.post(
-            reverse("claim", args=(6, "2R")),
+            reverse("claim", args=(6, apa.id)),
             {"claim_type": "landlord", "note": "Please approve my request"},
         )
         self.assertEqual(response.status_code, 200)
@@ -633,9 +606,10 @@ class ClaimViewTests(TestCase):
     def test_form_submit_invalid(self):
         user = SiteUser.objects.create(username="testuser")
         self.client.force_login(user)
+        apa = Apartment.objects.get(location__id=6, suite_num="2R")
 
         response = self.client.post(
-            reverse("claim", args=(6, "2R")),
+            reverse("claim", args=(6, apa.id)),
             {"claim_type": "HAHAHA", "note": "Please approve my request"},
         )
         self.assertEqual(response.status_code, 200)
@@ -651,7 +625,7 @@ class ClaimViewTests(TestCase):
         apt.save()
 
         response = self.client.post(
-            reverse("claim", args=(6, "2R")),
+            reverse("claim", args=(6, apt.id)),
             {"claim_type": "tenant", "note": "Please approve my request"},
         )
         self.assertEqual(response.status_code, 200)
@@ -667,7 +641,7 @@ class ClaimViewTests(TestCase):
         apt.save()
 
         response = self.client.post(
-            reverse("claim", args=(6, "2R")),
+            reverse("claim", args=(6, apt.id)),
             {"claim_type": "landlord", "note": "Please approve my request"},
         )
         self.assertEqual(response.status_code, 200)
