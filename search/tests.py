@@ -242,6 +242,40 @@ class SearchIndexViewTests(TestCase):
 
         self.assertContains(response, "Matching Apartments:")
 
+    @mock.patch("search.views.normalize_us_address")
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    def test_search_rented_apartment(self, mock_norm):
+        """
+        tests to make sure that apartments that have been marked as rented don't show up in
+        the general search
+        """
+        mock_norm.return_value = Address(
+            street="",
+            city="Brooklyn",
+            state="New York",
+            zipcode=11218,
+            latitude=0.0,
+            longitude=0.0,
+        )
+        loc, apa = create_location_and_apartment()
+        response = self.client.get("/search/?query=Brooklyn%2C+New+York+11218")
+        self.assertEqual(
+            len(response.context["search_data"]["locations"]),
+            1,
+            msg="Did not return result when it should have",
+        )
+
+        apa.is_rented = True
+        apa.save()
+
+        # once an apartment has been rented, it should no longer show up in the default search
+        response = self.client.get("/search/?query=Brooklyn%2C+New+York+11218")
+        self.assertEqual(
+            len(response.context["search_data"]["locations"]),
+            0,
+            msg="Returned results when it shouldn't have",
+        )
+
 
 class SearchCraigsTests(TestCase):
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
