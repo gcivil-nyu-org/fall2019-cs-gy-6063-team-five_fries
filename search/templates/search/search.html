@@ -164,7 +164,28 @@
     {% endif %}
 
     <div>
-        <h5>Locations</h5>
+        <h5 style="display: inline; margin-right:10px">Locations</h5>
+
+        <button id="mapTrigger" type="button" class="btn btn-primary" data-toggle="modal" data-target="#mapModal">See Apartments on Map</button>
+        <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="mapModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-full" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mapModalLabel">Search Result:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="map" class="modal-body" >
+                {% leaflet_map "leaflet_map_main" %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
+                </div>
+            </div>
+          </div>
+        </div>
+
         <hr class="mt-0 mb-2 mt-2">
         {% if search_data.locations %}
 
