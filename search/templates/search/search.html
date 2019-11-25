@@ -18,23 +18,25 @@
     });
 
     var markerList = [];
-    var mapCenter = [0,0];
 
+    const locations = [
     {% for item in search_data.locations %}
 
-        var latitude = "{{ item.latitude }}";
-        var longitude = "{{ item.longitude }}";
-        var gmapUrl = "{{ item.google_map_url }}";
-
-        mapCenter[0] += parseFloat(latitude);
-        mapCenter[1] += parseFloat(longitude);
-
-        markerList.push([latitude, longitude, gmapUrl]);
+        [ {{ item.latitude }}, {{ item.longitude }}, "{{ item.google_map_url }}" ],
 
     {% endfor %}
+    ];
 
-    mapCenter[0] = mapCenter[0] / markerList.length;
-    mapCenter[1] = mapCenter[1] / markerList.length;
+    let sumLatitude = 0;
+    let sumLongitude = 0;
+
+    for (const loc of locations) {
+      markerList.push(loc);
+      sumLatitude += loc[0];
+      sumLongitude += loc[1];
+    }
+
+    const mapCenter = [ sumLatitude / markerList.length, sumLongitude / markerList.length ];
 
     window.addEventListener("map:init", (event) => {
         var zoomLevel = 13;
