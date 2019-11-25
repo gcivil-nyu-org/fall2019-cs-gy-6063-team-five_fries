@@ -113,7 +113,7 @@
     <!-- Landlord Apartments -->
     {% if user.landlord_apartment_set.count > 0 %}
         <hr>
-        <h1>Places I own</h1>
+        <h3>Places I own</h3>
         <!--Section: Cards-->
         <section class="text-center">
         {% for apt in user.landlord_apartment_set.all %}
