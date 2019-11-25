@@ -3,15 +3,6 @@
 {% block breadcrumbs %}
 <a href="{% url 'search' %}">Search</a>
 <span>{{ location.full_address }}</span>
-{% if request.user.is_authenticated %}
-<form action="{% url 'favorite' object.id %}" method="POST">
-    {% csrf_token %}
-    {% if object in request.user.favorites.all %}
-    <button type="submit"><img src="https://img.icons8.com/color/64/000000/hearts.png"></button>
-    {% else %}
-    <button type="submit"><img src="https://img.icons8.com/material-outlined/64/000000/hearts.png"></button>
-    {% endif %}
-</form>
 
 {% endblock %}
 
@@ -49,6 +40,16 @@
 {% block content %}
 <h1>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h1>
 {% leaflet_map "leaflet_map_main" %}
+
+{% if request.user.is_authenticated %}
+<form action="{% url 'favorite' object.id %}" method="POST">
+    {% csrf_token %}
+    {% if object in request.user.favorites.all %}
+    <button type="submit"><img src="https://img.icons8.com/color/64/000000/hearts.png"></button>
+    {% else %}
+    <button type="submit"><img src="https://img.icons8.com/material-outlined/64/000000/hearts.png"></button>
+    {% endif %}
+</form>
 
 <hr>
 <div class="container">
