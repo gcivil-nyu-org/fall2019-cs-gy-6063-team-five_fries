@@ -4,7 +4,13 @@
 {% block breadcrumbs %}
 <a href="{% url 'search' %}">Search</a>
 <a href="{% url 'location' pk=object.location.id %}">{{ object.location.full_address }}</a>
-<a href="{% url 'apartment' pk=object.location.id suite_num=object.suite_num %}">{{ object.suite_num }}</a>
+<a href="{% url 'apartment' pk=object.location.id apk=object.id %}">
+    {% if object.suite_num %}
+    {{ object.suite_num }}
+    {% else %}
+    #
+    {% endif %}
+</a>
 <span>Edit</span>
 {% endblock %}
 
@@ -21,7 +27,9 @@
         {{ object.location.full_address }}
     </div>
     <div class="col">
+        {% if apt.suite_num %}
         <span class="badge badge-pill red mr-1 black-text">Suite: {{ object.suite_num }}</span>
+        {% endif %}
     </div>
 </h2>
 <div class="row">
@@ -39,7 +47,7 @@
     </div>
 </div>
 <!-- Modal -->
-<form method="POST" action="{% url 'apartment_delete' pk=object.location.id suite_num=object.suite_num %}" novalidate>
+<form method="POST" action="{% url 'apartment_delete' pk=object.location.id apk=object.id %}" novalidate>
     <!-- For some reason this form MUST be placed under the {% crispy apartment_form %} or you will -->
     <!-- Get CSRF Violations when you try to submit this form -->
     {% csrf_token %}

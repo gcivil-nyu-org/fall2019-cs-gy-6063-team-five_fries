@@ -42,8 +42,8 @@ class LocationView(generic.DetailView):
         return context
 
 
-def apartment_detail_view(request, pk, suite_num):
-    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
+def apartment_detail_view(request, pk, apk):
+    apt = Apartment.objects.get(location__id=pk, id=apk)
     contact_landlord_form = ContactLandlordForm()
 
     show_claim_button = not apt.tenant or not apt.landlord
@@ -59,9 +59,9 @@ def apartment_detail_view(request, pk, suite_num):
 
 
 @login_required
-def apartment_edit(request, pk, suite_num):
+def apartment_edit(request, pk, apk):
 
-    object = get_object_or_404(Apartment, location__id=pk, suite_num=suite_num)
+    object = get_object_or_404(Apartment, location__id=pk, id=apk)
     # if the apartment does not have a landlord or the current user is
     # not the landlord for the apartment, raise a Permission Exception
     if not object.landlord or (object.landlord != request.user):
@@ -74,8 +74,7 @@ def apartment_edit(request, pk, suite_num):
             form.save()
             return HttpResponseRedirect(
                 reverse(
-                    "apartment",
-                    kwargs={"pk": object.location.id, "suite_num": object.suite_num},
+                    "apartment", kwargs={"pk": object.location.id, "apk": object.id}
                 )
             )
     else:
@@ -87,9 +86,9 @@ def apartment_edit(request, pk, suite_num):
 
 
 @login_required
-def apartment_delete(request, pk, suite_num):
+def apartment_delete(request, pk, apk):
 
-    object = get_object_or_404(Apartment, location__id=pk, suite_num=suite_num)
+    object = get_object_or_404(Apartment, location__id=pk, id=apk)
     # check permissions
     if not object.landlord or (object.landlord != request.user):
         raise PermissionDenied
@@ -98,14 +97,12 @@ def apartment_delete(request, pk, suite_num):
         object.delete()
         return HttpResponseRedirect(reverse("location", kwargs={"pk": pk}))
     else:
-        return HttpResponseRedirect(
-            reverse("apartment", kwargs={"pk": pk, "suite_num": suite_num})
-        )
+        return HttpResponseRedirect(reverse("apartment", kwargs={"pk": pk, "apk": apk}))
 
 
 @login_required
-def claim_view(request, pk, suite_num):
-    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
+def claim_view(request, pk, apk):
+    apt = Apartment.objects.get(location__id=pk, id=apk)
 
     if request.method == "POST":
         form = ClaimForm(request.POST)
@@ -135,8 +132,8 @@ def claim_view(request, pk, suite_num):
 
 
 @login_required
-def contact_landlord(request, pk, suite_num):
-    apt = Apartment.objects.get(location__id=pk, suite_num=suite_num)
+def contact_landlord(request, pk, apk):
+    apt = Apartment.objects.get(location__id=pk, id=apk)
     landlord = apt.landlord
     landlord_email = landlord.email
     sender_email = settings.EMAIL_HOST_USER
@@ -156,9 +153,7 @@ def contact_landlord(request, pk, suite_num):
                 subject, message, sender_email, [landlord_email], fail_silently=False
             )
 
-    return HttpResponseRedirect(
-        reverse("apartment", kwargs={"pk": pk, "suite_num": suite_num})
-    )
+    return HttpResponseRedirect(reverse("apartment", kwargs={"pk": pk, "apk": apk}))
 
 
 @login_required
