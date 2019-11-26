@@ -1,11 +1,26 @@
 # Team FiveFries Project Repository (NYCityStreet)
 
+## Testing Day!
+
+### Account Creation
+
+We encourage everyone to create their own (or multiple!) user accounts for testing day.  The telephone field is no longer mandatory
+(unless you feel like it) and we have removed the restriction on different account types; so any one particular account can be a Tenant, Renter, and/or a Landlord.  Please make sure to sign up with a valid email address that you have access to as you will not be 
+able to log in until you have confirmed your account via email.  All emails for account activation and password resets (done from the login page) will be sent out from `team.five.fries@gmail.com`.
+
+For test day, we encourage everyon to test out the limits of our search functionality to see where it breaks. We have pulled in a large number of apartment locations from our data sources so there should be plenty for people to find.  Unfortunately though the APIs that are accessible to us do not provide images for locations, so other than those that are user uploaded most apartments will not have a locally stored picture.
+
+We also encourage everyone to test the functionality surrounding apartment uploading, editing, favoriting, and reviewing. What happens when you try to upload multiple apartments to the same place, or when a location has a ton of reviews, or when multiple users try to claim to be the landlord for a building? Let us know!
+
+## Build Status
+
 [![Build Status](https://travis-ci.com/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries.svg?token=SEGpBz7LdWjrjw6AhUsE&branch=master)](https://travis-ci.com/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries/badge.svg?branch=master&service=github)](https://coveralls.io/github/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries?branch=master)
 
 ## Heroku instance
 - [production](http://master-branch.herokuapp.com/)
 - [integration](https://develop-branch.herokuapp.com)
+
 
 ## Set up
 ### Environment variables
