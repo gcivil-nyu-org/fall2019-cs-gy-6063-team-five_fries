@@ -1,5 +1,6 @@
 import attr
 from django.db import models
+from django.core.exceptions import ValidationError
 from localflavor.us import models as us_models
 
 
@@ -23,6 +24,16 @@ class CachedSearch(models.Model):
     longitude = models.DecimalField(
         max_digits=9, decimal_places=6, blank=True, null=True
     )
+
+    def save(self, **kwargs):
+        if (self.latitude and self.longitude is None) or (
+            self.latitude is None and self.longitude
+        ):
+            print(f"Validation error on: {self.search_string}")
+            raise ValidationError(
+                "Either both latitude and longitude must have values or both must be null"
+            )
+        super().save(**kwargs)
 
 
 @attr.s
