@@ -3,7 +3,13 @@
 {% block breadcrumbs %}
 <a href="{% url 'search' %}">Search</a>
 <a href="{% url 'location' pk=apt.location.id %}">{{ apt.location.full_address }}</a>
-<span>{{ apt.suite_num }}</span>
+<span>
+  {% if apt.suite_num %}
+  {{ apt.suite_num }}
+  {% else %}
+  #
+  {% endif %}
+</span>
 {% endblock %}
 
 {% load crispy_forms_tags %}
@@ -43,12 +49,14 @@
           <p class="lead font-weight-bold">
             <span class="font-weight-bold">{{ apt.location.full_address }}</span>
             {% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
-            <small><a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}" class="">Edit</a></small>
+            <small><a href="{% url 'apartment_edit' pk=apt.location.id apk=apt.id %}" class="">Edit</a></small>
             {% endif %}
           </p>
 
           <div class="mb-3">
+            {% if apt.suite_num %}
             <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+            {% endif %}
             <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
           </div>
 
@@ -69,21 +77,21 @@
 
           {% if show_claim_button %}
           <p>
-            <a href="{% url 'claim' pk=apt.location.id suite_num=apt.suite_num %}" class="italic">Are you a tenant or a
+            <a href="{% url 'claim' pk=apt.location.id apk=apt.id %}" class="italic">Are you a tenant or a
               landlord of this apartment?</a>
           </p>
           {% endif %}
 
           <!--{% if apt.landlord and request.user.is_authenticated and apt.landlord == request.user %}
           <p>
-            <a href="{% url 'apartment_edit' pk=apt.location.id suite_num=apt.suite_num %}">
+            <a href="{% url 'apartment_edit' pk=apt.location.id apk=apt.id %}">
               <button class="btn btn-primary">Update</button>
             </a>
           </p>
           {% endif %}-->
 
           {% if apt.landlord and request.user.is_authenticated and apt.landlord != request.user %}
-          <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id suite_num=apt.suite_num %}">
+          <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id apk=apt.id %}">
             {% csrf_token %}
             <button type="button" class="btn btn-primary" data-toggle="modal"
               data-target="#exampleModal">Interested?</button>

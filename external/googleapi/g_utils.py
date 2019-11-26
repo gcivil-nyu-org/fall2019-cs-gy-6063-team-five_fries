@@ -1,4 +1,5 @@
 from typing import Optional
+from django.core.exceptions import ValidationError
 from ..models import Address, CachedSearch
 from .fetch import fetch_geocode
 
@@ -26,9 +27,9 @@ def normalize_us_address(address) -> Optional[Address]:
     # as those don't matter to the Geocode API and will reduce the number
     # of extra Cache objects
     address = (" ".join(address.split())).lower()
-    cache, created = CachedSearch.objects.get_or_create(search_string=address)
 
-    if not created:
+    if CachedSearch.objects.filter(search_string=address).exists():
+        cache = CachedSearch.objects.get(search_string=address)
         return Address(
             street=cache.street,
             city=cache.city,
@@ -73,15 +74,19 @@ def normalize_us_address(address) -> Optional[Address]:
     loc = response.get("geometry").get("location")
     lat, lon = loc["lat"], loc["lng"]
 
-    # save the search and it's return value from the Geocode API so next time
-    # it is searched we do not need to requery
-    cache.street = " ".join(filter(lambda x: x, [street_num, route]))
-    cache.city = city
-    cache.state = state
-    cache.zipcode = zip_code
-    cache.latitude = lat
-    cache.longitude = lon
-    cache.save()
+    try:
+        CachedSearch.objects.create(
+            search_string=address,
+            street=(" ".join(filter(lambda x: x, [street_num, route]))),
+            city=(city if city is not None else ""),
+            state=(state if state is not None else ""),
+            zipcode=zip_code,
+            latitude=lat,
+            longitude=lon,
+        )
+    except ValidationError as e:
+        print(f"ValidationError: {e}")
+        print(f"Unable to cache search string: {address}, due to lat/lon error")
 
     return Address(
         street=" ".join(filter(lambda x: x, [street_num, route])),

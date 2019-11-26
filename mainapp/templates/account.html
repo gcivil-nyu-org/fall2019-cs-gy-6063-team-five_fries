@@ -77,7 +77,7 @@
             <div class="card">
                 <!--Card image-->
                 <div class="view overlay">
-                <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">
+                <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
                 {% if apt.image %}
                     <img src="{{ apt.image.url }} " class="card-img-top cover" alt="apartment image">
                 {% else %}
@@ -91,7 +91,9 @@
                 <h4 class="card-title">{{ apt.location.full_address }}</h4>
                 <!--Text-->
                 <div class="mb-3">
+                    {%if apt.suite_num %} 
                     <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+                    {% endif %}
                     <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
                     <span class="badge green mr-1 black-text">Rent ($): {{ apt.rent_price }}</span>
                 </div>
@@ -128,7 +130,7 @@
             <div class="card">
                 <!--Card image-->
                 <div class="view overlay">
-                <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">
+                <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
                 {% if apt.image %}
                     <img src="{{ apt.image.url }} " class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
                 {% else %}
@@ -142,7 +144,9 @@
                 <h4 class="card-title">{{ apt.location.full_address }}</h4>
                 <!--Text-->
                 <div class="mb-3">
+                    {% if apt.suite_num %}
                     <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+                    {% endif %}
                     <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
                     <span class="badge green mr-1 black-text">Rent ($): {{ apt.rent_price }}</span>
                 </div>

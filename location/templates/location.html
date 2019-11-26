@@ -56,10 +56,12 @@
                                 {{apt.rent_price_for_display}}
                             </div>
                             <div class="col">
-                                {% if apt.suite_num %}
-                                <a href="{% url 'apartment' pk=object.id suite_num=apt.suite_num %}"><span
+                                {% if apt %}
+                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
                                         class="badge badge-secondary">{{ apt.location.address }}
-                                        #{{apt.suite_num}}</span></a>
+                                    {% if apt.suite_num %}
+                                        #{{apt.suite_num}}
+                                    {% endif %}</span></a>
                                 {% endif %}
                             </div>
                             <div class="col text-center">
@@ -79,10 +81,12 @@
                                 {{apt.rent_price_for_display}}
                             </div>
                             <div class="col">
-                                {% if apt.suite_num %}
-                                <a href="{% url 'apartment' pk=object.id suite_num=apt.suite_num %}"><span
+                                {% if apt %}
+                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
                                         class="badge badge-secondary">{{ apt.location.address }}
-                                        #{{apt.suite_num}}</span></a>
+                                    {% if apt.suite_num %}
+                                        #{{apt.suite_num}}
+                                    {% endif %}</span></a>
                                 {% endif %}
                             </div>
                         </div>

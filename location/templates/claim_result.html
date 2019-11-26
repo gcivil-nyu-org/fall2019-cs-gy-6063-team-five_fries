@@ -5,6 +5,6 @@
 <p>
     Your claim request has been sent successfully. We will be reviewing your request shortly.
     <br>
-    <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">Get back to the apartment</a>
+    <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">Get back to the apartment</a>
 </p>
 {% endblock %}
