@@ -1,15 +1,64 @@
 {% extends 'base.html' %}
+
+{% block header %}
 {% load custom_tags %}
 {% load crispy_forms_tags %}
-
+{% load leaflet_tags %}
+{% leaflet_js %}
+{% leaflet_css %}
+{% endblock %}
 
 {%  block script %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
     $(document).ready(function () {
         $("#complaints_button").click(function () {
             $("#complaints").toggle();
         });
     });
+
+    var markerList = [];
+
+    const locations = [
+    {% for item in search_data.locations %}
+
+        [ {{ item.latitude }}, {{ item.longitude }}, "{{ item.google_map_url }}" ],
+
+    {% endfor %}
+    ];
+
+    let sumLatitude = 0;
+    let sumLongitude = 0;
+
+    for (const loc of locations) {
+      markerList.push(loc);
+      sumLatitude += loc[0];
+      sumLongitude += loc[1];
+    }
+
+    const mapCenter = [ sumLatitude / markerList.length, sumLongitude / markerList.length ];
+
+    window.addEventListener("map:init", (event) => {
+        var zoomLevel = 13;
+        var map = event.detail.map.setView(mapCenter,zoomLevel);
+
+        for (var i=0; i < markerList.length; i++){
+            let g_url = markerList[i][2];
+
+            marker = new L.marker([markerList[i][0], markerList[i][1]])
+            .addTo(map)
+            .bindPopup(`<a target="_blank" href="${ g_url }">Open Google Maps</a>`);
+        }
+
+        <!-- Solution to Rendering Leaflet map displaying inside the Modal -->
+        document.getElementById("mapTrigger").onclick = function () {
+            document.getElementById('mapModal').style.display = 'block';
+            setTimeout(function() {
+                map.invalidateSize();
+            }, 100);
+        }
+    });
+
 </script>
 
 <style>
@@ -63,6 +112,14 @@
     margin: 0;
     padding: 0;
 }
+.modal-full {
+    min-width: 100%;
+    margin: 0;
+}
+
+.modal-full .modal-content {
+    min-height:50 vh;
+}
 </style>
 {% endblock %}
 
@@ -77,6 +134,7 @@
                     {% crispy search_form %}
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -84,7 +142,9 @@
     <div>
         <h3>Search results</h3>
         <p>{{ search_title }}</p>
+
     </div>
+
     {% if search_data.stats %}
     <p>
         <hr class="mt-0 mb-2 mt-2">
@@ -106,9 +166,31 @@
     {% endif %}
 
     <div>
-        <h5>Locations</h5>
-        <hr class="mt-0 mb-2 mt-2">
+        <h5 style="display: inline; margin-right:10px">Locations</h5>
+
         {% if search_data.locations %}
+
+        <button id="mapTrigger" type="button" class="btn btn-primary" data-toggle="modal" data-target="#mapModal">See Apartments on Map</button>
+        <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="mapModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-full" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mapModalLabel">Search Result:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="map" class="modal-body" >
+                {% leaflet_map "leaflet_map_main" %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">OK</button>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="mt-0 mb-2 mt-2">
 
             <!--Section: Cards-->
             <section class="text-center" >
@@ -172,7 +254,6 @@
             {% endif %}
           </ul>
         {% endif %}
-
         {% else %}
         No locations
         {% endif %}
