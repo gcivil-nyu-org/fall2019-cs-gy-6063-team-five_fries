@@ -1,5 +1,15 @@
 {% extends 'base.html' %}
 
+{%  block script %}
+<script>
+$(document).ready(function(){
+  $("#complaints_button").click(function(){
+    $("#complaints").toggle();
+  });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <h2>311 Data Results for Zip Code: {{ zip_code }}</h2>
 <hr>
@@ -40,7 +50,8 @@
         {% endif %}
 
         {% if results.complaints %}
-            <div id="complaints">
+            <button class="btn btn-primary" id="complaints_button">Display/Hide Complaints</button>
+            <div id="complaints" class="hidden">
             <hr class="mt-0 mb-2 mt-2">
                 <h5>311 Data Complaints for Zip Code: {{ zip }}</h5>
                 <ol>
