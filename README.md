@@ -12,6 +12,18 @@ For test day, we encourage everyon to test out the limits of our search function
 
 We also encourage everyone to test the functionality surrounding apartment uploading, editing, favoriting, and reviewing. What happens when you try to upload multiple apartments to the same place, or when a location has a ton of reviews, or when multiple users try to claim to be the landlord for a building? Let us know!
 
+A generic user interaction flow.
+
+1. Sign Up for an account (you need 2 accounts to test the entire functionality).
+2. Login
+3. Search for a location (e.g. based on street address, zipcode etc.). Searching based on zipcode should also display general complaint levels for that zipcode.
+4. The search page displays different locations along with the number of apartments at each location that satisfy your selected criteria. Click on a particular location to see all the apartments at that location. You can also display them on a map to get a better idea of the neighborhood.
+5. You can favorite a particular location and then go to the "Favorites" tab on the navigation bar to see your favorites list. You can remove an apartment from favorites as well.
+6. You can also leave a review for a particular location and it should display in your account page (accessible from "My account" on the navigation bar) and under that location's reviews.
+7. Next, try to upload your apartment. You can find this apartment under your account view.
+8. Next, try to search for some location and go to some apartment inside that location, setting yourself as the landlord (by clicking on the "Are you a tenant or landlord.....?"). For now, it does not do any validation and automatically sets you up as the tenant/landlord.
+9. In order to be able to contact the landlord for an apartment that you are interested in, you can find an apartment that already has a landlord. However, this might not be easy to find since most of our data is coming from Craigslist and Zillow and we don't have the landlords for those apartments set up. Since we don't allow the landlord to contact the landlord (himself/herself), you would need to logout and login from the other account that you created in order to send the landlord a message by going to the apartment view and clicking on the "Interested?" button.
+
 ## Build Status
 
 [![Build Status](https://travis-ci.com/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries.svg?token=SEGpBz7LdWjrjw6AhUsE&branch=master)](https://travis-ci.com/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries)
