@@ -243,10 +243,11 @@
             {% for i in search_data.locations_page.paginator.page_range %}
               {% if search_data.locations_page.number == i %}
                   <li class="active page-item"><a class="page-link">{{ i }}</a></li>
-              {% else %}
+              {% elif i > search_data.locations_page.number|add:-3 and i < search_data.locations_page.number|add:3 %}
                   <li class="page-item"><a class="page-link" href="?{% query_transform page=i %}">{{ i }}</a></li>
               {% endif %}
             {% endfor %}
+
             {% if search_data.locations_page.has_next %}
                 <li class="page-item"><a class="page-link" href="?{% query_transform page=search_data.locations_page.next_page_number %}">&raquo;</a></li>
             {% else %}
