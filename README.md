@@ -1,11 +1,38 @@
 # Team FiveFries Project Repository (NYCityStreet)
 
+## Testing Day!
+
+### Account Creation
+
+We encourage everyone to create their own (or multiple!) user accounts for testing day.  The telephone field is no longer mandatory
+(unless you feel like it) and we have removed the restriction on different account types; so any one particular account can be a Tenant, Renter, and/or a Landlord.  Please make sure to sign up with a valid email address that you have access to as you will not be 
+able to log in until you have confirmed your account via email.  All emails for account activation and password resets (done from the login page) will be sent out from `team.five.fries@gmail.com`.
+
+For test day, we encourage everyon to test out the limits of our search functionality to see where it breaks. We have pulled in a large number of apartment locations from our data sources so there should be plenty for people to find.  Unfortunately though the APIs that are accessible to us do not provide images for locations, so other than those that are user uploaded most apartments will not have a locally stored picture.
+
+We also encourage everyone to test the functionality surrounding apartment uploading, editing, favoriting, and reviewing. What happens when you try to upload multiple apartments to the same place, or when a location has a ton of reviews, or when multiple users try to claim to be the landlord for a building? Let us know!
+
+### A generic user interaction flow.
+
+1. Sign Up for an account (you need 2 accounts to test the entire functionality).
+2. Login
+3. Search for a location (e.g. based on street address, zipcode etc.). Searching based on zipcode should also display general complaint levels for that zipcode.
+4. The search page displays different locations along with the number of apartments at each location that satisfy your selected criteria. Click on a particular location to see all the apartments at that location. You can also display them on a map to get a better idea of the neighborhood.
+5. You can favorite a particular location and then go to the "Favorites" tab on the navigation bar to see your favorites list. You can remove an apartment from favorites as well.
+6. You can also leave a review for a particular location and it should display in your account page (accessible from "My account" on the navigation bar) and under that location's reviews. In order to leave a review, you need to set yourself as a tenant of one of the apartments at that location. You can do this by clicking on the "Are you a tenant or landlord.....?" in the apartment detail view.
+7. Next, try to upload your apartment. You can find this apartment under your account view.
+8. Next, try to search for some location and go to some apartment inside that location, setting yourself as the landlord (by clicking on the "Are you a tenant or landlord.....?"). For now, it does not do any validation and automatically sets you up as the tenant/landlord.
+9. In order to be able to contact the landlord for an apartment that you are interested in, you can find an apartment that already has a landlord. However, this might not be easy to find since most of our data is coming from Craigslist and Zillow and we don't have the landlords for those apartments set up. Since we don't allow the landlord to contact the landlord (himself/herself), you would need to logout and login from the other account that you created in order to send the landlord a message by going to the apartment view and clicking on the "Interested?" button.
+
+## Build Status
+
 [![Build Status](https://travis-ci.com/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries.svg?token=SEGpBz7LdWjrjw6AhUsE&branch=master)](https://travis-ci.com/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries/badge.svg?branch=master&service=github)](https://coveralls.io/github/gcivil-nyu-org/fall2019-cs-gy-6063-team-five_fries?branch=master)
 
 ## Heroku instance
 - [production](http://master-branch.herokuapp.com/)
 - [integration](https://develop-branch.herokuapp.com)
+
 
 ## Set up
 ### Environment variables
