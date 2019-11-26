@@ -1,11 +1,13 @@
 from django.test import TestCase
 from .zillow import refresh_zillow_housing_if_needed
+from .nyc311 import refresh_nyc311_statistics_if_needed
 from unittest import mock
 from ..zillow.stub import fetch_zillow_housing as fetch_zillow_housing_stub
 from ..zillow.stub import get_zillow_response
 from django.utils import timezone
 from location.models import Location, Apartment
 import decimal
+from ..models import NYC311Statistics
 
 
 def get_zws_id_stub():
@@ -113,3 +115,34 @@ class ZillowTests(TestCase):
 
         # 3. # apt with zpid = result_count (= 1 + result_count - 1)
         self.assertEqual(loc.apartment_set.exclude(zpid=None).count(), result_count)
+
+
+class NYC311StatisticsCacheTests(TestCase):
+    @mock.patch("external.cache.nyc311.get_311_statistics")
+    def test_fetch(self, get_311_statistics):
+        """
+        `refresh_if_needed` should make an actual request
+        if there is no cached data
+        """
+        self.assertEqual(NYC311Statistics.objects.filter(zipcode="11201").count(), 0)
+        refresh_nyc311_statistics_if_needed("11201")
+        get_311_statistics.assert_called()
+
+    @mock.patch("external.cache.nyc311.get_311_statistics")
+    def test_cache(self, get_311_statistics):
+        """
+        `refresh_if_needed` should not call get_311_statistics if there is up-to-date cached data
+        """
+
+        NYC311Statistics.objects.create(
+            zipcode="11201",
+            complaint_type="",
+            complaint_level=0,
+            total_complaints_query_zip=0,
+            closed_complaints_query_zip=0,
+            percentage_complaints_closed=0,
+            max_complaints=0,
+            max_complaints_zip="11201",
+        )
+        refresh_nyc311_statistics_if_needed("11201")
+        get_311_statistics.assert_not_called()

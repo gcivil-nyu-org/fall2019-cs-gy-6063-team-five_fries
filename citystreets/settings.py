@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "location.apps.LocationConfig",
     "external.apps.ExternalConfig",
     "review.apps.ReviewConfig",
+    "refresh_apartment.apps.AutofetchConfig",
 ]
 
 MIDDLEWARE = [
@@ -175,3 +176,14 @@ LEAFLET_CONFIG = {
     "MIN_ZOOM": 3,
     "MAX_ZOOM": 18,
 }
+
+# Using Celery for Asyncronized Job
+
+# Export this if run on local
+# export REDIS_URL="redis://localhost"
+CELERY_BROKER_URL = os.environ["REDIS_URL"]
+CELERY_RESULT_BACKEND = os.environ["REDIS_URL"]
+
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"

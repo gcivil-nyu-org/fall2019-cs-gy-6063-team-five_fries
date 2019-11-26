@@ -10,6 +10,9 @@ def fetch_geocode(
     results = googlemaps.Client(key=get_google_api_key()).geocode(
         address, components, bounds, region, language
     )
+    if not results:
+        return []
+
     results[0]["postal"] = ""
     addr_list = results[0]["address_components"]
     for addr in addr_list:

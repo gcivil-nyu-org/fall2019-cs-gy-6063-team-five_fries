@@ -120,3 +120,7 @@ div.custom-file {
     margin: 0 0.5rem;
     color: rgb(33, 37, 41);
 }
+
+.shadow {
+  box-shadow: 0.4rem 0.4rem #EAE6E6;
+}

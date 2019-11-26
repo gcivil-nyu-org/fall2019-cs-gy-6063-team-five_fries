@@ -1,14 +1,17 @@
 from django.shortcuts import render
 from django.views import generic
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .models import CraigslistLocation, LastRetrievedData
 from .forms import SearchForm
 from location.models import Location
 
-from external.nyc311 import get_311_data, get_311_statistics
+from external.nyc311 import get_311_data
 from external.craigslist import fetch_craigslist_housing
 from external.googleapi import normalize_us_address
 from external.res import get_res_data
+from external.models import NYC311Statistics
+from external.cache.nyc311 import refresh_nyc311_statistics_if_needed
 
 
 class CraigslistIndexView(generic.ListView):
@@ -24,9 +27,13 @@ def search(request):
         search_form = SearchForm(request.GET)
 
         address = None
+        zipcode = None
         if request.GET.get("query"):
             address = normalize_us_address(request.GET.get("query"))
+            if address:
+                zipcode = address.zipcode
 
+        # print(str(address))
         timeout = False
         max_price = request.GET.get("max_price")
         min_price = request.GET.get("min_price")
@@ -35,13 +42,13 @@ def search(request):
         search_title = ""
 
         # build the query parameter dictionary that will be used to
-        # query the Location model
-        query_params = build_search_query(
+        # query the Location model and Apartment model
+        query_params_location, query_params_apartment = build_search_query(
             address=address, max_price=max_price, min_price=min_price, bed_num=bed_num
         )
 
         search_data = {}
-        if query_params.keys() and search_form.is_valid():
+        if query_params_location.keys() and search_form.is_valid():
 
             if address:
                 search_title = search_title + f"Address: {address.full_address} "
@@ -52,12 +59,50 @@ def search(request):
             if bed_num:
                 search_title = search_title + f"Number of Bedroom: {bed_num}"
 
-            search_data["locations"] = Location.objects.filter(**query_params)
+            search_data["locations"] = Location.objects.filter(
+                **query_params_location
+            ).distinct()
+
+            # calculate the number of matching apartments at each location
+            matching_apartments = {}
+            thumbnails = {}  # thumbnail for each location
+            for loc in search_data["locations"]:
+                matching_apartments[loc.id] = 0
+                thumbnails[
+                    loc.id
+                ] = "/static/img/no_img.png"  # default image if no image exists
+
+            # number of apartments at each location satisfying the given criteria
+            for loc in search_data["locations"]:
+                matches = loc.apartment_set.filter(**query_params_apartment)
+                num_matches = matches.count()
+                matching_apartments[loc.id] = num_matches
+                for apt in matches:
+                    if apt.image:
+                        thumbnails[loc.id] = apt.image.url
+                        break
+
+            search_data["matching_apartments"] = matching_apartments
+            search_data["thumbnails"] = thumbnails
+
+            # paginate the search location results
+            page = request.GET.get("page", 1)
+
+            paginator = Paginator(search_data["locations"], 6)
+            try:
+                locations_page = paginator.page(page)
+            except PageNotAnInteger:
+                locations_page = paginator.page(1)
+            except EmptyPage:
+                locations_page = paginator.page(paginator.num_pages)
+
+            search_data["locations_page"] = locations_page
 
             # Get 311 statistics
-            if address and address.zipcode:
+            if zipcode:
                 try:
-                    stats = get_311_statistics(str(address.zipcode))
+                    refresh_nyc311_statistics_if_needed(zipcode)
+                    stats = NYC311Statistics.objects.filter(zipcode=zipcode)
                     search_data["stats"] = [
                         (s.complaint_type, 100 * s.complaint_level / 5) for s in stats
                     ]
@@ -83,6 +128,7 @@ def search(request):
                 "search_title": search_title,
                 "search_form": search_form,
                 "timeout": timeout,
+                "zipcode": zipcode,
             },
         )
     else:
@@ -93,13 +139,14 @@ def search(request):
 
 def data_311(request):
     if request.method == "GET" and "zip_code" in request.GET:
-        zip_code = request.GET["zip_code"]
+        zip_code = str(request.GET["zip_code"])
 
         results = {}
         timeout = False
         # Get 311 statistics
         try:
-            results["stats"] = get_311_statistics(str(zip_code))
+            refresh_nyc311_statistics_if_needed(zip_code)
+            results["stats"] = NYC311Statistics.objects.filter(zipcode=zip_code)
         except TimeoutError:
             timeout = True
 
@@ -192,29 +239,40 @@ def css_color_for_complaint_level(level):
 
 def build_search_query(address, min_price, max_price, bed_num):
     # builds a dictionary of query parameters used to pass values into
-    # the Location model query
-    query_params = {}
+    # the Location model query and Apartment model query
+    query_params_location = {}
+    query_params_apartment = {}
+
     if address:
         # filter based on existence of locations with the specified address
         if address.city:
-            query_params["city"] = address.city
+            # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
+            query_params_location["city__iexact"] = address.city
         if address.state:
-            query_params["state"] = address.state
+            query_params_location["state__iexact"] = address.state
         if address.zipcode:
-            query_params["zipcode"] = address.zipcode
+            query_params_location["zipcode"] = address.zipcode
+
+        # moved here to fix bug when querying "100100" because address returned is None and yet results are displayed
+        # rented apartments shouldn't show up in general search
+        query_params_location["apartment_set__is_rented"] = False
+        query_params_apartment["is_rented"] = False
     if max_price:
         # filter based on existence of apartments  with a rent_price less than or equal (lte)
         # than the max_price
-        query_params["apartment_set__rent_price__lte"] = max_price
+        query_params_location["apartment_set__rent_price__lte"] = max_price
+        query_params_apartment["rent_price__lte"] = max_price
     if min_price:
         # filter based on existence of apartments  with a rent_price greater than or equal (gte)
         # than the min_price
-        query_params["apartment_set__rent_price__gte"] = min_price
+        query_params_location["apartment_set__rent_price__gte"] = min_price
+        query_params_apartment["rent_price__gte"] = min_price
     if bed_num:
         # filter based on existence of locations with the specified bedroom number
-        query_params["apartment_set__number_of_bed"] = bed_num
+        query_params_location["apartment_set__number_of_bed"] = bed_num
+        query_params_apartment["number_of_bed"] = bed_num
 
-    return query_params
+    return query_params_location, query_params_apartment
 
 
 def data_res(request):

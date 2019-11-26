@@ -59,10 +59,63 @@
         </div>
     </div>
 
+    <!-- Tenant Apartments -->
+    {% if user.tenant_apartment_set.count > 0 %}
+        <hr>
+        <h3>Places I live</h3>
+        <!--Section: Cards-->
+        <section class="text-center">
+        {% for apt in user.tenant_apartment_set.all %}
+            {% cycle 'odd' 'even' as odd_even silent %}
+            {% if odd_even == "odd" %}
+            <!--Grid row-->
+            <div class="row mb-4 wow fadeIn">
+            {% endif %}
+            <!--Grid column-->
+            <div class="col-md-6 mb-4">
+            <!--Card-->
+            <div class="card">
+                <!--Card image-->
+                <div class="view overlay">
+                <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
+                {% if apt.image %}
+                    <img src="{{ apt.image.url }} " class="card-img-top cover" alt="apartment image">
+                {% else %}
+                    <img src="/static/img/no_apa_pic.jpg" class="card-img-top cover" alt="apartment image">
+                {% endif %}
+                </a>
+                </div>
+                <!--Card content-->
+                <div class="card-body">
+                <!--Title-->
+                <h4 class="card-title">{{ apt.location.full_address }}</h4>
+                <!--Text-->
+                <div class="mb-3">
+                    {%if apt.suite_num %} 
+                    <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+                    {% endif %}
+                    <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
+                    <span class="badge green mr-1 black-text">Rent ($): {{ apt.rent_price }}</span>
+                </div>
+                </div>
+            </div>
+            <!--/.Card-->
+            </div>
+            <!--Grid column-->
+            {% if odd_even == "even" %}
+            </div>
+            {% endif %}
+        {% endfor %}
+        </section>
+        <!--Section: Cards-->
+    {% endif %}
+
+
+
     <!-- Landlord Apartments -->
     {% if user.landlord_apartment_set.count > 0 %}
         <hr>
-        <h1>Landlord Apartments</h1>
+        <h3>Places I own</h3>
         <!--Section: Cards-->
         <section class="text-center">
         {% for apt in user.landlord_apartment_set.all %}
@@ -77,11 +130,11 @@
             <div class="card">
                 <!--Card image-->
                 <div class="view overlay">
-                <a href="{% url 'apartment' pk=apt.location.id suite_num=apt.suite_num %}">
+                <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
                 {% if apt.image %}
-                    <img src="{{ apt.image.url }} " class="card-img-top cover" alt="apartment image">
+                    <img src="{{ apt.image.url }} " class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
                 {% else %}
-                    <img src="/static/img/no_apa_pic.jpg" class="card-img-top cover" alt="apartment image">
+                    <img src="/static/img/no_img.jpg" class="card-img-top cover" alt="apartment image">
                 {% endif %}
                 </a>
                 </div>
@@ -91,7 +144,9 @@
                 <h4 class="card-title">{{ apt.location.full_address }}</h4>
                 <!--Text-->
                 <div class="mb-3">
+                    {% if apt.suite_num %}
                     <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+                    {% endif %}
                     <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
                     <span class="badge green mr-1 black-text">Rent ($): {{ apt.rent_price }}</span>
                 </div>

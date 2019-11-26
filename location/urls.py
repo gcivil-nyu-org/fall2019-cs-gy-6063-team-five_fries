@@ -4,22 +4,18 @@ from . import views
 
 urlpatterns = [
     path("<int:pk>/", views.LocationView.as_view(), name="location"),
+    path("<int:pk>/apartment/<int:apk>", views.apartment_detail_view, name="apartment"),
+    path("<int:pk>/apartment/<int:apk>/claim", views.claim_view, name="claim"),
     path(
-        "<int:pk>/apartment/<suite_num>", views.apartment_detail_view, name="apartment"
-    ),
-    path("<int:pk>/apartment/<suite_num>/claim", views.claim_view, name="claim"),
-    path(
-        "<int:pk>/apartment/<suite_num>/contact_landlord",
+        "<int:pk>/apartment/<int:apk>/contact_landlord",
         views.contact_landlord,
         name="contact_landlord",
     ),
     path(
-        "<int:pk>/apartment/<suite_num>/edit",
-        views.apartment_edit,
-        name="apartment_edit",
+        "<int:pk>/apartment/<int:apk>/edit", views.apartment_edit, name="apartment_edit"
     ),
     path(
-        "<int:pk>/apartment/<suite_num>/delete",
+        "<int:pk>/apartment/<int:apk>/delete",
         views.apartment_delete,
         name="apartment_delete",
     ),
