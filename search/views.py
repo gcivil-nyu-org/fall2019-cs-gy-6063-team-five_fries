@@ -30,7 +30,8 @@ def search(request):
         zipcode = None
         if request.GET.get("query"):
             address = normalize_us_address(request.GET.get("query"))
-            zipcode = address.zipcode
+            if address:
+                zipcode = address.zipcode
 
         # print(str(address))
         timeout = False
@@ -251,6 +252,11 @@ def build_search_query(address, min_price, max_price, bed_num):
             query_params_location["state__iexact"] = address.state
         if address.zipcode:
             query_params_location["zipcode"] = address.zipcode
+
+        # moved here to fix bug when querying "100100" because address returned is None and yet results are displayed
+        # rented apartments shouldn't show up in general search
+        query_params_location["apartment_set__is_rented"] = False
+        query_params_apartment["is_rented"] = False
     if max_price:
         # filter based on existence of apartments  with a rent_price less than or equal (lte)
         # than the max_price
@@ -265,10 +271,6 @@ def build_search_query(address, min_price, max_price, bed_num):
         # filter based on existence of locations with the specified bedroom number
         query_params_location["apartment_set__number_of_bed"] = bed_num
         query_params_apartment["number_of_bed"] = bed_num
-
-    # rented apartments shouldn't show up in general search
-    query_params_location["apartment_set__is_rented"] = False
-    query_params_apartment["is_rented"] = False
 
     return query_params_location, query_params_apartment
 
