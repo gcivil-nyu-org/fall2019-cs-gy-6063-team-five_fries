@@ -168,6 +168,8 @@
     <div>
         <h5 style="display: inline; margin-right:10px">Locations</h5>
 
+        {% if search_data.locations %}
+
         <button id="mapTrigger" type="button" class="btn btn-primary" data-toggle="modal" data-target="#mapModal">See Apartments on Map</button>
         <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="mapModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-full" role="document">
@@ -189,7 +191,6 @@
         </div>
 
         <hr class="mt-0 mb-2 mt-2">
-        {% if search_data.locations %}
 
             <!--Section: Cards-->
             <section class="text-center" >
