@@ -288,9 +288,7 @@ class SearchIndexViewTests(TestCase):
             "bed_num": 4,
         }
         session.save()
-        # response = self.client.get(
-        #     "/search/?query=NY&min_price=500&max_price=2000&bed_num=4"
-        # )
+
         response = self.client.get("/search/")
         self.assertContains(response, "Address:")
         self.assertContains(response, "Max Price: 2000")

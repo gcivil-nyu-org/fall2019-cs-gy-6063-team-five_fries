@@ -27,7 +27,7 @@ def search(request):
         # if there isn't a current search query, check the user session to see
         # if there's a previously stored query
         if request.session.get("last_query", False) and not request.GET.get("query"):
-            print("getting session object")
+
             query["query"] = request.session["last_query"]["query"]
             query["min_price"] = request.session["last_query"]["min_price"]
             query["max_price"] = request.session["last_query"]["max_price"]
@@ -47,7 +47,6 @@ def search(request):
             if address:
                 zipcode = address.zipcode
 
-        # print(str(address))
         timeout = False
         max_price = query["max_price"]
         min_price = query["min_price"]
