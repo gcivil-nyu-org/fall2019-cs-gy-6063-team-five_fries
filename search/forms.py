@@ -5,9 +5,9 @@ from crispy_forms.layout import Layout, Submit, Field
 
 class SearchForm(forms.Form):
     query = forms.CharField(required=True)
-    min_price = forms.IntegerField(min_value=0, required=False)
-    max_price = forms.IntegerField(min_value=0, required=False)
-    bed_num = forms.IntegerField(min_value=0, required=False)
+    min_price = forms.IntegerField(min_value=1, max_value=100000, required=False)
+    max_price = forms.IntegerField(min_value=1, max_value=100000, required=False)
+    bed_num = forms.IntegerField(min_value=0, max_value=10, required=False)
 
     def __init__(self, *args, **kwargs):
         self.helper = FormHelper()
