@@ -23,21 +23,35 @@ def search(request):
     # generic zip code form post
     if request.method == "GET":
 
+        query = {}
+        # if there isn't a current search query, check the user session to see
+        # if there's a previously stored query
+        if request.session.get("last_query", False) and not request.GET.get("query"):
+            print("getting session object")
+            query["query"] = request.session["last_query"]["query"]
+            query["min_price"] = request.session["last_query"]["min_price"]
+            query["max_price"] = request.session["last_query"]["max_price"]
+            query["bed_num"] = request.session["last_query"]["bed_num"]
+        else:
+            query["query"] = request.GET.get("query")
+            query["min_price"] = request.GET.get("min_price")
+            query["max_price"] = request.GET.get("max_price")
+            query["bed_num"] = request.GET.get("bed_num")
         # pass the form data to the form class
-        search_form = SearchForm(request.GET)
+        search_form = SearchForm(query)
 
         address = None
         zipcode = None
-        if request.GET.get("query"):
-            address = normalize_us_address(request.GET.get("query"))
+        if query["query"]:
+            address = normalize_us_address(query["query"])
             if address:
                 zipcode = address.zipcode
 
         # print(str(address))
         timeout = False
-        max_price = request.GET.get("max_price")
-        min_price = request.GET.get("min_price")
-        bed_num = request.GET.get("bed_num")
+        max_price = query["max_price"]
+        min_price = query["min_price"]
+        bed_num = query["bed_num"]
 
         search_title = ""
 
@@ -46,6 +60,10 @@ def search(request):
         query_params_location, query_params_apartment = build_search_query(
             address=address, max_price=max_price, min_price=min_price, bed_num=bed_num
         )
+
+        # update stored last query in the session object
+        request.session["last_query"] = query
+        request.session.modified = True
 
         search_data = {}
         if query_params_location.keys() and search_form.is_valid():

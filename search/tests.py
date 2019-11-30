@@ -276,6 +276,27 @@ class SearchIndexViewTests(TestCase):
             msg="Returned results when it shouldn't have",
         )
 
+    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
+    @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
+    def test_search_page_session(self):
+        session = self.client.session
+        session["last_query"] = {
+            "query": "NY",
+            "max_price": 2000,
+            "min_price": 500,
+            "bed_num": 4,
+        }
+        session.save()
+        # response = self.client.get(
+        #     "/search/?query=NY&min_price=500&max_price=2000&bed_num=4"
+        # )
+        response = self.client.get("/search/")
+        self.assertContains(response, "Address:")
+        self.assertContains(response, "Max Price: 2000")
+        self.assertContains(response, "Min Price: 500")
+        self.assertContains(response, "Number of Bedroom: 4")
+
 
 class SearchCraigsTests(TestCase):
     @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
