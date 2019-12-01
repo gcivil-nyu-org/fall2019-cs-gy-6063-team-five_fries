@@ -14,7 +14,10 @@ class ApartmentUploadForm(forms.Form):
     address = forms.CharField(label="Address", max_length=255)
     zipcode = us_forms.USZipCodeField(label="Zip Code")
     rent_price = forms.DecimalField(
-        label="Rent Price ($)", max_digits=20, decimal_places=2, validators=[MinValueValidator(1), MaxValueValidator(100000)]
+        label="Rent Price ($)",
+        max_digits=20,
+        decimal_places=2,
+        validators=[MinValueValidator(1), MaxValueValidator(100000)],
     )
     number_of_bed = forms.IntegerField(
         label="Bedrooms", validators=[MinValueValidator(0), MaxValueValidator(10)]
@@ -26,12 +29,12 @@ class ApartmentUploadForm(forms.Form):
     suite_num = forms.CharField(label="Suite Number", max_length=30)
     description = forms.CharField(widget=forms.Textarea)
 
-    def clean_rent_price(self):
-        rent_price = self.cleaned_data.get("rent_price")
-        if rent_price <= 0:
-            raise forms.ValidationError("Rental price cannot be negative!")
+    # def clean_rent_price(self):
+    #     rent_price = self.cleaned_data.get("rent_price")
+    #     if rent_price <= 0:
+    #         raise forms.ValidationError("Rental price cannot be negative!")
 
-        return rent_price
+    #     return rent_price
 
     def clean_suite_num(self):
         """checks for apartments with duplicate suite numbers in the same location"""

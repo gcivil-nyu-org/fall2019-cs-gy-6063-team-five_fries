@@ -234,7 +234,10 @@ class LocationViewTests(TestCase):
 
         response = self.client.post(reverse("apartment_upload"), post_data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Rental price cannot be negative!")
+        # self.assertContains(response, "Rental price cannot be negative!")
+        self.assertContains(
+            response, "Ensure this value is greater than or equal to 1."
+        )
 
     def test_location_edit_not_logged_in(self):
         """

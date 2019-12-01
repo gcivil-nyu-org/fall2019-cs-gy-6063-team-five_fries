@@ -264,6 +264,8 @@ def apartment_upload(request):
 
             # redirect to the confirmation page
             return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
+        else:
+            return render(request, "apartment_upload.html", {"form": form})
 
     # if a GET (or any other method) we'll create a blank form
     else:
