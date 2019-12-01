@@ -139,7 +139,7 @@ class LocationViewTests(TestCase):
         self.assertTrue(loc.check_tenant(user))
 
         response = self.client.get(reverse("location", args=(1,)))
-        self.assertContains(response, "Write something")
+        self.assertContains(response, "Review")
 
     def test_apartment_view(self):
         """create location and apartment associated with that location.
@@ -513,7 +513,7 @@ class LocationViewTests(TestCase):
         )
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
-        self.assertNotIn("Interested?", content)
+        self.assertIn("Interested?", content)
 
     def test_display_interested_if_landlord_and_renter_same(self):
         loc, apt = self.create_location_and_apartment()
@@ -526,7 +526,7 @@ class LocationViewTests(TestCase):
         )
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
-        self.assertNotIn("Interested?", content)
+        self.assertIn("Interested?", content)
 
     def test_display_interested_if_landlord_and_renter_different(self):
         loc, apt = self.create_location_and_apartment()
