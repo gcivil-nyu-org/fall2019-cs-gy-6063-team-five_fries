@@ -211,6 +211,23 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
 
+            {% elif not can_leave_a_review %}
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Not a Tenant?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <p>It appears that you are not a tenant for any apartments at this location. If this is not
+                        the case, you can claim that you are a tenant by going to the apartment view and clicking
+                        <b><i>"Are you a tenant or a landlord of this apartment?"</i></b></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+
             {% else %}
                 <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Review this location</h5>
