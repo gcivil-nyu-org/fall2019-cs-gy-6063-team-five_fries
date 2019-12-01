@@ -54,10 +54,15 @@ class Apartment(models.Model):
         Location, on_delete=models.CASCADE, related_name="apartment_set"
     )
     rent_price = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, validators=[MinValueValidator(1), MaxValueValidator(100000)]
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        validators=[MinValueValidator(1), MaxValueValidator(100000)],
     )
     number_of_bed = models.IntegerField(
-        verbose_name="Bedrooms", null=True, validators=[MinValueValidator(0), MaxValueValidator(10)]
+        verbose_name="Bedrooms",
+        null=True,
+        validators=[MinValueValidator(0), MaxValueValidator(10)],
     )
     description = models.TextField(default="")
     last_modified = models.DateTimeField(auto_now=True)
