@@ -29,13 +29,6 @@ class ApartmentUploadForm(forms.Form):
     suite_num = forms.CharField(label="Suite Number", max_length=30)
     description = forms.CharField(widget=forms.Textarea)
 
-    # def clean_rent_price(self):
-    #     rent_price = self.cleaned_data.get("rent_price")
-    #     if rent_price <= 0:
-    #         raise forms.ValidationError("Rental price cannot be negative!")
-
-    #     return rent_price
-
     def clean_suite_num(self):
         """checks for apartments with duplicate suite numbers in the same location"""
         city = self.cleaned_data.get("city")
