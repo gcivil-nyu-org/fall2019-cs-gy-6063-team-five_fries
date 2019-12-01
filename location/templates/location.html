@@ -178,7 +178,7 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
 {% if messages %}
 <ul>
   {% for message in messages %}
-    {% if 'apartment' in message %}
+    {% if 'apartment' in message.tags %}
         <li style="color:green">
             {{ message }}
         </li>
@@ -242,10 +242,10 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary" name="form_submit">Review!</button>
                 </div>
+            {% endif %}
         </div>
       </div>
     </div>
-    {% endif %}
 </form>
 
 
