@@ -30,3 +30,8 @@ def get_item(dictionary, key):
 @register.filter
 def get_modulo(value, key):
     return value % key
+
+
+@register.filter
+def add(val1, val2):
+    return val1 + val2
