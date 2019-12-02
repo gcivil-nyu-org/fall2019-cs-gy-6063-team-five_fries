@@ -100,7 +100,7 @@ def search(request):
                 matching_apartments[loc.id] = num_matches
                 for apt in matches:
                     if apt.image:
-                        thumbnails[loc.id] = apt.image.url
+                        thumbnails[loc.id] = apt.image
                         break
 
             search_data["matching_apartments"] = matching_apartments
