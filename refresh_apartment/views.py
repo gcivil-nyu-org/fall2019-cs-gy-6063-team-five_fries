@@ -1,3 +1,5 @@
+from bs4 import BeautifulSoup
+import requests
 from django.shortcuts import render
 from external.craigslist import fetch_craigslist_housing
 from external.googleapi.fetch import fetch_reverse_geocode
@@ -10,6 +12,8 @@ import googlemaps
 
 
 CITY_LIST = ["brx", "brk", "fct", "lgi", "mnh", "jsy", "que", "stn", "wch"]
+DEFAULT_IMG_URL = "/static/img/no_img.png"
+DEFAULT_DESCRIPTION = "DEFAULT DESCRIPTION"
 
 
 def autofetch(request):
@@ -37,7 +41,6 @@ def autofetch(request):
         bckgrndfetch.delay(list(city_list), int(limit))
 
     return render(request, "account.html")
-
 
 @shared_task
 def bckgrndfetch(city_list, limit):
@@ -68,13 +71,24 @@ def bckgrndfetch(city_list, limit):
             last_updated = r["last_updated"]
             bedrooms = r["bedrooms"]
 
+            image_url, description = DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
+            try:
+                image_url, description = get_img_url_and_description(r["url"])
+            except requests.exceptions.ConnectionError:
+                pass
+
             if len(Apartment.objects.filter(c_id=c_id)) > 0:
 
                 apartment = Apartment.objects.get(c_id=c_id)
                 if apartment.last_modified != last_updated:
+
                     print(
                         f"city_name={city_name}: Found existing apartment for c_id = {c_id}, updating."
                     )
+
+                    apartment.image = image_url
+                    apartment.description = description
+
                     apartment.rent_price = price
                     apartment.number_of_bed = bedrooms
                     apartment.last_modified = last_updated
@@ -157,6 +171,8 @@ def bckgrndfetch(city_list, limit):
                 )
 
                 apartment.rent_price = price
+                apartment.image = image_url
+                apartment.description = description
                 apartment.number_of_bed = bedrooms
                 apartment.last_modified = last_updated
                 apartment.save()
@@ -164,3 +180,27 @@ def bckgrndfetch(city_list, limit):
         print(" Finish query\n")
 
     print(f"End at: {str(datetime.now())} \n")
+
+
+def get_img_url_and_description(url):
+    result = requests.get(url)
+    if result.status_code == 200:
+        soup = BeautifulSoup(result.content, "html.parser")
+        img_tag = soup.find_all("a", {"class": "thumb"})
+        img_url = img_tag[0].get("href")
+
+        body = soup.find("section", id="postingbody")
+        body_text = (getattr(e, "text", e) for e in body
+                     if not getattr(e, "attrs", None))
+        description = ''.join(body_text).strip()
+
+        if len(img_tag) == 0 and description == "":
+            return DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
+        elif len(img_tag) == 0:
+            return DEFAULT_IMG_URL, description
+        elif description == "":
+            return img_url, DEFAULT_DESCRIPTION
+        else:
+            return img_url, description
+    else:
+        return DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
