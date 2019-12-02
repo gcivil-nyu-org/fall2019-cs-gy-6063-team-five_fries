@@ -187,7 +187,6 @@ def get_img_url_and_description(url):
     if result.status_code == 200:
         soup = BeautifulSoup(result.content, "html.parser")
         img_tag = soup.find_all("a", {"class": "thumb"})
-        img_url = img_tag[0].get("href")
 
         body = soup.find("section", id="postingbody")
         body_text = (getattr(e, "text", e) for e in body
@@ -199,8 +198,8 @@ def get_img_url_and_description(url):
         elif len(img_tag) == 0:
             return DEFAULT_IMG_URL, description
         elif description == "":
-            return img_url, DEFAULT_DESCRIPTION
+            return img_tag[0].get("href"), DEFAULT_DESCRIPTION
         else:
-            return img_url, description
+            return img_tag[0].get("href"), description
     else:
         return DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
