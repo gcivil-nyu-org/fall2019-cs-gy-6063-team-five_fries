@@ -152,6 +152,9 @@ def contact_landlord(request, pk, apk):
             send_mail(
                 subject, message, sender_email, [landlord_email], fail_silently=False
             )
+            messages.success(
+                request, "An email has been sent to the landlord!", extra_tags="email"
+            )
 
     return HttpResponseRedirect(reverse("apartment", kwargs={"pk": pk, "apk": apk}))
 
@@ -162,11 +165,17 @@ def favorites(request, pk):
     user = request.user
     if apartment not in user.favorites.all():
         user.favorites.add(apartment)
-        messages.success(request, "This apartment has been added to your favorites!")
+        messages.success(
+            request,
+            "This apartment has been added to your favorites!",
+            extra_tags="apartment",
+        )
     else:
         user.favorites.remove(apartment)
         messages.success(
-            request, "This apartment has been removed from your favorites!"
+            request,
+            "This apartment has been removed from your favorites!",
+            extra_tags="apartment",
         )
     return HttpResponseRedirect(reverse("location", args=(pk,)))
 
