@@ -42,6 +42,7 @@ def autofetch(request):
 
     return render(request, "account.html")
 
+
 @shared_task
 def bckgrndfetch(city_list, limit):
 
@@ -189,9 +190,10 @@ def get_img_url_and_description(url):
         img_tag = soup.find_all("a", {"class": "thumb"})
 
         body = soup.find("section", id="postingbody")
-        body_text = (getattr(e, "text", e) for e in body
-                     if not getattr(e, "attrs", None))
-        description = ''.join(body_text).strip()
+        body_text = (
+            getattr(e, "text", e) for e in body if not getattr(e, "attrs", None)
+        )
+        description = "".join(body_text).strip()
 
         if len(img_tag) == 0 and description == "":
             return DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
