@@ -5,6 +5,7 @@ from crispy_forms.layout import Layout, Submit, Button, ButtonHolder, Div
 
 from localflavor.us import forms as us_forms
 from .models import Location, Apartment
+from external.googleapi.fetch import fetch_geocode
 
 
 class ApartmentUploadForm(forms.Form):
@@ -51,6 +52,20 @@ class ApartmentUploadForm(forms.Form):
         except Location.DoesNotExist:
             # if the apartment belongs to a location that does not exist, we can't have duplicate apartments
             return suite_num
+
+    def clean(self):
+        super(ApartmentUploadForm, self).clean()
+
+        address = self.cleaned_data.get("address")
+        city = self.cleaned_data.get("city")
+        state = self.cleaned_data.get("state")
+        zipcode = self.cleaned_data.get("zipcode")
+
+        g_data = fetch_geocode(f"{address}, {city} {state}, {zipcode}")
+        if len(g_data) == 0:
+            raise forms.ValidationError(
+                "Unable to locate that address, please check that it was entered correctly."
+            )
 
 
 class ClaimForm(forms.Form):
