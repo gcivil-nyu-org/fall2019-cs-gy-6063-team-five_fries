@@ -150,7 +150,12 @@ def get_zipcode(g_result) -> Optional[str]:
     """
     result = get_result(g_result)
     zipcode = result.get("postal")
+<<<<<<< HEAD
 
+=======
+    print(f"result: {result}")
+    print(f"zipcode: {zipcode}")
+>>>>>>> made modifications to search
     if not zipcode:
         return ""
     else:

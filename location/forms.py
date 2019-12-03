@@ -6,10 +6,7 @@ from crispy_forms.layout import Layout, Submit, Button, ButtonHolder, Div
 from localflavor.us import forms as us_forms
 from .models import Location, Apartment
 from external.googleapi.fetch import fetch_geocode
-<<<<<<< HEAD
-=======
 from external.googleapi import g_utils
->>>>>>> made modifications to search
 
 
 class ApartmentUploadForm(forms.Form):
