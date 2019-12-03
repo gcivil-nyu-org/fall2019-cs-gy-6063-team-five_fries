@@ -275,6 +275,40 @@ class LocationViewTests(TestCase):
             "Unable to locate that address, please check that it was entered correctly.",
         )
 
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
+    def test_location_upload_negative_suite(self):
+        """
+        insures a validation error is raised when an apartment is uploaded
+        that does not have a corresponding location in the google API
+        """
+        self.client.force_login(SiteUser.objects.create(username="testuser"))
+
+        # Create a fake image
+        im = Image.new(mode="RGB", size=(200, 200))
+        im_io = BytesIO()
+        im.save(im_io, "JPEG")
+        im_io.seek(0)
+        mem_image = InMemoryUploadedFile(
+            im_io, None, "image.jpg", "image/jpeg", len(im_io.getvalue()), None
+        )
+
+        post_data = {
+            "city": "Test",
+            "state": "AK",
+            "address": "123 test ave",
+            "zipcode": "99999",
+            "suite_num": "-1",
+            "rent_price": 2500,
+            "number_of_bed": 1,
+            "description": "This is a test",
+            "image": mem_image,
+        }
+        response = self.client.post(reverse("apartment_upload"), post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "You cannot submit an apartment with a negative Suite Number"
+        )
+
     def test_location_edit_not_logged_in(self):
         """
         Tests the 'apartment_edit' page redirects when the user is not logged in

@@ -37,6 +37,12 @@ class ApartmentUploadForm(forms.Form):
         address = self.cleaned_data.get("address")
         zipcode = self.cleaned_data.get("zipcode")
         suite_num = self.cleaned_data.get("suite_num")
+
+        if suite_num.strip()[0] == "-":
+            raise forms.ValidationError(
+                "You cannot submit an apartment with a negative Suite Number"
+            )
+
         try:  # If the apartment belongs to a location that already exists
             loc = Location.objects.get(
                 city=city, state=state, address=address, zipcode=zipcode
