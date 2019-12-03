@@ -33,6 +33,7 @@ def normalize_us_address(address) -> Optional[Address]:
         return Address(
             street=cache.street,
             city=cache.city,
+            locality=cache.locality,
             state=cache.state,
             zipcode=cache.zipcode,
             latitude=cache.latitude,
@@ -47,7 +48,7 @@ def normalize_us_address(address) -> Optional[Address]:
     response = response_list[0]
 
     state = get_state(response)
-    city = get_city(response)
+    city, locality = get_city(response)
     street_num, route = get_address(response)
     zip_code = get_zipcode(response)
     lat, lon = get_location(response)
@@ -57,6 +58,7 @@ def normalize_us_address(address) -> Optional[Address]:
             search_string=address,
             street=(" ".join(filter(lambda x: x, [street_num, route]))),
             city=(city if city is not None else ""),
+            locality=locality,
             state=(state if state is not None else ""),
             zipcode=zip_code,
             latitude=lat,
@@ -70,6 +72,7 @@ def normalize_us_address(address) -> Optional[Address]:
         street=" ".join(filter(lambda x: x, [street_num, route])),
         city=city,
         state=state,
+        locality=locality
         zipcode=zip_code,
         latitude=lat,
         longitude=lon,
@@ -118,13 +121,12 @@ def get_state(g_result) -> Optional[str]:
     return state
 
 
-def get_city(g_result) -> Optional[str]:
+def get_city(g_result) -> Optional[Tuple[str, str]]:
     """
-    Parses out the city component of a geocode result
+    Parses out the city and locality components of a geocode result
     """
     result = get_result(g_result)
 
-    neighborhood = None
     locality = None
     city = None
     for comp in result.get("address_components"):
@@ -134,14 +136,15 @@ def get_city(g_result) -> Optional[str]:
             continue
 
         if "neighborhood" in types:
-            neighborhood = comp.get("long_name")
+            city = comp.get("long_name")
 
         # https://stackoverflow.com/a/49640066/1556838
         if "locality" in types or "sublocality_level_1" in types:
             locality = comp.get("long_name")
 
-    city = locality if not neighborhood else neighborhood
-    return city
+    if not city:
+        city = locality
+    return city, locality
 
 
 def get_zipcode(g_result) -> Optional[str]:

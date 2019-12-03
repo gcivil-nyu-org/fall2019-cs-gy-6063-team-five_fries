@@ -229,9 +229,11 @@ def apartment_upload(request):
             # parse out the latitude and longitude from the response
             lat_lng = g_utils.parse_lat_lng(g_data[0])
 
+            g_locality = g_utils.get_city(g_data[0])[1]
+
             # create or retrieve an existing location
             loc, created = Location.objects.get_or_create(
-                city=city, state=state, address=address, zipcode=zipcode
+                city=city, state=state, address=address, zipcode=zipcode, locality=locality
             )  # using get_or_create avoids race condition
 
             if created:
