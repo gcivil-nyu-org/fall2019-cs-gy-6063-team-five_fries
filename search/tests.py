@@ -222,6 +222,14 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Min Price: 500")
         self.assertContains(response, "Number of Bedroom: 4")
 
+    def test_search_reversed_price(self):
+        response = self.client.get(
+            "/search/?query=NY&min_price=2000&max_price=500&bed_num=4"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Larger than Max")
+        self.assertContains(response, "Less than Min")
+
     @mock.patch("search.views.normalize_us_address")
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     def test_search_page_matching_apartments(self, mock_norm):
