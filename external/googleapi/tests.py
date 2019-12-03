@@ -610,8 +610,9 @@ class GUtilsTests(TestCase):
         tests the get_address function when the returned result
         has no types field
         """
-        city = get_city(fetch_geocode_no_type("00000"))
+        city, locality = get_city(fetch_geocode_no_type("00000"))
         self.assertEqual(city, None)
+        self.assertEqual(locality, None)
 
     def test_get_state_no_types(self):
         """

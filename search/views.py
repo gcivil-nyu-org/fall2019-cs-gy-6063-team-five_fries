@@ -57,7 +57,7 @@ def search(request):
         # build the query parameter dictionary that will be used to
         # query the Location model and Apartment model
         query_params_location, query_params_apartment = build_search_query(
-            address=address, max_price=max_price, min_price=min_price, bed_num=bed_num
+            address=address, max_price=max_price, min_price=min_price, bed_num=bed_num, orig_query=query["query"]
         )
 
         # update stored last query in the session object
@@ -254,7 +254,7 @@ def css_color_for_complaint_level(level):
     return colors[level]
 
 
-def build_search_query(address, min_price, max_price, bed_num):
+def build_search_query(address, min_price, max_price, bed_num, orig_query):
     # builds a dictionary of query parameters used to pass values into
     # the Location model query and Apartment model query
     query_params_location = {}
@@ -267,6 +267,9 @@ def build_search_query(address, min_price, max_price, bed_num):
             query_params_location["city__iexact"] = address.city
         if address.state:
             query_params_location["state__iexact"] = address.state
+        if address.locality and address.state and 
+            address.locality != address.state:
+            query_params_location["locality__iexact"] = address.locality
         if address.zipcode:
             query_params_location["zipcode"] = address.zipcode
 
