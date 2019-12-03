@@ -202,7 +202,7 @@ class LocationViewTests(TestCase):
         }
 
         response = self.client.post(reverse("apartment_upload"), post_data)
-        self.assertRedirects(response, reverse("apartment_upload_confirmation"))
+        self.assertRedirects(response, reverse("apartment", kwargs={"pk": 7, "apk": 8}))
 
     @mock.patch("location.views.fetch_geocode", fetch_geocode_stub)
     @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
