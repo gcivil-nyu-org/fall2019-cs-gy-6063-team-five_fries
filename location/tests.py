@@ -170,6 +170,7 @@ class LocationViewTests(TestCase):
         response = self.client.get(reverse("apartment_upload"))
         self.assertEqual(response.status_code, 200)
 
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_location_upload_post(self, mock_client):
         """
@@ -190,10 +191,10 @@ class LocationViewTests(TestCase):
         )
 
         post_data = {
-            "city": "New York",
+            "city": "Long Island City",
             "state": "NY",
-            "address": "111 anytown st",
-            "zipcode": "10003",
+            "address": "28-15 34th Street",
+            "zipcode": "11103",
             "suite_num": "1",
             "rent_price": 2500,
             "number_of_bed": 1,
@@ -205,6 +206,7 @@ class LocationViewTests(TestCase):
         self.assertRedirects(response, reverse("apartment_upload_confirmation"))
 
     @mock.patch("location.views.fetch_geocode", fetch_geocode_stub)
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
     def test_location_upload_negative_price(self):
         """
         tests uploading an apartment that has a negative rental price

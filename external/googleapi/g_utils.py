@@ -46,38 +46,10 @@ def normalize_us_address(address) -> Optional[Address]:
 
     response = response_list[0]
 
-    # state = None
-    # city = None
-    # route = ""
-    # street_num = ""
-
     state = get_state(response)
     city = get_city(response)
     street_num, route = get_address(response)
-
-    # for comp in response.get("address_components"):
-    #     types = comp.get("types")
-
-    #     if not types:
-    #         continue
-
-    #     if "administrative_area_level_1" in types:
-    #         state = comp.get("short_name")
-
-    #     if "street_number" in types:
-    #         street_num = comp.get("long_name")
-
-    #     if "route" in types:
-    #         route = comp.get("long_name")
-
-    #     # https://stackoverflow.com/a/49640066/1556838
-    #     if "locality" in types or "sublocality_level_1" in types:
-    #         city = comp.get("long_name")
-
-    # zip_code = response.get("postal")
     zip_code = get_zipcode(response)
-    # loc = response.get("geometry").get("location")
-    # lat, lon = loc["lat"], loc["lng"]
     lat, lon = get_location(response)
 
     try:
@@ -178,8 +150,7 @@ def get_zipcode(g_result) -> Optional[str]:
     """
     result = get_result(g_result)
     zipcode = result.get("postal")
-    print(f"result: {result}")
-    print(f"zipcode: {zipcode}")
+
     if not zipcode:
         return ""
     else:

@@ -1,0 +1,64 @@
+[
+    {
+       "address_components": [
+          {
+             "long_name": "28-15",
+             "short_name": "28-15"
+          },
+          {
+             "long_name": "34th Street",
+             "short_name": "34th St"
+          },
+          {
+             "long_name": "Long Island City",
+             "short_name": "LIC"
+          },
+          {
+             "long_name": "Queens",
+             "short_name": "Queens"
+          },
+          {
+             "long_name": "Queens County",
+             "short_name": "Queens County"
+          },
+          {
+             "long_name": "New York",
+             "short_name": "NY"
+          },
+          {
+             "long_name": "United States",
+             "short_name": "US"
+          },
+          {
+             "long_name": "11103",
+             "short_name": "11103"
+          }
+       ],
+       "formatted_address": "28-15 34th St, Long Island City, NY 11103, USA",
+       "geometry": {
+          "location": {
+             "lat": 40.7667831,
+             "lng": -73.91779679999999
+          },
+          "location_type": "ROOFTOP",
+          "viewport": {
+             "northeast": {
+                "lat": 40.76813208029149,
+                "lng": -73.91644781970848
+             },
+             "southwest": {
+                "lat": 40.76543411970849,
+                "lng": -73.9191457802915
+             }
+          }
+       },
+       "place_id": "ChIJ_eoztkBfwokRJZ8i8DXMYfI",
+       "plus_code": {
+          "compound_code": "Q38J+PV New York, United States",
+          "global_code": "87G8Q38J+PV"
+       },
+       "types": [
+          "street_address"
+       ]
+    }
+ ]
