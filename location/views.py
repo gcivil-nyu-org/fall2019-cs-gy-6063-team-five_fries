@@ -153,7 +153,7 @@ def contact_landlord(request, pk, apk):
                 subject, message, sender_email, [landlord_email], fail_silently=False
             )
             messages.success(
-                request, "An email has been sent to the landlord!", extra_tags="email"
+                request, "An email has been sent to the landlord!", extra_tags="success"
             )
 
     return HttpResponseRedirect(reverse("apartment", kwargs={"pk": pk, "apk": apk}))
@@ -168,14 +168,14 @@ def favorites(request, pk):
         messages.success(
             request,
             "This apartment has been added to your favorites!",
-            extra_tags="apartment",
+            extra_tags="success",
         )
     else:
         user.favorites.remove(apartment)
         messages.success(
             request,
             "This apartment has been removed from your favorites!",
-            extra_tags="apartment",
+            extra_tags="success",
         )
     return HttpResponseRedirect(reverse("location", args=(pk,)))
 
@@ -262,17 +262,16 @@ def apartment_upload(request):
 
             apt.save()
 
-            # redirect to the confirmation page
-            return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
-        else:
-            return render(request, "apartment_upload.html", {"form": form})
+            messages.success(
+                request, message="Successfully created Apartment!", extra_tags="success"
+            )
+
+            return HttpResponseRedirect(
+                reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
+            )
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ApartmentUploadForm()
 
     return render(request, "apartment_upload.html", {"form": form})
-
-
-def apartment_upload_confirmation(request):
-    return render(request, "apartment_upload_confirmation.html")
