@@ -262,6 +262,8 @@ def build_search_query(address, min_price, max_price, bed_num):
 
     if address:
         # filter based on existence of locations with the specified address
+        if address.street:
+            query_params_location["address__iexact"] = address.street
         if address.city:
             # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
             query_params_location["city__iexact"] = address.city
