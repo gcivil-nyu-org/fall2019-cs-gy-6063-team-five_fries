@@ -30,3 +30,4 @@ googlemaps
 street-address
 celery
 redis
+pytest
