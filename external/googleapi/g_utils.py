@@ -57,7 +57,7 @@ def normalize_us_address(address) -> Optional[Address]:
         print("Returned a result not in New York")
         print(
             f"Street: {street_num}, Route: {route}, city: {city}, locality: {locality}"
-            ", state: {state}, zip: {zip_code}, lat: {lat}, lon: {lon}"
+            f", state: {state}, zip: {zip_code}, lat: {lat}, lon: {lon}"
         )
         return None
 
