@@ -85,16 +85,7 @@ class AutoFetchTests(TestCase):
         self.assertEqual(
             img_url, "https://images.craigslist.org/00H0H_2JxY7yF7CiN_600x450.jpg"
         )
-        self.assertEqual(
-            description, "At the side of Crown Heights awaits an undiscovered jewel. Located on Sterling Pl at "
-                         "Rochester Ave near the 3,4,A,C trains in a beautiful, quiet pre-war building, this newly "
-                         "renovated apartment is waiting for you!\n\n*New modern kitchen with stainless steel "
-                         "appliances\n*Kitchen living room open concept\n*New gorgeous tiled bath\n*New flooring "
-                         "throughout the apartment\n*Abundant sunlight through the large windows\n*Great closet "
-                         "space\n*State of the art surveillance system\n*Very safe, quiet & clean building \n*Heat and "
-                         "Hot water included \n*No pets\n\nGood credit and income to qualify. Guarantors welcome.\nFor "
-                         "more information or to schedule a viewing please call or text me at 201-297-6655"
-        )
+        self.assertNotEqual(description, "DEFAULT DESCRIPTION")
 
     @mock.patch("refresh_apartment.views.requests")
     def test_no_pic_get_img_url_and_description(self, mock_requests):
@@ -110,16 +101,7 @@ class AutoFetchTests(TestCase):
         img_url, description = get_img_url_and_description(url)
 
         self.assertEqual(img_url, "/static/img/no_img.png")
-        self.assertEqual(
-            description, "At the side of Crown Heights awaits an undiscovered jewel. Located on Sterling Pl at "
-                         "Rochester Ave near the 3,4,A,C trains in a beautiful, quiet pre-war building, this newly "
-                         "renovated apartment is waiting for you!\n\n*New modern kitchen with stainless steel "
-                         "appliances\n*Kitchen living room open concept\n*New gorgeous tiled bath\n*New flooring "
-                         "throughout the apartment\n*Abundant sunlight through the large windows\n*Great closet "
-                         "space\n*State of the art surveillance system\n*Very safe, quiet & clean building \n*Heat and "
-                         "Hot water included \n*No pets\n\nGood credit and income to qualify. Guarantors welcome.\nFor "
-                         "more information or to schedule a viewing please call or text me at 201-297-6655"
-        )
+        self.assertNotEqual(description, "DEFAULT DESCRIPTION")
 
     @mock.patch("refresh_apartment.views.requests")
     def test_no_des_get_img_url_and_description(self, mock_requests):
