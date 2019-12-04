@@ -23,7 +23,7 @@
 {% load crispy_forms_tags %}
 {% leaflet_js %}
 {% leaflet_css %}
-    
+
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -47,7 +47,7 @@
 {% block content %}
 <div class="row">
 <div class="col col-sm-9">
-    <h1>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h1>
+    <h3>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h3>
 </div>
 <div class="col col-sm-1">
 <form action="{% url 'favorite' object.id %}" method="POST">
