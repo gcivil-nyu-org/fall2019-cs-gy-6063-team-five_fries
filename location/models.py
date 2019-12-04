@@ -8,7 +8,7 @@ class Location(models.Model):
     city = models.CharField(max_length=100)
     # locality is for certain places (such as queens) where the google
     # locality and neighborhood are different
-    locality = models.CharField(max_length=100)
+    locality = models.CharField(max_length=100, default='')
     state = us_models.USStateField()
     address = models.CharField(max_length=255)
     zipcode = us_models.USZipCodeField()

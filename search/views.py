@@ -267,9 +267,7 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
             query_params_location["city__iexact"] = address.city
         if address.state:
             query_params_location["state__iexact"] = address.state
-        if address.locality and address.state and 
-            address.locality != address.state:
-            query_params_location["locality__iexact"] = address.locality
+        
         if address.zipcode:
             query_params_location["zipcode"] = address.zipcode
 
