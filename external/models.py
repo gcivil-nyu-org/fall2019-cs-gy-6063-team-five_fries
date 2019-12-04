@@ -16,6 +16,7 @@ class CachedSearch(models.Model):
     search_string = models.CharField(max_length=255, db_index=True)
     street = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100, blank=True)
+    locality = models.CharField(max_length=100, blank=True)
     state = models.CharField(max_length=100, blank=True)
     zipcode = models.CharField(max_length=10, blank=True)
     latitude = models.DecimalField(
@@ -44,6 +45,10 @@ class Address(object):
     state = attr.ib()
     latitude = attr.ib(converter=float)
     longitude = attr.ib(converter=float)
+    locality = attr.ib(
+        default=None,
+        validator=attr.validators.optional(attr.validators.instance_of(str)),
+    )
 
     @classmethod
     def from_dict(cls, dic):
