@@ -20,7 +20,7 @@
     var markerList = [];
 
     const locations = [
-    {% for item in search_data.locations %}
+    {% for item in search_data.locations_page %}
 
         [ {{ item.latitude }}, {{ item.longitude }}, "{{ item.google_map_url }}" ],
 
