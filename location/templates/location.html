@@ -186,7 +186,22 @@
 
         <div class="col">
             {% if object.review_set %}
-
+                <div class="row">
+                <div class="col col-sm-6">
+                    <h4>Reviews</h4>
+                </div>
+                <div class="col col-sm-6">
+                <div class="text-right">Average:
+                    {% for idx in '12345' %}
+                        {% if forloop.counter <= object.avg_rate %}
+                            <span class="fa fa-star checked"></span>
+                        {% else %}
+                            <span class="fa fa-star"></span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                </div>
+                </div>
 
             <div class="mb-3 text-center location-results">
                 {% for review in object.review_set.all %}
