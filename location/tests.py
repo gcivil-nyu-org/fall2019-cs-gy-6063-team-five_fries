@@ -428,6 +428,32 @@ class LocationViewTests(TestCase):
             "Another apartment exists at that location with that Suite number.",
         )
 
+    def test_location_edit_num_negative(self):
+        """
+        tests a POST request to the 'apartment_edit' URI where the suite_num
+        is negative
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apt = self.create_location_and_apartment()
+        apt.landlord = user
+        apt.save()
+
+        form_data = {
+            "suite_num": -1,
+            "rent_price": 2500,
+            "number_of_bed": 2,
+            "description": "a different description",
+        }
+        response = self.client.post(
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id}), form_data
+        )
+        # insure that it returns to the edit page due to validation failures
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "You cannot submit an apartment with a negative Suite Number"
+        )
+
     def test_location_edit_num_succcess(self):
         """
         tests a POST request to the 'apartment_edit' URI where the suite_num
