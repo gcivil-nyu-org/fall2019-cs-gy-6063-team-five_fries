@@ -191,8 +191,10 @@ def get_img_url_and_description(url):
 
         body = soup.find("section", id="postingbody")
         body_text = (
-            getattr(e, "text", e) for e in body if not getattr(e, "attrs", None)
-        ) if body is not None else ""
+            (getattr(e, "text", e) for e in body if not getattr(e, "attrs", None))
+            if body is not None
+            else ""
+        )
         description = "".join(body_text).strip()
 
         if len(img_tag) == 0 and description == "":
