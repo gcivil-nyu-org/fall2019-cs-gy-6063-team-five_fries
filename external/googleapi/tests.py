@@ -3,10 +3,22 @@ from unittest import mock
 import attr
 
 from .fetch import fetch_geocode, fetch_reverse_geocode
-from .g_utils import parse_lat_lng, normalize_us_address
+from .g_utils import (
+    parse_lat_lng,
+    normalize_us_address,
+    get_address,
+    get_city,
+    get_state,
+    get_zipcode,
+    get_result,
+)
 from .stub import fetch_geocode as fetch_geocode_stub
 from .stub import fetch_reverse_geocode as fetch_reverse_geocode_stub
-from .stub import fetch_geocode_no_zip, fetch_reverse_geocode_no_zip
+from .stub import (
+    fetch_geocode_no_zip,
+    fetch_reverse_geocode_no_zip,
+    fetch_geocode_no_type,
+)
 from .models import (
     GeocodeResponse,
     GeocodeAddressComponent,
@@ -423,6 +435,21 @@ class GeocodeTests(TestCase):
             GeocodeResponse.from_any(precomputed_response),
         )
 
+    @mock.patch("external.googleapi.fetch.googlemaps.Client")
+    def test_fetch_geocode_empty_response(self, mock_client):
+        """
+        Tests the return value of the fetch geocode function
+        when google returns an empty array
+        """
+        mock_client().geocode = mock.MagicMock(return_value=[])
+
+        results = fetch_geocode("11103")
+        self.assertListEqual(
+            results,
+            [],
+            msg="fetch_geocode did not return an empty list when it was supposed to",
+        )
+
 
 class GUtilsTests(TestCase):
     def create_search_cache(
@@ -430,6 +457,7 @@ class GUtilsTests(TestCase):
         search_string,
         street="123 Anystreet",
         city="Anytown",
+        locality="Anytown",
         state="Anystate",
         zipcode="00000",
         lat=0.0,
@@ -439,6 +467,7 @@ class GUtilsTests(TestCase):
             search_string=search_string,
             street=street,
             city=city,
+            locality=locality,
             state=state,
             zipcode=zipcode,
             latitude=lat,
@@ -541,6 +570,14 @@ class GUtilsTests(TestCase):
             "the normalize_us_address function didn't return None when it was supposed to",
         )
 
+    @mock.patch("external.googleapi.g_utils.fetch_geocode", fetch_geocode_no_type)
+    def test_normalize_wrong_state(self):
+
+        result = normalize_us_address("00000")
+        self.assertEqual(
+            result, None, msg="fetch_geocode did not return None when state wasn't NY"
+        )
+
     @mock.patch("external.googleapi.g_utils.fetch_geocode")
     def test_cache_normalize(self, mock_fetch):
         """
@@ -569,3 +606,47 @@ class GUtilsTests(TestCase):
         self.assertEqual(
             cache.zipcode, "00000", "The cached zipcode value was incorrect"
         )
+
+    def test_get_address_no_types(self):
+        """
+        tests the get_address function when the returned result
+        has no types field
+        """
+        address = get_address(fetch_geocode_no_type("00000"))
+        self.assertTupleEqual(address, ("", ""))
+
+    def test_get_city_no_types(self):
+        """
+        tests the get_address function when the returned result
+        has no types field
+        """
+        city, locality = get_city(fetch_geocode_no_type("00000"))
+        self.assertEqual(city, None)
+        self.assertEqual(locality, None)
+
+    def test_get_state_no_types(self):
+        """
+        tests the get_address function when the returned result
+        has no types field
+        """
+        state = get_state(fetch_geocode_no_type("00000"))
+        self.assertEqual(state, None)
+
+    def test_get_zipcode_no_types(self):
+        """
+        tests the get_address function when the returned result
+        has no types field
+        """
+        zipcode = get_zipcode(fetch_geocode_no_type("00000"))
+        self.assertEqual(zipcode, "")
+
+    def test_get_result_not_dict_or_list(self):
+
+        with self.assertRaises(ValueError) as e:
+            get_result("")
+        self.assertEqual(str(e.exception), "g_result was neither a list or a dict")
+
+    def test_get_result_empty_list(self):
+
+        result = get_result([])
+        self.assertEqual(result, None)

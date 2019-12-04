@@ -59,6 +59,8 @@ def bckgrndfetch(city_list, limit):
             )
             continue
 
+        print(f"Finished Fetching {city_name}..........")
+        print(f"Parsing Response array for {city_name}.............")
         for r in results:
 
             c_id = r["id"]
@@ -70,6 +72,9 @@ def bckgrndfetch(city_list, limit):
 
                 apartment = Apartment.objects.get(c_id=c_id)
                 if apartment.last_modified != last_updated:
+                    print(
+                        f"city_name={city_name}: Found existing apartment for c_id = {c_id}, updating."
+                    )
                     apartment.rent_price = price
                     apartment.number_of_bed = bedrooms
                     apartment.last_modified = last_updated
@@ -77,6 +82,9 @@ def bckgrndfetch(city_list, limit):
 
             # Apartment not exist, create a location for it
             else:
+                print(
+                    f"city={city_name}:c_id={c_id}: No Existing locations found, preparing to create new"
+                )
                 # check if is_existed w/ address reversed from lat,lon
                 if r["geotag"] is not None:
 
@@ -104,26 +112,39 @@ def bckgrndfetch(city_list, limit):
                     normalize_addr_dic = normalize_us_address(full_address)
 
                     if not normalize_addr_dic:
-                        print("return None from nomalize_us_address")
-                        print(f"The address input is: {full_address}")
+                        print(
+                            f"city={city_name}:c_id={c_id}: return None from nomalize_us_address"
+                        )
+                        print(
+                            f"city={city_name}:c_id={c_id}: The address input is: {full_address}"
+                        )
                         continue
 
                     state = normalize_addr_dic.state
                     address = normalize_addr_dic.street
                     city = normalize_addr_dic.city
+                    locality = normalize_addr_dic.locality
                     zipcode = normalize_addr_dic.zipcode
 
                 else:
-                    print("No geotag in craiglist results")
+                    print(
+                        f"city={city_name}:c_id={c_id}: No geotag in craiglist results"
+                    )
                     continue
 
                 # match the not null constraint of postgre
                 if state is None or address is None or city is None or zipcode is None:
-                    print("state, address, city or zipcode is None")
+                    print(
+                        f"city={city_name}:c_id={c_id}: state, address, city or zipcode is None"
+                    )
                     continue
 
                 loc, loc_created = Location.objects.get_or_create(
-                    address=address, city=city, state=state, zipcode=zipcode
+                    address=address,
+                    city=city,
+                    state=state,
+                    zipcode=zipcode,
+                    locality=locality,
                 )
 
                 if loc_created:

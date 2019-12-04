@@ -61,13 +61,14 @@ class LocationViewTests(TestCase):
     fixtures = ["locations.json"]
 
     def create_location_and_apartment(self):
-        city = "Brooklyn"
+        city = ("Bushwick",)
+        locality = "Brooklyn"
         state = "New York"
         address = "1234 Coney Island Avenue"
         zipcode = 11218
         # using get_or_create avoids race condition
         loc = Location.objects.get_or_create(
-            city=city, state=state, address=address, zipcode=zipcode
+            city=city, state=state, address=address, zipcode=zipcode, locality=locality
         )[0]
 
         # create an apartment and link it to that location
@@ -170,6 +171,7 @@ class LocationViewTests(TestCase):
         response = self.client.get(reverse("apartment_upload"))
         self.assertEqual(response.status_code, 200)
 
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_location_upload_post(self, mock_client):
         """
@@ -190,10 +192,10 @@ class LocationViewTests(TestCase):
         )
 
         post_data = {
-            "city": "New York",
+            "city": "Long Island City",
             "state": "NY",
-            "address": "111 anytown st",
-            "zipcode": "10003",
+            "address": "28-15 34th Street",
+            "zipcode": "11103",
             "suite_num": "1",
             "rent_price": 2500,
             "number_of_bed": 1,

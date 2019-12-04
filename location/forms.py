@@ -6,6 +6,7 @@ from crispy_forms.layout import Layout, Submit, Button, ButtonHolder, Div
 from localflavor.us import forms as us_forms
 from .models import Location, Apartment
 from external.googleapi.fetch import fetch_geocode
+from external.googleapi import g_utils
 
 
 class ApartmentUploadForm(forms.Form):
@@ -71,6 +72,37 @@ class ApartmentUploadForm(forms.Form):
         if len(g_data) == 0:
             raise forms.ValidationError(
                 "Unable to locate that address, please check that it was entered correctly."
+            )
+
+        g_address = g_utils.get_address(g_data)
+        g_city = g_utils.get_city(g_data)[0]
+        g_state = g_utils.get_state(g_data)
+        g_zip = g_utils.get_zipcode(g_data)
+
+        if g_city != city:
+            self.add_error(
+                "city",
+                f"The input value of {city} did not match the resolved value of {g_city}",
+            )
+        if g_state != state:
+            self.add_error(
+                "state",
+                f"The input value of {state} did not match the resolved value of {g_state}",
+            )
+        if g_zip != zipcode:
+            self.add_error(
+                "zipcode",
+                f"The input value of {zipcode} did not match the resolved value of {g_zip}",
+            )
+        if g_address[0].lower() not in address.lower():
+            self.add_error(
+                "address",
+                f"The input value of {address} did not contain the resolved value {g_address[0]}",
+            )
+        if g_address[1].lower() not in address.lower():
+            self.add_error(
+                "address",
+                f"The input value of {address} did not contain the resolved value {g_address[1]}",
             )
 
 
