@@ -181,6 +181,11 @@ class ApartmentUpdateForm(forms.ModelForm):
         # access the passed in instance of the Apartment model to get its location
         location = self.instance.location
 
+        if suite_num.strip()[0] == "-":
+            raise forms.ValidationError(
+                "You cannot submit an apartment with a negative Suite Number"
+            )
+
         if (
             self.instance.suite_num != suite_num
             and Apartment.objects.filter(
