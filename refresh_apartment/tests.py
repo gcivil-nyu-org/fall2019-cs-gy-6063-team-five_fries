@@ -136,3 +136,19 @@ class AutoFetchTests(TestCase):
 
         self.assertEqual(img_url, "/static/img/no_img.png")
         self.assertEqual(description, "DEFAULT DESCRIPTION")
+
+    @mock.patch("refresh_apartment.views.requests")
+    def test_not_200_get_img_url_and_description(self, mock_requests):
+        """
+        :param mock_requests: mock the "requests" in your main code
+        """
+        craigslist_response_content = ""
+        mock_resp_obj = MockRequestResponse(404, craigslist_response_content)
+
+        mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
+
+        url = "whatever.html"
+        img_url, description = get_img_url_and_description(url)
+
+        self.assertEqual(img_url, "/static/img/no_img.png")
+        self.assertEqual(description, "DEFAULT DESCRIPTION")
