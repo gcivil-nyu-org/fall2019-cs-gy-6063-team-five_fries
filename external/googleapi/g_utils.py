@@ -72,7 +72,7 @@ def normalize_us_address(address) -> Optional[Address]:
         street=" ".join(filter(lambda x: x, [street_num, route])),
         city=city,
         state=state,
-        locality=locality
+        locality=locality,
         zipcode=zip_code,
         latitude=lat,
         longitude=lon,
