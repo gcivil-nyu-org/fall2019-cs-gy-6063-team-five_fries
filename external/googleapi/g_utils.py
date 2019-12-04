@@ -161,7 +161,7 @@ def get_zipcode(g_result) -> Optional[str]:
     """
     result = get_result(g_result)
     zipcode = result.get("postal")
-
+    
     if not zipcode:
         return ""
     else:

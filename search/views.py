@@ -266,17 +266,17 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
 
     if address:
         # filter based on existence of locations with the specified address
+        if address.street:
+            query_params_location["address__iexact"] = address.street
         if address.city or address.locality:
             if (
                 address.city
                 and address.locality
                 and address.locality.lower() in orig_query.lower()
             ):
-                print("Locality won out")
                 query_params_location["locality__iexact"] = address.locality
             else:  # default to city
                 # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
-                print("default to city")
                 query_params_location["city__iexact"] = address.city
         if address.state or address.locality:
             query_params_location["state__iexact"] = address.state
