@@ -75,7 +75,7 @@ class ApartmentUploadForm(forms.Form):
             )
 
         g_address = g_utils.get_address(g_data)
-        g_city = g_utils.get_city(g_data)
+        g_city = g_utils.get_city(g_data)[0]
         g_state = g_utils.get_state(g_data)
         g_zip = g_utils.get_zipcode(g_data)
 

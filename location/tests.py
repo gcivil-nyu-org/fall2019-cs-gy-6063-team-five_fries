@@ -61,13 +61,14 @@ class LocationViewTests(TestCase):
     fixtures = ["locations.json"]
 
     def create_location_and_apartment(self):
-        city = "Brooklyn"
+        city = ("Bushwick",)
+        locality = "Brooklyn"
         state = "New York"
         address = "1234 Coney Island Avenue"
         zipcode = 11218
         # using get_or_create avoids race condition
         loc = Location.objects.get_or_create(
-            city=city, state=state, address=address, zipcode=zipcode
+            city=city, state=state, address=address, zipcode=zipcode, locality=locality
         )[0]
 
         # create an apartment and link it to that location
