@@ -33,7 +33,7 @@
       <div class="col-md-6 mb-4">
 
       {% if apt.image %}
-          <img src="{{ apt.image.url }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+          <img src="{{ apt.image }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
       {% else %}
           <img src="/static/img/no_img.png" class="card-img-top contain" alt="apartment image">
       {% endif %}
@@ -90,33 +90,87 @@
           </p>
           {% endif %}-->
 
-          {% if apt.landlord and request.user.is_authenticated and apt.landlord != request.user %}
           <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id apk=apt.id %}">
-            {% csrf_token %}
-            <button type="button" class="btn btn-primary" data-toggle="modal"
-              data-target="#exampleModal">Interested?</button>
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Contact Landlord</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+              {% csrf_token %}
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Interested?</button>
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                   aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                          {% if not request.user.is_authenticated %}
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Log In</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <p>You need to be <a href="/accounts/login?next={{request.path}}">logged in</a> before you can contact the landlord!</p>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div>
+
+                          {% elif not apt.landlord %}
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">No Landlord?</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <p>It appears that there is no landlord for this apartment in our database. If you are
+                                      the landlord, you can claim this apartment by clicking
+                                      <b><i>"Are you a tenant or a landlord of this apartment?"</i></b></p>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div>
+
+                          {% elif apt.landlord == request.user %}
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Can't Contact Yourself</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <p>It appears that you are the landlord for this apartment. Why do you want to contact
+                                  yourself?</p>
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div>
+
+                          {% else %}
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLabel">Contact Landlord</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  {{ contact_landlord_form|crispy }}
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  <button type="submit" class="btn btn-primary">Send message</button>
+                              </div>
+                          {% endif %}
+                      </div>
                   </div>
-                  <div class="modal-body">
-                    {{ contact_landlord_form|crispy }}
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Send message</button>
-                  </div>
-                </div>
               </div>
-            </div>
           </form>
-          {% endif %}
+
+        {% if messages %}
+          {% for message in messages %}
+            {% if 'email' in message.tags %}
+                <p style="color:green">
+                    {{ message }}
+                </p>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
 
         </div>
         <!--Content-->

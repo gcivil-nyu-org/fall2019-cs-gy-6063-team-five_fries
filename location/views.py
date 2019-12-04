@@ -152,6 +152,9 @@ def contact_landlord(request, pk, apk):
             send_mail(
                 subject, message, sender_email, [landlord_email], fail_silently=False
             )
+            messages.success(
+                request, "An email has been sent to the landlord!", extra_tags="success"
+            )
 
     return HttpResponseRedirect(reverse("apartment", kwargs={"pk": pk, "apk": apk}))
 
@@ -162,11 +165,17 @@ def favorites(request, pk):
     user = request.user
     if apartment not in user.favorites.all():
         user.favorites.add(apartment)
-        messages.success(request, "This apartment has been added to your favorites!")
+        messages.success(
+            request,
+            "This apartment has been added to your favorites!",
+            extra_tags="success",
+        )
     else:
         user.favorites.remove(apartment)
         messages.success(
-            request, "This apartment has been removed from your favorites!"
+            request,
+            "This apartment has been removed from your favorites!",
+            extra_tags="success",
         )
     return HttpResponseRedirect(reverse("location", args=(pk,)))
 
@@ -220,9 +229,15 @@ def apartment_upload(request):
             # parse out the latitude and longitude from the response
             lat_lng = g_utils.parse_lat_lng(g_data[0])
 
+            g_locality = g_utils.get_city(g_data[0])[1]
+
             # create or retrieve an existing location
             loc, created = Location.objects.get_or_create(
-                city=city, state=state, address=address, zipcode=zipcode
+                city=city,
+                state=state,
+                address=address,
+                zipcode=zipcode,
+                locality=g_locality,
             )  # using get_or_create avoids race condition
 
             if created:
@@ -253,15 +268,16 @@ def apartment_upload(request):
 
             apt.save()
 
-            # redirect to the confirmation page
-            return HttpResponseRedirect(reverse("apartment_upload_confirmation"))
+            messages.success(
+                request, message="Successfully created Apartment!", extra_tags="success"
+            )
+
+            return HttpResponseRedirect(
+                reverse("apartment", kwargs={"pk": loc.id, "apk": apt.id})
+            )
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ApartmentUploadForm()
 
     return render(request, "apartment_upload.html", {"form": form})
-
-
-def apartment_upload_confirmation(request):
-    return render(request, "apartment_upload_confirmation.html")

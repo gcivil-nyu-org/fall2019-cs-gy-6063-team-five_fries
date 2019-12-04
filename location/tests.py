@@ -61,13 +61,14 @@ class LocationViewTests(TestCase):
     fixtures = ["locations.json"]
 
     def create_location_and_apartment(self):
-        city = "Brooklyn"
+        city = ("Bushwick",)
+        locality = "Brooklyn"
         state = "New York"
         address = "1234 Coney Island Avenue"
         zipcode = 11218
         # using get_or_create avoids race condition
         loc = Location.objects.get_or_create(
-            city=city, state=state, address=address, zipcode=zipcode
+            city=city, state=state, address=address, zipcode=zipcode, locality=locality
         )[0]
 
         # create an apartment and link it to that location
@@ -139,7 +140,7 @@ class LocationViewTests(TestCase):
         self.assertTrue(loc.check_tenant(user))
 
         response = self.client.get(reverse("location", args=(1,)))
-        self.assertContains(response, "Write something")
+        self.assertContains(response, "Review")
 
     def test_apartment_view(self):
         """create location and apartment associated with that location.
@@ -170,6 +171,7 @@ class LocationViewTests(TestCase):
         response = self.client.get(reverse("apartment_upload"))
         self.assertEqual(response.status_code, 200)
 
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
     @mock.patch("external.googleapi.fetch.googlemaps.Client")
     def test_location_upload_post(self, mock_client):
         """
@@ -190,10 +192,10 @@ class LocationViewTests(TestCase):
         )
 
         post_data = {
-            "city": "New York",
+            "city": "Long Island City",
             "state": "NY",
-            "address": "111 anytown st",
-            "zipcode": "10003",
+            "address": "28-15 34th Street",
+            "zipcode": "11103",
             "suite_num": "1",
             "rent_price": 2500,
             "number_of_bed": 1,
@@ -202,9 +204,10 @@ class LocationViewTests(TestCase):
         }
 
         response = self.client.post(reverse("apartment_upload"), post_data)
-        self.assertRedirects(response, reverse("apartment_upload_confirmation"))
+        self.assertRedirects(response, reverse("apartment", kwargs={"pk": 7, "apk": 8}))
 
     @mock.patch("location.views.fetch_geocode", fetch_geocode_stub)
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
     def test_location_upload_negative_price(self):
         """
         tests uploading an apartment that has a negative rental price
@@ -234,7 +237,79 @@ class LocationViewTests(TestCase):
 
         response = self.client.post(reverse("apartment_upload"), post_data)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Rental price cannot be negative!")
+
+        self.assertContains(
+            response, "Ensure this value is greater than or equal to 1."
+        )
+
+    @mock.patch("location.forms.fetch_geocode", mock.MagicMock(return_value=[]))
+    def test_location_upload_no_location(self):
+        """
+        insures a validation error is raised when an apartment is uploaded
+        that does not have a corresponding location in the google API
+        """
+        self.client.force_login(SiteUser.objects.create(username="testuser"))
+
+        # Create a fake image
+        im = Image.new(mode="RGB", size=(200, 200))
+        im_io = BytesIO()
+        im.save(im_io, "JPEG")
+        im_io.seek(0)
+        mem_image = InMemoryUploadedFile(
+            im_io, None, "image.jpg", "image/jpeg", len(im_io.getvalue()), None
+        )
+
+        post_data = {
+            "city": "Test",
+            "state": "AK",
+            "address": "123 test ave",
+            "zipcode": "99999",
+            "suite_num": "1",
+            "rent_price": 2500,
+            "number_of_bed": 1,
+            "description": "This is a test",
+            "image": mem_image,
+        }
+        response = self.client.post(reverse("apartment_upload"), post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            "Unable to locate that address, please check that it was entered correctly.",
+        )
+
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
+    def test_location_upload_negative_suite(self):
+        """
+        insures a validation error is raised when an apartment is uploaded
+        that does not have a corresponding location in the google API
+        """
+        self.client.force_login(SiteUser.objects.create(username="testuser"))
+
+        # Create a fake image
+        im = Image.new(mode="RGB", size=(200, 200))
+        im_io = BytesIO()
+        im.save(im_io, "JPEG")
+        im_io.seek(0)
+        mem_image = InMemoryUploadedFile(
+            im_io, None, "image.jpg", "image/jpeg", len(im_io.getvalue()), None
+        )
+
+        post_data = {
+            "city": "Test",
+            "state": "AK",
+            "address": "123 test ave",
+            "zipcode": "99999",
+            "suite_num": "-1",
+            "rent_price": 2500,
+            "number_of_bed": 1,
+            "description": "This is a test",
+            "image": mem_image,
+        }
+        response = self.client.post(reverse("apartment_upload"), post_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "You cannot submit an apartment with a negative Suite Number"
+        )
 
     def test_location_edit_not_logged_in(self):
         """
@@ -351,6 +426,32 @@ class LocationViewTests(TestCase):
         self.assertContains(
             response,
             "Another apartment exists at that location with that Suite number.",
+        )
+
+    def test_location_edit_num_negative(self):
+        """
+        tests a POST request to the 'apartment_edit' URI where the suite_num
+        is negative
+        """
+        user = SiteUser.objects.create(username="testuser")
+        self.client.force_login(user)
+        loc, apt = self.create_location_and_apartment()
+        apt.landlord = user
+        apt.save()
+
+        form_data = {
+            "suite_num": -1,
+            "rent_price": 2500,
+            "number_of_bed": 2,
+            "description": "a different description",
+        }
+        response = self.client.post(
+            reverse("apartment_edit", kwargs={"pk": loc.id, "apk": apt.id}), form_data
+        )
+        # insure that it returns to the edit page due to validation failures
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, "You cannot submit an apartment with a negative Suite Number"
         )
 
     def test_location_edit_num_succcess(self):
@@ -513,7 +614,7 @@ class LocationViewTests(TestCase):
         )
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
-        self.assertNotIn("Interested?", content)
+        self.assertIn("Interested?", content)
 
     def test_display_interested_if_landlord_and_renter_same(self):
         loc, apt = self.create_location_and_apartment()
@@ -526,7 +627,7 @@ class LocationViewTests(TestCase):
         )
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
-        self.assertNotIn("Interested?", content)
+        self.assertIn("Interested?", content)
 
     def test_display_interested_if_landlord_and_renter_different(self):
         loc, apt = self.create_location_and_apartment()

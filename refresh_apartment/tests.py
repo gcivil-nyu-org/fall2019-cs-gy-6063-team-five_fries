@@ -1,9 +1,20 @@
 import pytest
 from django.test import TestCase
 from unittest import mock
+from .stub import get_craigslist_response
+from .views import get_img_url_and_description
 import os
 
-# Create your tests here.
+NORMAL_URL = "craigslist-url-normal.html"
+NO_PIC_URL = "craigslist-url-no-pic.html"
+NO_DESCRIPTION_URL = "craigslist-url-no-des.html"
+NO_PIC_NO_DESCRIPTION_URL = "craigslist-url-no-pic-no-des.html"
+
+
+class MockRequestResponse:
+    def __init__(self, status_code, content):
+        self.status_code = status_code
+        self.content = content
 
 
 @pytest.mark.celery(CELERY_BROKER_URL=os.environ["REDIS_URL"])
@@ -49,3 +60,95 @@ class AutoFetchTests(TestCase):
         city_list = []
         self.assertEqual(response.status_code, 200)
         mockbckgrndfetch.delay.assert_called_with(city_list, 100)
+
+    @mock.patch(
+        "refresh_apartment.views.requests"
+    )  # all the requests in view is replaced with mock_requests here
+    def test_normal_get_img_url_and_description(self, mock_requests):
+        """
+        :param mock_requests: mock the "requests" in your main code
+        """
+        # setup(mock) the object which requests.get(url) return
+        craigslist_response_content = get_craigslist_response(NORMAL_URL)
+        mock_resp_obj = MockRequestResponse(200, craigslist_response_content)
+
+        # The moment that the mock take into place
+        # When your test run the line "request.get" in your main code,
+        # It would mock the obj that it return with `return_value`.
+        mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
+
+        url = (
+            "./sample-response/craigslist-url-normal.html"
+        )  # this url doesn't matter, could be whatever you like
+        img_url, description = get_img_url_and_description(url)
+
+        self.assertEqual(
+            img_url, "https://images.craigslist.org/00H0H_2JxY7yF7CiN_600x450.jpg"
+        )
+        self.assertNotEqual(description, "DEFAULT DESCRIPTION")
+
+    @mock.patch("refresh_apartment.views.requests")
+    def test_no_pic_get_img_url_and_description(self, mock_requests):
+        """
+        :param mock_requests: mock the "requests" in your main code
+        """
+        craigslist_response_content = get_craigslist_response(NO_PIC_URL)
+        mock_resp_obj = MockRequestResponse(200, craigslist_response_content)
+
+        mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
+
+        url = "whatever.html"
+        img_url, description = get_img_url_and_description(url)
+
+        self.assertEqual(img_url, "/static/img/no_img.png")
+        self.assertNotEqual(description, "DEFAULT DESCRIPTION")
+
+    @mock.patch("refresh_apartment.views.requests")
+    def test_no_des_get_img_url_and_description(self, mock_requests):
+        """
+        :param mock_requests: mock the "requests" in your main code
+        """
+        craigslist_response_content = get_craigslist_response(NO_DESCRIPTION_URL)
+        mock_resp_obj = MockRequestResponse(200, craigslist_response_content)
+
+        mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
+
+        url = "whatever.html"
+        img_url, description = get_img_url_and_description(url)
+
+        self.assertEqual(
+            img_url, "https://images.craigslist.org/00H0H_2JxY7yF7CiN_600x450.jpg"
+        )
+        self.assertEqual(description, "DEFAULT DESCRIPTION")
+
+    @mock.patch("refresh_apartment.views.requests")
+    def test_no_pic_no_des_get_img_url_and_description(self, mock_requests):
+        """
+        :param mock_requests: mock the "requests" in your main code
+        """
+        craigslist_response_content = get_craigslist_response(NO_PIC_NO_DESCRIPTION_URL)
+        mock_resp_obj = MockRequestResponse(200, craigslist_response_content)
+
+        mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
+
+        url = "whatever.html"
+        img_url, description = get_img_url_and_description(url)
+
+        self.assertEqual(img_url, "/static/img/no_img.png")
+        self.assertEqual(description, "DEFAULT DESCRIPTION")
+
+    @mock.patch("refresh_apartment.views.requests")
+    def test_not_200_get_img_url_and_description(self, mock_requests):
+        """
+        :param mock_requests: mock the "requests" in your main code
+        """
+        craigslist_response_content = ""
+        mock_resp_obj = MockRequestResponse(404, craigslist_response_content)
+
+        mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
+
+        url = "whatever.html"
+        img_url, description = get_img_url_and_description(url)
+
+        self.assertEqual(img_url, "/static/img/no_img.png")
+        self.assertEqual(description, "DEFAULT DESCRIPTION")

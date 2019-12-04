@@ -23,9 +23,4 @@ urlpatterns = [
     path("favlist", views.favlist, name="favlist"),
     path("<int:pk>/review", views.review, name="review"),
     path("apartment_upload", views.apartment_upload, name="apartment_upload"),
-    path(
-        "apartment_upload_confirmation",
-        views.apartment_upload_confirmation,
-        name="apartment_upload_confirmation",
-    ),
 ]
