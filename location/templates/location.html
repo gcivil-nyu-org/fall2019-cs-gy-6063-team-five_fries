@@ -58,7 +58,66 @@
     {% endif %}
 </form>
 </div>
+<div class="col col-sm-2">
+<form action="{% url 'review' object.id %}" method="POST">
+    {% csrf_token %}
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Review</button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            {% if not request.user.is_authenticated %}
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Log In</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <p>You need to be <a href="/accounts/login?next={{request.path}}">logged in</a> before you can write reviews!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
 
+            {% elif not can_leave_a_review %}
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Not a Tenant?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <p>It appears that you are not a tenant for any apartments at this location. If this is not
+                        the case, you can claim that you are a tenant by going to the apartment view and clicking
+                        <b><i>"Are you a tenant or a landlord of this apartment?"</i></b></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+
+            {% else %}
+                <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Review this location</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    {{ form|crispy }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" name="form_submit">Review!</button>
+                </div>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+</form>
+
+</div>
 
 </div>
 
