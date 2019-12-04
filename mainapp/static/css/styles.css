@@ -128,3 +128,9 @@ div.custom-file {
 .search-form input[type="text"], .search-form input[type="number"] {
     width: 165px!important;
 }
+
+.unstyled-button {
+  border: none;
+  padding: 0;
+  background: none;
+}

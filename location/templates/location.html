@@ -7,9 +7,13 @@
 {% endblock %}
 
 {% block script %}
-<!-- Font Awesome Icon Library -->
+<!-- Font Awesome Icon Library. Not needed if the font awesome kit is available -->
+<!--
 <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+-->
+<!-- font awesome account is needed to create the font awesome kit below -->
+<script src="https://kit.fontawesome.com/29da671985.js" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
   integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 {% endblock %}
@@ -19,6 +23,7 @@
 {% load crispy_forms_tags %}
 {% leaflet_js %}
 {% leaflet_css %}
+
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -40,156 +45,21 @@
 {% endblock%}
 
 {% block content %}
-<h1>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h1>
-{% leaflet_map "leaflet_map_main" %}
-
-<hr>
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h2>Apartments</h2>
-            <div class="location-results">
-                {% if zillow_list %}
-                <ul class="list-group">
-                    {% for apt in zillow_list %}
-                    <li class="list-group-item list-group-item-action">
-                        <div class="row d-flex justify-content-between">
-                            <div class="col">
-                                {{apt.rent_price_for_display}}
-                            </div>
-                            <div class="col">
-                                {% if apt %}
-                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
-                                        class="badge badge-secondary">{{ apt.location.address }}
-                                    {% if apt.suite_num %}
-                                        #{{apt.suite_num}}
-                                    {% endif %}</span></a>
-                                {% endif %}
-                            </div>
-                            <div class="col text-center">
-                                <a href="{{ apt.zillow_url }}"><span class="badge badge-secondary">Zillow</span></a>
-                            </div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% if landlord_list %}
-                <ul class="list-group">
-                    {% for apt in landlord_list %}
-                    <li class="list-group-item list-group-item-action">
-                        <div class="row d-flex justify-content-between">
-                            <div class="col">
-                                {{apt.rent_price_for_display}}
-                            </div>
-                            <div class="col">
-                                {% if apt %}
-                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
-                                        class="badge badge-secondary">{{ apt.location.address }}
-                                    {% if apt.suite_num %}
-                                        #{{apt.suite_num}}
-                                    {% endif %}</span></a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-                {% if not zillow_list and not landlord_list %}
-                <p>No apartments</p>
-                {% endif %}
-            </div>
-            <i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
-        </div>
-
-
-
-
-        <div class="col">
-            {% if object.review_set %}
-            <h2> Review: </h2>
-            <ul class="list-unstyled">
-                <li>
-                    Average: {{ object.avg_rate }}
-                </li>
-                <li>
-                    {% for idx in '12345' %}
-                    {% if forloop.counter <= object.avg_rate %}
-                    <span class="fa fa-star checked"></span>
-                    {% else %}
-                    <span class="fa fa-star"></span>
-                    {% endif %}
-                    {% endfor %}
-                </li>
-            </ul>
-
-            <div class="mb-3 text-center location-results">
-                {% for review in object.review_set.all %}
-                <div class="card mb-4 shadow-sm " style="max-width: 27rem;">
-                    <div class="card-header">
-                        <ul class="list-unstyled">
-                            <li>{{ review.user }}</li>
-                            <li>
-                                {% for idx in '12345' %}
-                                {% if forloop.counter <= review.rating %}
-                                <span class="fa fa-star checked"></span>
-                                {% else %}
-                                <span class="fa fa-star"></span>
-                                {% endif %}
-                                {% endfor %}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title pricing-card-title">
-                        </h5>
-
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>{{ review.content }}</li>
-                        </ul>
-
-                        <h4 class=" mb-0">
-                            <small class="blockquote-footer"
-                                style="font-size: x-small"><cite>{{ review.time }}</cite></small>
-                        </h4>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
-
-        </div>
-    </div>
+<div class="row">
+<div class="col col-sm-9">
+    <h3>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h3>
 </div>
-
+<div class="col col-sm-1">
 <form action="{% url 'favorite' object.id %}" method="POST">
     {% csrf_token %}
     {% if object in request.user.favorites.all %}
-    <button type="submit"><img src="https://img.icons8.com/color/64/000000/hearts.png"></button>
+    <button type="submit" class="unstyled-button"><i class="fas fa-heart" style="color:red; font-size:2.5rem"></i></button>
     {% else %}
-    <button type="submit"><img src="https://img.icons8.com/material-outlined/64/000000/hearts.png"></button>
+    <button type="submit" class="unstyled-button"><i class="fas fa-heart" style="color:black; font-size:2.5rem"></i></button>
     {% endif %}
 </form>
-
-<!--
-Uncomment to display messages indicating confirmation of favorited/unfavorited apartment.
-{% if messages %}
-<ul>
-  {% for message in messages %}
-    {% if 'apartment' in message.tags %}
-        <li style="color:green">
-            {{ message }}
-        </li>
-    {% endif %}
-  {% endfor %}
-</ul>
-{% endif %}
--->
-
-
-
+</div>
+<div class="col col-sm-2">
 <form action="{% url 'review' object.id %}" method="POST">
     {% csrf_token %}
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Review</button>
@@ -247,5 +117,146 @@ Uncomment to display messages indicating confirmation of favorited/unfavorited a
       </div>
     </div>
 </form>
+
+</div>
+
+</div>
+
+{% leaflet_map "leaflet_map_main" %}
+
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h4>Apartments</h4>
+            <div class="location-results">
+                {% if zillow_list %}
+                <ul class="list-group">
+                    {% for apt in zillow_list %}
+                    <li class="list-group-item list-group-item-action">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col">
+                                {{apt.rent_price_for_display}}
+                            </div>
+                            <div class="col">
+                                {% if apt %}
+                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
+                                        class="badge badge-secondary">{{ apt.location.address }}
+                                    {% if apt.suite_num %}
+                                        #{{apt.suite_num}}
+                                    {% endif %}</span></a>
+                                {% endif %}
+                            </div>
+                            <div class="col text-center">
+                                <a href="{{ apt.zillow_url }}"><span class="badge badge-secondary">Zillow</span></a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% if landlord_list %}
+                <ul class="list-group">
+                    {% for apt in landlord_list %}
+                    <li class="list-group-item list-group-item-action">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col">
+                                {{apt.rent_price_for_display}}
+                            </div>
+                            <div class="col">
+                                {% if apt %}
+                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
+                                        class="badge badge-secondary">{{ apt.location.address }}
+                                    {% if apt.suite_num %}
+                                        #{{apt.suite_num}}
+                                    {% endif %}</span></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% if not zillow_list and not landlord_list %}
+                <p>No apartments</p>
+                {% endif %}
+            </div>
+            <i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
+        </div>
+
+        <div class="col">
+            {% if object.review_set %}
+                <div class="row">
+                <div class="col col-sm-6">
+                    <h4>Reviews</h4>
+                </div>
+                <div class="col col-sm-6">
+                <div class="text-right">Average:
+                    {% for idx in '12345' %}
+                        {% if forloop.counter <= object.avg_rate %}
+                            <span class="fa fa-star checked"></span>
+                        {% else %}
+                            <span class="fa fa-star"></span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                </div>
+                </div>
+
+            <div class="mb-3 text-center location-results">
+                {% for review in object.review_set.all %}
+                <div class="card mb-4 shadow-sm " style="max-width: 27rem;">
+                    <div class="card-header">
+                        <ul class="list-unstyled">
+                            <li>{{ review.user }}</li>
+                            <li>
+                                {% for idx in '12345' %}
+                                {% if forloop.counter <= review.rating %}
+                                <span class="fa fa-star checked"></span>
+                                {% else %}
+                                <span class="fa fa-star"></span>
+                                {% endif %}
+                                {% endfor %}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title pricing-card-title">
+                        </h5>
+
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>{{ review.content }}</li>
+                        </ul>
+
+                        <h4 class=" mb-0">
+                            <small class="blockquote-footer"
+                                style="font-size: x-small"><cite>{{ review.time }}</cite></small>
+                        </h4>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+
+<!--
+Uncomment to display messages indicating confirmation of favorited/unfavorited apartment.
+{% if messages %}
+<ul>
+  {% for message in messages %}
+    {% if 'apartment' in message.tags %}
+        <li style="color:green">
+            {{ message }}
+        </li>
+    {% endif %}
+  {% endfor %}
+</ul>
+{% endif %}
+-->
 
 {% endblock %}
