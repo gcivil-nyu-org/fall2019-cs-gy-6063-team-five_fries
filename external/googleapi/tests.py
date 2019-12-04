@@ -457,6 +457,7 @@ class GUtilsTests(TestCase):
         search_string,
         street="123 Anystreet",
         city="Anytown",
+        locality="Anytown",
         state="Anystate",
         zipcode="00000",
         lat=0.0,
@@ -466,6 +467,7 @@ class GUtilsTests(TestCase):
             search_string=search_string,
             street=street,
             city=city,
+            locality=locality,
             state=state,
             zipcode=zipcode,
             latitude=lat,
@@ -566,6 +568,14 @@ class GUtilsTests(TestCase):
         self.assertIsNone(
             input,
             "the normalize_us_address function didn't return None when it was supposed to",
+        )
+
+    @mock.patch("external.googleapi.g_utils.fetch_geocode", fetch_geocode_no_type)
+    def test_normalize_wrong_state(self):
+
+        result = normalize_us_address("00000")
+        self.assertEqual(
+            result, None, msg="fetch_geocode did not return None when state wasn't NY"
         )
 
     @mock.patch("external.googleapi.g_utils.fetch_geocode")

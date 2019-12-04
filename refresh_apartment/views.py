@@ -123,6 +123,7 @@ def bckgrndfetch(city_list, limit):
                     state = normalize_addr_dic.state
                     address = normalize_addr_dic.street
                     city = normalize_addr_dic.city
+                    locality = normalize_addr_dic.locality
                     zipcode = normalize_addr_dic.zipcode
 
                 else:
@@ -139,7 +140,11 @@ def bckgrndfetch(city_list, limit):
                     continue
 
                 loc, loc_created = Location.objects.get_or_create(
-                    address=address, city=city, state=state, zipcode=zipcode
+                    address=address,
+                    city=city,
+                    state=state,
+                    zipcode=zipcode,
+                    locality=locality,
                 )
 
                 if loc_created:

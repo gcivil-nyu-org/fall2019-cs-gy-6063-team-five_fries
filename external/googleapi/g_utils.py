@@ -53,12 +53,20 @@ def normalize_us_address(address) -> Optional[Address]:
     zip_code = get_zipcode(response)
     lat, lon = get_location(response)
 
+    if state != "NY":  # don't want to retrieve results not in NY
+        print("Returned a result not in New York")
+        print(
+            f"Street: {street_num}, Route: {route}, city: {city}, locality: {locality}"
+            ", state: {state}, zip: {zip_code}, lat: {lat}, lon: {lon}"
+        )
+        return None
+
     try:
         CachedSearch.objects.create(
             search_string=address,
             street=(" ".join(filter(lambda x: x, [street_num, route]))),
             city=(city if city is not None else ""),
-            locality=locality,
+            locality=(locality if locality is not None else ""),
             state=(state if state is not None else ""),
             zipcode=zip_code,
             latitude=lat,

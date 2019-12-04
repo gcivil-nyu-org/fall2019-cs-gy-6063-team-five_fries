@@ -57,7 +57,11 @@ def search(request):
         # build the query parameter dictionary that will be used to
         # query the Location model and Apartment model
         query_params_location, query_params_apartment = build_search_query(
-            address=address, max_price=max_price, min_price=min_price, bed_num=bed_num, orig_query=query["query"]
+            address=address,
+            max_price=max_price,
+            min_price=min_price,
+            bed_num=bed_num,
+            orig_query=query["query"],
         )
 
         # update stored last query in the session object
@@ -262,12 +266,20 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
 
     if address:
         # filter based on existence of locations with the specified address
-        if address.city:
-            # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
-            query_params_location["city__iexact"] = address.city
-        if address.state:
+        if address.city or address.locality:
+            if (
+                address.city
+                and address.locality
+                and address.locality.lower() in orig_query.lower()
+            ):
+                print("Locality won out")
+                query_params_location["locality__iexact"] = address.locality
+            else:  # default to city
+                # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
+                print("default to city")
+                query_params_location["city__iexact"] = address.city
+        if address.state or address.locality:
             query_params_location["state__iexact"] = address.state
-        
         if address.zipcode:
             query_params_location["zipcode"] = address.zipcode
 

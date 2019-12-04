@@ -233,7 +233,11 @@ def apartment_upload(request):
 
             # create or retrieve an existing location
             loc, created = Location.objects.get_or_create(
-                city=city, state=state, address=address, zipcode=zipcode, locality=locality
+                city=city,
+                state=state,
+                address=address,
+                zipcode=zipcode,
+                locality=g_locality,
             )  # using get_or_create avoids race condition
 
             if created:

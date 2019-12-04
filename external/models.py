@@ -42,10 +42,13 @@ class Address(object):
     street = attr.ib()
     zipcode = attr.ib(converter=str)
     city = attr.ib()
-    locality = attr.ib()
     state = attr.ib()
     latitude = attr.ib(converter=float)
     longitude = attr.ib(converter=float)
+    locality = attr.ib(
+        default=None,
+        validator=attr.validators.optional(attr.validators.instance_of(str)),
+    )
 
     @classmethod
     def from_dict(cls, dic):
