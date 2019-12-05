@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import CraigslistLocation, LastRetrievedData
+# from .models import CraigslistLocation, LastRetrievedData
 from .forms import SearchForm
 from location.models import Location
 
@@ -14,9 +14,9 @@ from external.models import NYC311Statistics
 from external.cache.nyc311 import refresh_nyc311_statistics_if_needed
 
 
-class CraigslistIndexView(generic.ListView):
-    template_name = "search/clist_results.html"
-    context_object_name = "cl_results"
+# class CraigslistIndexView(generic.ListView):
+#     template_name = "search/clist_results.html"
+#     context_object_name = "cl_results"
 
 
 def search(request):
@@ -191,50 +191,50 @@ def data_311(request):
         return render(request, "search/data_311.html", {})
 
 
-def clist_results(request):
-    do_update = False
-    last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
+# def clist_results(request):
+#     do_update = False
+#     last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
 
-    if created:
-        do_update = True
-    elif last.should_retrieve():
-        do_update = True
-        last.time = timezone.now()
-        last.save()
+#     if created:
+#         do_update = True
+#     elif last.should_retrieve():
+#         do_update = True
+#         last.time = timezone.now()
+#         last.save()
 
-    results = []
-    if do_update is True:
-        results = fetch_craigslist_housing(
-            limit=100,  # FIXME: temporarily limit the results up to 100 for the fast response
-            site="newyork",
-            category="apa",
-            area="brk",
-            filters={"max_price": 2000},
-        )
+#     results = []
+#     if do_update is True:
+#         results = fetch_craigslist_housing(
+#             limit=100,  # FIXME: temporarily limit the results up to 100 for the fast response
+#             site="newyork",
+#             category="apa",
+#             area="brk",
+#             filters={"max_price": 2000},
+#         )
 
-    for r in results:
-        if not CraigslistLocation.objects.filter(c_id=r["id"]).exists():
-            lat = None
-            lon = None
-            if r["geotag"] is not None:
-                lat = r["geotag"][0]
-                lon = r["geotag"][1]
+#     for r in results:
+#         if not CraigslistLocation.objects.filter(c_id=r["id"]).exists():
+#             lat = None
+#             lon = None
+#             if r["geotag"] is not None:
+#                 lat = r["geotag"][0]
+#                 lon = r["geotag"][1]
 
-            q = CraigslistLocation(
-                c_id=r["id"],
-                name=r["name"],
-                url=r["url"],
-                date_time=r["datetime"],
-                price=r["price"],
-                where=(r["where"] if r["where"] is not None else ""),
-                has_image=r["has_image"],
-                lat=lat,
-                lon=lon,
-            )
-            q.save()
-    result_list = CraigslistLocation.objects.all()
-    context = {"clist_results": result_list}
-    return render(request, "search/clist_results.html", context)
+#             q = CraigslistLocation(
+#                 c_id=r["id"],
+#                 name=r["name"],
+#                 url=r["url"],
+#                 date_time=r["datetime"],
+#                 price=r["price"],
+#                 where=(r["where"] if r["where"] is not None else ""),
+#                 has_image=r["has_image"],
+#                 lat=lat,
+#                 lon=lon,
+#             )
+#             q.save()
+#     result_list = CraigslistLocation.objects.all()
+#     context = {"clist_results": result_list}
+#     return render(request, "search/clist_results.html", context)
 
 
 def description_for_complaint_level(level):

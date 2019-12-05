@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "phonenumber_field",
     "location_field.apps.DefaultConfig",
-    "map.apps.MapConfig",
+    # "map.apps.MapConfig",
     "leaflet",
     "djgeojson",
     "localflavor",

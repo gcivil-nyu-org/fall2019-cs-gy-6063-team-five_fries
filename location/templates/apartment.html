@@ -33,7 +33,7 @@
       <div class="col-md-6 mb-4">
 
       {% if apt.image %}
-          <img src="{{ apt.image }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+          <img src="{{ apt.image }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='{{ apt.image.url }}'">
       {% else %}
           <img src="/static/img/no_img.png" class="card-img-top contain" alt="apartment image">
       {% endif %}
