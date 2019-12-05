@@ -1,13 +1,11 @@
 from django.shortcuts import render
-from django.views import generic
-from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 # from .models import CraigslistLocation, LastRetrievedData
 from .forms import SearchForm
 from location.models import Location
 
 from external.nyc311 import get_311_data
-from external.craigslist import fetch_craigslist_housing
 from external.googleapi import normalize_us_address
 from external.res import get_res_data
 from external.models import NYC311Statistics

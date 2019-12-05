@@ -1,9 +1,7 @@
 from django.test import TestCase
-from django.utils import timezone
 from django.urls import reverse
 from unittest import mock
 
-import datetime
 # from .models import CraigslistLocation, LastRetrievedData
 from external.models import Address
 from location.models import Location, Apartment
