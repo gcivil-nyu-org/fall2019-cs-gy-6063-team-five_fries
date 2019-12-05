@@ -21,7 +21,7 @@
     const locations = [
     {% for item in search_data.locations_page %}
 
-        [ {{ item.latitude }}, {{ item.longitude }}, "{{ item.google_map_url }}" ],
+        [ {{ item.latitude }}, {{ item.longitude }}, "{% url 'location' item.id %}" ],
 
     {% endfor %}
     ];
@@ -42,11 +42,11 @@
         var map = event.detail.map.setView(mapCenter,zoomLevel);
 
         for (var i=0; i < markerList.length; i++){
-            let g_url = markerList[i][2];
+            var location_url = markerList[i][2];
 
             marker = new L.marker([markerList[i][0], markerList[i][1]])
             .addTo(map)
-            .bindPopup(`<a target="_blank" href="${ g_url }">Open Google Maps</a>`);
+            .bindPopup(`<a target="_blank" href="${location_url}">View on Location Page</a>`);
         }
 
         <!-- Solution to Rendering Leaflet map displaying inside the Modal -->
