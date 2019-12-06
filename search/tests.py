@@ -243,16 +243,18 @@ class SearchQueryBuilderTests(TestCase):
         Tests the return value of the search query when
         the original zip code is the exact query
         """
-        addr_dict = {
-            "street": "",
-            "zipcode": "11204",
-            "city": "Brooklyn",
-            "state": "NY",
-            "latitude": 40.6195067,
-            "longitude": -73.9859414,
-            "locality": "Brooklyn",
-        }
-        addr = Address.from_dict(addr_dict)
+
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "11204",
+                "city": "Brooklyn",
+                "state": "NY",
+                "latitude": 40.6195067,
+                "longitude": -73.9859414,
+                "locality": "Brooklyn",
+            }
+        )
 
         q_loc, q_apa = build_search_query(
             address=addr, orig_query="11204", min_price="", max_price="", bed_num=""
@@ -265,16 +267,18 @@ class SearchQueryBuilderTests(TestCase):
         Tests the return value of build_search_query when
         the address locality is in the original query
         """
-        addr_dict = {
-            "street": "",
-            "zipcode": "",
-            "city": "Brooklyn",
-            "state": "NY",
-            "latitude": 40.6195067,
-            "longitude": -73.9859414,
-            "locality": "Brooklyn",
-        }
-        addr = Address.from_dict(addr_dict)
+
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "",
+                "city": "Brooklyn",
+                "state": "NY",
+                "latitude": 40.6195067,
+                "longitude": -73.9859414,
+                "locality": "Brooklyn",
+            }
+        )
 
         q_loc, q_apa = build_search_query(
             address=addr,
