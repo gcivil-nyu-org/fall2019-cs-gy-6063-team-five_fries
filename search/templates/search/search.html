@@ -230,7 +230,7 @@
 
         <!-- Pagination -->
         {% if search_data.locations_page.has_other_pages %}
-          <ul class="pagination pg-gray">
+          <ul class="pagination pg-gray" style="justify-content: center;">
             {% if search_data.locations_page.has_previous %}
                 <li class="page-item"><a class="page-link" href="?{% query_transform page=search_data.locations_page.previous_page_number %}">&laquo;</a></li>
             {% else %}
