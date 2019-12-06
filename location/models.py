@@ -51,7 +51,7 @@ class Location(models.Model):
             return self.apartment_set.first().rent_price_for_display
         else:
             minimum = f"{self.apartment_set.order_by('rent_price')[0].rent_price:.0f}"
-            maximum = self.apartment_set.order_by('-rent_price')[0].rent_price
+            maximum = f"{self.apartment_set.order_by('-rent_price')[0].rent_price:.0f}"
             return f"${minimum} - {maximum}"
 
     def avg_rate(self):
