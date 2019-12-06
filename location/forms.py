@@ -79,7 +79,7 @@ class ApartmentUploadForm(forms.Form):
         g_state = g_utils.get_state(g_data)
         g_zip = g_utils.get_zipcode(g_data)
 
-        if g_city != city:
+        if g_city.lower() != city.lower():
             self.add_error(
                 "city",
                 f"The input value of {city} did not match the resolved value of {g_city}",
