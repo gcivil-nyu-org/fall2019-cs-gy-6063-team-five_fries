@@ -34,7 +34,7 @@
     </div>
     <div class="col-sm-4">
         {% if object.image %}
-        <img src="{{ object.image.url }} " class="img-fluid" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+        <img src="{{ object.picture_url }} " class="img-fluid" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
         {% else %}
         <span>No Image Available</span>
         {% endif %}
