@@ -260,9 +260,9 @@ class SearchQueryBuilderTests(TestCase):
             address=addr, orig_query="11204", min_price="", max_price="", bed_num=""
         )
         query_result_dict = {"zipcode": "11204"}
-        query_resutl_apa_dict = {}
+        query_result_apa_dict = {}
         self.assertDictEqual(q_loc, query_result_dict)
-        self.assertDictEqual(q_apa, query_resutl_apa_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
 
     def test_build_query_locality(self):
         """
