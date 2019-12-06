@@ -42,6 +42,18 @@ class Location(models.Model):
         image = self.representative_image
         return image if image is not None else "/static/img/no_img.png"
 
+    @property
+    def rent_price_for_display(self):
+        count = self.apartment_set.count()
+        if count == 0:
+            return None
+        elif count == 1:
+            return self.apartment_set.first().rent_price_for_display
+        else:
+            minimum = f"{self.apartment_set.order_by('rent_price')[0].rent_price:.0f}"
+            maximum = self.apartment_set.order_by('-rent_price')[0].rent_price
+            return f"${minimum} - {maximum}"
+
     def avg_rate(self):
         review_sum = 0
         for review in self.review_set.all():

@@ -209,7 +209,7 @@
                         <img src="{{ loc.representative_image_or_placeholder }}"" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
                         <hr style="margin: 0;">
                         <div class="card-body" style="text-align: left; color: black;">
-                            <h5 class="card-title">$1800 - 2100</h5>
+                            <h5 class="card-title">{{ loc.rent_price_for_display }}</h5>
                             <p class="card-text">{{ loc.full_address }}</p>
                             <div>
                                 <span class="badge green mr-1" style="color: white;">{{ search_data.matching_apartments|get_item:loc.id }} Apartment(s)</span>
