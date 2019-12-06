@@ -21,7 +21,7 @@
     const locations = [
     {% for item in search_data.locations_page %}
 
-        [ {{ item.latitude }}, {{ item.longitude }}, "{% url 'location' item.id %}" ],
+        [ {{ item.latitude }}, {{ item.longitude }}, "{% url 'location' item.id %}", "{{ search_data.thumbnails|get_item:item.id }}" ],
 
     {% endfor %}
     ];
@@ -43,10 +43,12 @@
 
         for (var i=0; i < markerList.length; i++){
             var location_url = markerList[i][2];
+            var image_url = markerList[i][3];
+            content = `<img width="100" src="${image_url}"/><br><a target="_blank" href="${location_url}">View Location</a>`;
 
             marker = new L.marker([markerList[i][0], markerList[i][1]])
             .addTo(map)
-            .bindPopup(`<a target="_blank" href="${location_url}">View on Location Page</a>`);
+            .bindPopup(content);
         }
 
         <!-- Solution to Rendering Leaflet map displaying inside the Modal -->
