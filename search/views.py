@@ -210,8 +210,6 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
     query_params_location = {}
     query_params_apartment = {}
 
-    print(f"address: {address}, orig_query: {orig_query}")
-
     # if the original query, exactly matches the zipcode, we want to only search
     # on the zip code
     if address and address.zipcode and address.zipcode == orig_query:
