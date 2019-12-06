@@ -203,23 +203,19 @@
                 <!--Grid column-->
                 <div class="col-md-4 mb-4">
                 <!--Card-->
-                <div class="card shadow">
-                    <!--Card image-->
-                    <div class="view overlay">
-                    <a href="{% url 'location' loc.id %}">
+                <a href="{% url 'location' loc.id %}" style="text-decoration: none;">
+                    <div class="card h-100 shadow" style="border-radius: 10px;">
                         <img src={{ search_data.thumbnails|get_item:loc.id }} class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
-                    </a>
+                        <hr style="margin: 0;">
+                        <div class="card-body" style="text-align: left; color: black;">
+                            <h5 class="card-title">$1800 - 2100</h5>
+                            <p class="card-text">{{ loc.full_address }}</p>
+                            <div>
+                                <span class="badge green mr-1" style="color: white;">{{ search_data.matching_apartments|get_item:loc.id }} Apartment(s)</span>
+                            </div>
+                        </div>
                     </div>
-                    <!--Card content-->
-                    <div class="card-body">
-                    <!--Title-->
-                    <h4 class="card-title">{{ loc.full_address }}</h4>
-                    <!--Text-->
-                    <div class="mb-3">
-                        <span class="badge green mr-1 black-text">Matching Apartments: {{ search_data.matching_apartments|get_item:loc.id }}</span>
-                    </div>
-                    </div>
-                </div>
+                </a>
                 <!--/.Card-->
                 </div>
                 <!--Grid column-->

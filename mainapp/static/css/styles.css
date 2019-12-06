@@ -122,7 +122,7 @@ div.custom-file {
 }
 
 .shadow {
-  box-shadow: 0.4rem 0.4rem #EAE6E6;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1)
 }
 
 .search-form input[type="text"], .search-form input[type="number"] {
