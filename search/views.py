@@ -225,6 +225,8 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
                 and address.locality.lower() in orig_query.lower()
             ):
                 query_params_location["locality__iexact"] = address.locality
+                # if the locality AND the zip code are in the orig_query
+                # search on locality, not city
             elif address.city.lower() not in orig_query.lower():
                 query_params_location["locality__iexact"] = address.locality
             else:  # default to city
