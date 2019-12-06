@@ -86,25 +86,16 @@ def search(request):
 
             # calculate the number of matching apartments at each location
             matching_apartments = {}
-            thumbnails = {}  # thumbnail for each location
             for loc in search_data["locations"]:
                 matching_apartments[loc.id] = 0
-                thumbnails[
-                    loc.id
-                ] = "/static/img/no_img.png"  # default image if no image exists
 
             # number of apartments at each location satisfying the given criteria
             for loc in search_data["locations"]:
                 matches = loc.apartment_set.filter(**query_params_apartment)
                 num_matches = matches.count()
                 matching_apartments[loc.id] = num_matches
-                for apt in matches:
-                    if apt.image:
-                        thumbnails[loc.id] = apt.image
-                        break
 
             search_data["matching_apartments"] = matching_apartments
-            search_data["thumbnails"] = thumbnails
 
             # paginate the search location results
             page = request.GET.get("page", 1)

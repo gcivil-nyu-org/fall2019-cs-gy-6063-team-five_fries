@@ -33,6 +33,15 @@ class Location(models.Model):
     def google_map_url(self):
         return f"https://www.google.com/maps/search/?api=1&query={self.url_encoded_full_address}"
 
+    @property
+    def representative_image(self):
+        return self.apartment_set.exclude(image=None).first().image
+
+    @property
+    def representative_image_or_placeholder(self):
+        image = self.representative_image
+        return image if image is not None else "/static/img/no_img.png"
+
     def avg_rate(self):
         review_sum = 0
         for review in self.review_set.all():
