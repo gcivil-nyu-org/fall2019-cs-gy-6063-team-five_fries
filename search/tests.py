@@ -8,6 +8,7 @@ from external.nyc311.stub import fetch_311_data
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 from external.res.stub import fetch_res_data
 from .templatetags.custom_tags import get_item, get_modulo
+from .views import build_search_query
 
 
 def create_location_and_apartment():
@@ -234,3 +235,57 @@ class CustomTemplatesTestCases(TestCase):
         key = 3
         result = get_modulo(value, key)
         self.assertEqual(result, 2)
+
+
+class SearchQueryBuilderTests(TestCase):
+    def test_build_query_zip_only(self):
+        """
+        Tests the return value of the search query when
+        the original zip code is the exact query
+        """
+        addr_dict = {
+            "street": "",
+            "zipcode": "11204",
+            "city": "Brooklyn",
+            "state": "NY",
+            "latitude": 40.6195067,
+            "longitude": -73.9859414,
+            "locality": "Brooklyn",
+        }
+        addr = Address.from_dict(addr_dict)
+
+        q_loc, q_apa = build_search_query(
+            address=addr, orig_query="11204", min_price="", max_price="", bed_num=""
+        )
+        result_query_dict = {"zipcode": "11204"}
+        self.assertDictEqual(q_loc, result_query_dict)
+
+    def test_build_query_locality(self):
+        """
+        Tests the return value of build_search_query when
+        the address locality is in the original query
+        """
+        addr_dict = {
+            "street": "",
+            "zipcode": "",
+            "city": "Brooklyn",
+            "state": "NY",
+            "latitude": 40.6195067,
+            "longitude": -73.9859414,
+            "locality": "Brooklyn",
+        }
+        addr = Address.from_dict(addr_dict)
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="Brooklyn, NY",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        result_query_dict = {
+            "locality__iexact": "Brooklyn",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        self.assertDictEqual(q_loc, result_query_dict)
