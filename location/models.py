@@ -3,6 +3,8 @@ from localflavor.us import models as us_models
 from urllib.parse import quote
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+import uuid
+
 
 class Location(models.Model):
     city = models.CharField(max_length=100)
@@ -138,3 +140,16 @@ class Apartment(models.Model):
             return self.image.url
         else:
             return self.image
+
+class ClaimRequest(models.Model):
+    user = models.ForeignKey("mainapp.SiteUser", null=True, on_delete=models.CASCADE)
+    apartment = models.ForeignKey(
+        Apartment, null=True, on_delete=models.CASCADE, related_name="claim_set"
+    )
+    request_type = models.CharField(
+        max_length=100, choices=[("tenant", "Tenant"), ("landlord", "Landlord")]
+    )
+    note = models.TextField()
+    access_granted = models.BooleanField(default=False)
+    allow_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    deny_token = models.UUIDField(default=uuid.uuid4, editable=False)

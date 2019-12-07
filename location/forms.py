@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Button, ButtonHolder, Div
 
 from localflavor.us import forms as us_forms
-from .models import Location, Apartment
+from .models import Location, Apartment, ClaimRequest
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
 
@@ -106,17 +106,23 @@ class ApartmentUploadForm(forms.Form):
             )
 
 
-class ClaimForm(forms.Form):
-    claim_type = forms.ChoiceField(
-        choices=[
-            ("tenant", "I am a tenant of this apartment"),
-            ("landlord", "I am a landlord of this apartment"),
-        ],
-        widget=forms.RadioSelect(attrs={"required": True}),
-        label="Are you a tenant or a landlord?",
-        required=True,
-    )
-    note = forms.CharField(widget=forms.Textarea, required=False)
+# class ClaimForm(forms.Form):
+#     claim_type = forms.ChoiceField(
+#         choices=[
+#             ("tenant", "I am a tenant of this apartment"),
+#             ("landlord", "I am a landlord of this apartment"),
+#         ],
+#         widget=forms.RadioSelect(attrs={"required": True}),
+#         label="Are you a tenant or a landlord?",
+#         required=True,
+#     )
+#     note = forms.CharField(widget=forms.Textarea, required=False)
+
+
+class ClaimForm(forms.ModelForm):
+    class Meta:
+        model = ClaimRequest
+        exclude = ["user", "apartment", "allow_token", "deny_token", "access_granted"]
 
 
 class ContactLandlordForm(forms.Form):
