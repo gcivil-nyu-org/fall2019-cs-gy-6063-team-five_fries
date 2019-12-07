@@ -53,7 +53,29 @@
             <!--Text-->
             <p class="card-text">
 
+                <div class="text-center">
+                  <h3 class="h3 mb-0">{{ result.complaint_level }}</h3>
+                  <p>Complaint Level (0-5)</p>
+                </div>
+                <hr>
 
+                <div class="text-center">
+                  <h3 class="h3 mb-0">{{ result.percentage_complaints_closed }} %</h3>
+                  <p>Complaints Closed</p>
+                </div>
+                <hr>
+
+                <div class="text-center">
+                  <h3 class="h3 mb-0">{{ result.total_complaints_query_zip }}</h3>
+                  <p>Total Complaints</p>
+                </div>
+                <hr>
+
+                <div class="text-center">
+                  <h3 class="h3 mb-0">{{ result.closed_complaints_query_zip }}</h3>
+                  <p>Closed Complaints</p>
+                </div>
+                <hr>
 
             </p>
 
