@@ -21,13 +21,48 @@
 
 {% block content %}
 
+
+
+      <!--Grid column-->
+      <div class="col-md-4 mb-4">
+          {% for result in results_311.stats %}
+
+            <!--Card-->
+            <div class="card shadow">
+            <!--Card image-->
+            <div class="view overlay">
+
+            </div>
+            <!--Card content-->
+            <div class="card-body white-text">
+
+            <!--Title-->
+            <h4 class="card-title text-center">{{ result.complaint_type }} Complaints</h4>
+            <!--Text-->
+            <p class="card-text">
+
+
+
+            </p>
+
+            </div>
+            <!-- Card -->
+
+      </div>
+              <hr>
+          {% endfor %}
+        </div>
+
 <!--Main layout-->
 <main class="mt-5 pt-4">
 
+
   <div class="container dark-grey-text mt-5">
+
 
     <!--Grid row-->
     <div class="row wow fadeIn">
+
 
       <!--Grid column-->
       <div class="col-md-6 mb-4">
@@ -43,6 +78,7 @@
 
       <!--Grid column-->
       <div class="col-md-6 mb-4">
+
 
         <!--Content-->
         <div class="p-4">
