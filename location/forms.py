@@ -106,23 +106,24 @@ class ApartmentUploadForm(forms.Form):
             )
 
 
-# class ClaimForm(forms.Form):
-#     claim_type = forms.ChoiceField(
-#         choices=[
-#             ("tenant", "I am a tenant of this apartment"),
-#             ("landlord", "I am a landlord of this apartment"),
-#         ],
-#         widget=forms.RadioSelect(attrs={"required": True}),
-#         label="Are you a tenant or a landlord?",
-#         required=True,
-#     )
-#     note = forms.CharField(widget=forms.Textarea, required=False)
-
-
 class ClaimForm(forms.ModelForm):
     class Meta:
         model = ClaimRequest
-        exclude = ["user", "apartment", "allow_token", "deny_token", "access_granted"]
+        exclude = ["allow_token", "deny_token", "access_granted"]
+
+    def __init__(self, *args, **kwargs):
+        super(ClaimForm, self).__init__(*args, **kwargs)
+        self.fields["user"].widget = forms.HiddenInput()
+        self.fields["apartment"].widget = forms.HiddenInput()
+
+    def clean(self):
+        super(ClaimForm, self).clean()
+        request_type = self.cleaned_data.get("request_type")
+        apartment = self.cleaned_data.get("apartment")
+        if request_type == "tenant" and not apartment.landlord:
+            raise forms.ValidationError(
+                "This Apartment does not currently have a Landlord registered with the site"
+            )
 
 
 class ContactLandlordForm(forms.Form):

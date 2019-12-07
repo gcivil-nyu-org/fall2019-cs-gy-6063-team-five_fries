@@ -108,11 +108,9 @@ def claim_view(request, pk, apk):
 
     if request.method == "POST":
         form = ClaimForm(request.POST)
+        print(f"request.post: {request.POST}")
         if form.is_valid():
-            claim_request = form.save(commit=False)
-            claim_request.user = request.user
-            claim_request.apartment = apt
-            claim_request.save()
+            claim_request = form.save()
 
             sender_email = settings.EMAIL_HOST_USER
 
@@ -154,7 +152,7 @@ def claim_view(request, pk, apk):
                 user_model = get_user_model()
                 admin_list = user_model.objects.filter(is_superuser=True)
                 to_list = [user.email for user in admin_list]
-                print(f"to list: {to_list}")
+
                 plaintext = get_template("location/email/landlord_claim_request.txt")
 
                 text_content = plaintext.render(context)
@@ -178,7 +176,7 @@ def claim_view(request, pk, apk):
         else:
             return render(request, "claim.html", {"apt": apt, "form": form})
     else:
-        form = ClaimForm()
+        form = ClaimForm(initial={"apartment": apt, "user": request.user})
         return render(request, "claim.html", {"apt": apt, "form": form})
 
 
@@ -187,6 +185,13 @@ def grant_claim(request, pk, apk, id, token):
 
     apt = get_object_or_404(Apartment, pk=apk)
     claim = get_object_or_404(ClaimRequest, pk=id, apartment=apt, allow_token=token)
+
+    sender_email = settings.EMAIL_HOST_USER
+    context = {
+        "user_name": claim.user.full_name,
+        "apt": apt,
+        "location_address": apt.location.full_address,
+    }
 
     if claim.request_type == "tenant":
         if request.user != apt.landlord:
@@ -201,6 +206,17 @@ def grant_claim(request, pk, apk, id, token):
             claim.save()
             apt.tenant = claim.user
             apt.save()
+
+            subject = "Your Tenancy request has been approved"
+            to = claim.user.email
+
+            text_context = get_template("location/email/request_approved.txt")
+            context["request_type"] = "tenancy"
+            context["approver"] = "landlord"
+            message = text_context.render(context)
+
+            send_mail(subject, message, sender_email, [to])
+
             messages.success(
                 request,
                 message=f"Granted {claim.user.full_name}'s tenancy request!",
@@ -214,6 +230,16 @@ def grant_claim(request, pk, apk, id, token):
 
             apt.landlord = claim.user
             apt.save()
+
+            subject = "Your Ownership request has been approved"
+            to = claim.user.email
+
+            text_context = get_template("location/email/request_approved.txt")
+            context["request_type"] = "ownership"
+            context["approver"] = "site administrator"
+            message = text_context.render(context)
+
+            send_mail(subject, message, sender_email, [to])
 
             messages.success(
                 request,
@@ -232,13 +258,46 @@ def grant_claim(request, pk, apk, id, token):
 
 @login_required
 def deny_claim(request, pk, apk, id, token):
-    print("")
+
     apt = get_object_or_404(Apartment, pk=apk)
     claim = get_object_or_404(ClaimRequest, pk=id, apartment=apt, deny_token=token)
-    if claim.request_type == "tenant":
-        print("")
-    elif claim.request_type == "landlord":
-        print("")
+    sender_email = settings.EMAIL_HOST_USER
+    context = {
+        "user_name": claim.user.full_name,
+        "apt": apt,
+        "location_address": apt.location.full_address,
+    }
+    if claim.request_type == "tenant" and request.user == apt.landlord:
+
+        subject = "Your Tenancy request has been rejected"
+        to = claim.user.email
+
+        text_context = get_template("location/email/tenant_claim_request_rejected.txt")
+        message = text_context.render(context)
+        send_mail(subject, message, sender_email, [to])
+        messages.error(
+            request, message="Tenancy request rejected.", extra_tags="danger"
+        )
+
+    elif claim.request_type == "landlord" and request.user.is_superuser:
+
+        subject = "Your Ownership request has been rejected"
+        to = claim.user.email
+
+        text_context = get_template(
+            "location/email/landlord_claim_request_rejected.txt"
+        )
+        msg = text_context.render(context)
+        send_mail(subject, msg, sender_email, [to])
+        messages.error(
+            request, message="Ownership request rejected.", extra_tags="danger"
+        )
+    else:
+        messages.error(
+            request,
+            message="You do not have permission to reject this request.",
+            extra_tags="danger",
+        )
 
     return HttpResponseRedirect(reverse("apartment", kwargs={"pk": pk, "apk": apk}))
 
