@@ -26,7 +26,13 @@
             <div class="card shadow">
             <!--Card image-->
             <div class="view overlay">
-
+                {% if result.complaint_type == "Parking" %}
+                    <img src="/static/img/parking.jpg" class="card-img-top cover" alt="">
+                {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
+                    <img src="/static/img/noise_low.jpg" class="card-img-top cover" alt="">
+                {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
+                    <img src="/static/img/noise_high.jpg" class="card-img-top cover" alt="">
+                {% endif %}
             </div>
             <!--Card content-->
             <div class="card-body white-text">
@@ -43,7 +49,10 @@
             </div>
             <!-- Card -->
 
+
+
       </div>
+
               <hr>
           {% endfor %}
         </div>
