@@ -96,6 +96,10 @@ div.custom-file {
     color:#000!important;
 }
 
+.white-text{
+    color:white;
+}
+
 .cover {
     object-fit: cover;
     width: 100%;

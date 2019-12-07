@@ -19,6 +19,9 @@ from .models import Location, Apartment
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
+from external.cache.nyc311 import refresh_nyc311_statistics_if_needed
+from external.models import NYC311Statistics
+from external.nyc311 import get_311_data
 from django.core.mail import send_mail
 from django.conf import settings
 
@@ -46,6 +49,28 @@ def apartment_detail_view(request, pk, apk):
     apt = Apartment.objects.get(location__id=pk, id=apk)
     contact_landlord_form = ContactLandlordForm()
 
+    zip_code = None
+    if apt:
+        zip_code = apt.location.zipcode
+
+    # TODO use no_matches for zipcodes that have no data in 311 but apartments available
+
+    results_311 = {}
+    timeout = False
+    if zip_code:
+        # Get 311 statistics
+        try:
+            refresh_nyc311_statistics_if_needed(zip_code)
+            results_311["stats"] = NYC311Statistics.objects.filter(zipcode=zip_code)
+        except TimeoutError:
+            timeout = True
+
+        # Get 311 raw complaints
+        try:
+            results_311["complaints"] = get_311_data(str(zip_code))
+        except TimeoutError:
+            timeout = True
+
     show_claim_button = not apt.tenant or not apt.landlord
     return render(
         request,
@@ -54,6 +79,8 @@ def apartment_detail_view(request, pk, apk):
             "apt": apt,
             "show_claim_button": show_claim_button,
             "contact_landlord_form": contact_landlord_form,
+            "results_311": results_311,
+            "timeout": timeout,
         },
     )
 
