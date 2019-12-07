@@ -1,5 +1,7 @@
 {% extends 'nav.html' %}
 
+
+
 {% block body %}
 
 <div class="breadcrumbs">
@@ -9,16 +11,6 @@
 
 <main role="main" class="container">
     <div class="container">
-
-        {% if messages %}
-            <div class="row justify-content-center">
-                {% for message in messages %}
-                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} col-sm-6">{{ message }}<button
-                            type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button></div>
-                {% endfor %}
-            </div>
-        {% endif %}
         <div class="row justify-content-center">
             <div class="col center-container">
                 

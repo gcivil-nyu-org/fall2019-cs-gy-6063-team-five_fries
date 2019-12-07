@@ -134,3 +134,10 @@ div.custom-file {
   padding: 0;
   background: none;
 }
+
+.alert-top {
+    position: fixed;
+    top: 65px;
+    left: 34%;
+    width: 33%
+}
