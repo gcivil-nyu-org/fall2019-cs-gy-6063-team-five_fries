@@ -40,7 +40,13 @@
                 {% endif %}
             </div>
             <!--Card content-->
-            <div class="card-body white-text">
+            <div class="card-body white-text"
+                 {% if result.complaint_level <= 2 %}
+                 style="background-color:green"
+                 {% else %}
+                 style="background-color:#ff0b00db"
+                {% endif %}
+            >
 
             <!--Title-->
             <h4 class="card-title text-center">{{ result.complaint_type }} Complaints</h4>
