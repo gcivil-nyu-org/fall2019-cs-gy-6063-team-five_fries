@@ -1,20 +1,23 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.conf import settings
+
+# from django.core import mail
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from PIL import Image
 from io import BytesIO
+from bs4 import BeautifulSoup
+from unittest import mock
+
+import string
 
 from .models import Location, Apartment, ClaimRequest
 from .forms import ClaimForm
 from mainapp.models import SiteUser
 from review.models import Review
-import string
-from unittest import mock
 from external.zillow.stub import fetch_zillow_housing
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
-from bs4 import BeautifulSoup
-from django.conf import settings
 
 
 def create_location_and_apartment():
@@ -678,17 +681,18 @@ class ClaimViewTests(TestCase):
         post_data = {"user": user, "apartment": apa, "request_type": "tenant"}
 
         response = self.client.post(reverse("claim", args=(6, apa.id)), post_data)
+        claim = ClaimRequest.objects.filter(apartment=apa).exists()
         self.assertEqual(response.status_code, 200)
+        self.assertFalse(claim, msg="Should not have created a claim")
 
-    @mock.patch("location.views.send_mail")
-    def test_form_submit_tenant_with_note(self, mock_mailer):
+    def test_form_submit_tenant_with_note(self):
 
         user = SiteUser.objects.create(username="testuser", email="test@test.com")
         self.client.force_login(user)
         apa = Apartment.objects.get(location__id=6, suite_num="2R")
         apa.landlord = SiteUser.objects.create(username="landlord")
         apa.save()
-
+        # mock_mailer = mock.MagicMock()
         post_data = {
             "user": user.id,
             "apartment": apa.id,
@@ -697,7 +701,11 @@ class ClaimViewTests(TestCase):
         }
 
         response = self.client.post(reverse("claim", args=(6, apa.id)), post_data)
-        # mock_mailer.send_mail.assert_called()
+        # self.assertTrue(mock_mailer.send_mail.called, msg="send_mail should have been called")
+
+        # self.assertEqual(len(mail.outbox), 1, msg="Should have sent an email out")
+        created = ClaimRequest.objects.filter(apartment=apa).exists()
+        self.assertTrue(created, msg="Should have created a claim")
         self.assertRedirects(
             response,
             reverse("apartment", kwargs={"pk": apa.location.id, "apk": apa.id}),
@@ -711,7 +719,9 @@ class ClaimViewTests(TestCase):
         post_data = {"user": user, "apartment": apa, "request_type": "landlord"}
 
         response = self.client.post(reverse("claim", args=(6, apa.id)), post_data)
+        claim = ClaimRequest.objects.filter(apartment=apa).exists()
         self.assertEqual(response.status_code, 200)
+        self.assertFalse(claim, msg="Should not have created a claim")
 
     @mock.patch("location.views.send_mail")
     def test_form_submit_landlord_with_note(self, mock_mailer):
@@ -729,6 +739,9 @@ class ClaimViewTests(TestCase):
 
         response = self.client.post(reverse("claim", args=(6, apa.id)), post_data)
 
+        created = ClaimRequest.objects.filter(apartment=apa).exists()
+
+        self.assertTrue(created, msg="Should have created a claim")
         # mock_mailer.send_mail.assert_called()
         self.assertRedirects(
             response,
@@ -744,8 +757,10 @@ class ClaimViewTests(TestCase):
             reverse("claim", args=(6, apa.id)),
             {"claim_type": "HAHAHA", "note": "Please approve my request"},
         )
+        claim = ClaimRequest.objects.filter(apartment=apa).exists()
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "successful")
+        self.assertFalse(claim, msg="Should not have created a claim")
 
 
 @mock.patch("location.views.send_mail")
@@ -778,16 +793,31 @@ class GrantClaimTests(TestCase):
             reverse(
                 "grant_claim",
                 args=(loc.id, apa.id, claim_request.id, claim_request.allow_token),
-            )
+            ),
+            follow=True,  # tells client to follow the request through the redirect
         )
+
+        self.assertEqual(response.status_code, 200)
 
         claim = ClaimRequest.objects.get(pk=claim_request.id)
         self.assertFalse(claim.access_granted, msg="Claim should not have been granted")
         self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
 
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "danger" in message.tags,
+            msg="There should have been a error message raised",
+        )
+        self.assertTrue(
+            "You do not have permission to grant tenancy requests." in message.message,
+            msg="Should have raised a permission warning",
+        )
+
     def test_grant_tenant(self, mock_mailer):
         loc, apa = create_location_and_apartment()
-        user = SiteUser.objects.create_user(username="user", email="test@teest.com")
+        user = SiteUser.objects.create_user(
+            username="user", email="test@teest.com", full_name="user"
+        )
         apa.landlord = user
         apa.save()
         self.client.force_login(user)
@@ -797,12 +827,24 @@ class GrantClaimTests(TestCase):
             reverse(
                 "grant_claim",
                 args=(loc.id, apa.id, claim_request.id, claim_request.allow_token),
-            )
+            ),
+            follow=True,  # tells client to follow the request through the redirect
         )
-
+        self.assertEqual(
+            response.status_code, 200, msg="Initial response should have returned 200"
+        )
         claim = ClaimRequest.objects.get(pk=claim_request.id)
         self.assertTrue(claim.access_granted, msg="Claim should have been granted")
         self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
+
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "success" in message.tags, msg="Message should have a success tag"
+        )
+        self.assertTrue(
+            f"Granted {user.full_name}'s tenancy request!" in message.message,
+            msg="Should have displayed a success message",
+        )
 
     def test_grant_landlord_not_admin(self, mock_mailer):
         loc, apa = create_location_and_apartment()
@@ -821,16 +863,34 @@ class GrantClaimTests(TestCase):
             reverse(
                 "grant_claim",
                 args=(loc.id, apa.id, claim_request.id, claim_request.allow_token),
-            )
+            ),
+            follow=True,  # tells the client to follow the request through the redirect
+        )
+
+        self.assertEqual(
+            response.status_code, 200, msg="Initial request should return 200"
         )
 
         claim = ClaimRequest.objects.get(pk=claim_request.id)
         self.assertFalse(claim.access_granted, msg="Claim should not have been granted")
         self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
 
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "danger" in message.tags,
+            msg="There should have been a error message raised",
+        )
+        self.assertTrue(
+            "You do not have permission to grant ownership requests."
+            in message.message,
+            msg="Should have raised a permission warning",
+        )
+
     def test_grant_landlord(self, mock_mailer):
         loc, apa = create_location_and_apartment()
-        user = SiteUser.objects.create_user(username="user", email="test@teest.com")
+        user = SiteUser.objects.create_user(
+            username="user", email="test@teest.com", full_name="user"
+        )
         admin = SiteUser.objects.create_user(username="admin", is_superuser=True)
         apa.landlord = user
         apa.save()
@@ -843,12 +903,25 @@ class GrantClaimTests(TestCase):
             reverse(
                 "grant_claim",
                 args=(loc.id, apa.id, claim_request.id, claim_request.allow_token),
-            )
+            ),
+            follow=True,  # tells the client to follow the request through the redirect
+        )
+        self.assertEqual(
+            response.status_code, 200, msg="Initial request should have returned 200"
         )
 
         claim = ClaimRequest.objects.get(pk=claim_request.id)
         self.assertTrue(claim.access_granted, msg="Claim should have been granted")
         self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
+
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "success" in message.tags, msg="Message should have a success tag"
+        )
+        self.assertTrue(
+            f"Granted {claim.user.full_name}'s ownership request!" in message.message,
+            msg="Should have displayed a success message",
+        )
 
 
 @mock.patch("location.views.send_mail")
@@ -878,11 +951,61 @@ class DenyClaimTests(TestCase):
             reverse(
                 "deny_claim",
                 args=(loc.id, apa.id, claim_request.id, claim_request.deny_token),
-            )
+            ),
+            follow=True,  # tells the client to follow the request through the redirect
         )
+        self.assertEqual(
+            response.status_code, 200, msg="Initial request should have returned a 200"
+        )
+
         claim = ClaimRequest.objects.get(pk=claim_request.id)
         self.assertFalse(claim.access_granted)
         self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
+
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "danger" in message.tags,
+            msg="There should have been a error message raised",
+        )
+        self.assertTrue(
+            "You do not have permission to reject this request." in message.message,
+            msg="Should have raised a permission warning",
+        )
+
+    def test_deny_tenant_not_admin(self, mock_mailer):
+        loc, apa = create_location_and_apartment()
+        user = SiteUser.objects.create_user(username="user")
+        self.client.force_login(user)
+        claim_request = create_claim_request(
+            user=user, apartment=apa, request_type="landlord"
+        )
+        apa.landlord = SiteUser.objects.create_user(username="landlord")
+        apa.save()
+
+        response = self.client.get(
+            reverse(
+                "deny_claim",
+                args=(loc.id, apa.id, claim_request.id, claim_request.deny_token),
+            ),
+            follow=True,  # tells the client to follow the request through the redirect
+        )
+        self.assertEqual(
+            response.status_code, 200, msg="Initial request should have returned a 200"
+        )
+
+        claim = ClaimRequest.objects.get(pk=claim_request.id)
+        self.assertFalse(claim.access_granted)
+        self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
+
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "danger" in message.tags,
+            msg="There should have been a error message raised",
+        )
+        self.assertTrue(
+            "You do not have permission to reject this request." in message.message,
+            msg="Should have raised a permission warning",
+        )
 
     def test_deny_tenant(self, mock_mailer):
         loc, apa = create_location_and_apartment()
@@ -896,11 +1019,26 @@ class DenyClaimTests(TestCase):
             reverse(
                 "deny_claim",
                 args=(loc.id, apa.id, claim_request.id, claim_request.deny_token),
-            )
+            ),
+            follow=True,  # tells the client to follow the request through the redirect
         )
+        self.assertEqual(
+            response.status_code, 200, msg="Initial request should have returned a 200"
+        )
+
         claim = ClaimRequest.objects.get(pk=claim_request.id)
         self.assertFalse(claim.access_granted)
         self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
+
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "danger" in message.tags,
+            msg="There should have been a error message raised",
+        )
+        self.assertTrue(
+            "Tenancy request rejected." in message.message,
+            msg="Should have raised a permission warning",
+        )
 
     def test_deny_landlord(self, mock_mailer):
         loc, apa = create_location_and_apartment()
@@ -916,11 +1054,26 @@ class DenyClaimTests(TestCase):
             reverse(
                 "deny_claim",
                 args=(loc.id, apa.id, claim_request.id, claim_request.deny_token),
-            )
+            ),
+            follow=True,  # tells the client to follow the request through the redirect
         )
+        self.assertEqual(
+            response.status_code, 200, msg="Initial request should have returned a 200"
+        )
+
         claim = ClaimRequest.objects.get(pk=claim_request.id)
         self.assertFalse(claim.access_granted)
         self.assertRedirects(response, reverse("apartment", args=(loc.id, apa.id)))
+
+        message = list(response.context.get("messages"))[0]
+        self.assertTrue(
+            "danger" in message.tags,
+            msg="There should have been a error message raised",
+        )
+        self.assertTrue(
+            "Ownership request rejected." in message.message,
+            msg="Should have raised a permission warning",
+        )
 
 
 class ClaimFormTests(TestCase):
