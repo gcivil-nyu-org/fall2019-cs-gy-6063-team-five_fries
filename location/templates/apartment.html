@@ -14,122 +14,19 @@
 
 {% load crispy_forms_tags %}
 
+{% block script %}
+<!-- Compiled and minified CSS -->
+{#<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">#}
+
+<!-- Compiled and minified JavaScript -->
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+{% endblock %}
+
 {% block content %}
 
-
-
-      <!--Grid column-->
-      <div class="col-md-4 mb-4">
-          {% for result in results_311.stats %}
-
-            <!--Card-->
-            <div class="card shadow">
-            <!--Card image-->
-            <div class="view overlay">
-                {% if result.complaint_type == "Parking" %}
-                    <img src="/static/img/parking.jpg" class="card-img-top cover" alt="">
-                {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
-                    <img src="/static/img/noise_low.jpg" class="card-img-top cover" alt="">
-                {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
-                    <img src="/static/img/noise_high.jpg" class="card-img-top cover" alt="">
-                {% endif %}
-            </div>
-            <!--Card content-->
-            <div class="card-body white-text"
-                 {% if result.complaint_level <= 2 %}
-                 style="background-color:green"
-                 {% else %}
-                 style="background-color:#ff0b00db"
-                {% endif %}
-            >
-
-            <!--Title-->
-            <h4 class="card-title text-center">{{ result.complaint_type }} Complaints</h4>
-            <!--Text-->
-            <p class="card-text">
-
-                <div class="text-center">
-                  <h3 class="h3 mb-0">{{ result.complaint_level }}</h3>
-                  <p>Complaint Level (0-5)</p>
-                </div>
-                <hr>
-
-                <div class="text-center">
-                  <h3 class="h3 mb-0">{{ result.percentage_complaints_closed }} %</h3>
-                  <p>Complaints Closed</p>
-                </div>
-                <hr>
-
-                <div class="text-center">
-                  <h3 class="h3 mb-0">{{ result.total_complaints_query_zip }}</h3>
-                  <p>Total Complaints</p>
-                </div>
-                <hr>
-
-                <div class="text-center">
-                  <h3 class="h3 mb-0">{{ result.closed_complaints_query_zip }}</h3>
-                  <p>Closed Complaints</p>
-                </div>
-                <hr>
-
-            </p>
-
-            </div>
-            <!-- Card -->
-
-{#              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Display Complaints</button>#}
-{#              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"#}
-{#                   aria-hidden="true">#}
-{#                  <div class="modal-dialog" role="document">#}
-{#                      <div class="modal-content">#}
-{#                          <div class="modal-header">#}
-{#                              <h5 class="modal-title" id="exampleModalLabel">Complaints</h5>#}
-{#                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
-{#                                  <span aria-hidden="true">&times;</span>#}
-{#                              </button>#}
-{#                          </div>#}
-{#                          <div class="modal-body">#}
-{#                              <div>#}
-{#                                <hr class="mt-0 mb-2 mt-2">#}
-{#                                    <h5>311 Data Complaints for Zip Code: {{ zip }}</h5>#}
-{#                                    <ol>#}
-{#                                    {% for result in results_311.complaints %}#}
-{#                                        <li><h5>Complaint Results</h5></li>#}
-{#                                        <ul>#}
-{#                                        <li>Date Created: {{ result.created_date }}</li>#}
-{#                                        <li>Incident Address</li>#}
-{#                                            <ul>#}
-{#                                            <li>Street Address: {{ result.incident_address }}</li>#}
-{#                                            <li>ZIP Code: {{ result.incident_zip }}</li>#}
-{#                                            <li>City: {{ result.city }}</li>#}
-{#                                            </ul>#}
-{##}
-{#                                        <li>Complaint</li>#}
-{#                                            <ul>#}
-{#                                            <li>Complaint Type: {{ result.complaint_type }}</li>#}
-{#                                            <li>Description: {{ result.descriptor }}</li>#}
-{#                                            <li>Status: {{ result.status }}</li>#}
-{#                                            </ul>#}
-{#                                        </ul>#}
-{#                                        <hr class="mt-0 mb-2 mt-2">#}
-{#                                    {% endfor %}#}
-{#                                    </ol>#}
-{#                                </div>#}
-{#                          </div>#}
-{#                          <div class="modal-footer">#}
-{#                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>#}
-{#                          </div>#}
-{#                      </div>#}
-{#                  </div>#}
-{#              </div>#}
-{##}
-{#        <a href="#" class="btn btn-outline-white btn-md waves-effect">Display Complaints</a>#}
-
-      </div>
-
-              <hr>
-          {% endfor %}
-        </div>
 
 <!--Main layout-->
 <main class="mt-5 pt-4">
@@ -143,7 +40,7 @@
 
 
       <!--Grid column-->
-      <div class="col-md-6 mb-4">
+      <div class="col mb-4">
 
       {% if apt.image %}
           <img src="{{ apt.picture_url }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'" data-toggle="modal" data-target=".carouselModalControls">
@@ -229,7 +126,7 @@
       <!--Grid column-->
 
       <!--Grid column-->
-      <div class="col-md-6 mb-4">
+      <div class="col mb-4">
 
 
         <!--Content-->
@@ -373,6 +270,103 @@
 
       </div>
       <!--Grid column-->
+
+
+
+
+      <!--Grid column-->
+      <div class="col mb-4">
+        {% for result in results_311.stats %}
+
+          <!--Card-->
+          <div class="card shadow">
+          <!--Card image-->
+          <div class="view overlay">
+              {% if result.complaint_type == "Parking" %}
+                  <img src="/static/img/parking.jpg" class="card-img-top cover activator" alt="">
+              {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
+                  <img src="/static/img/noise_low.jpg" class="card-img-top cover activator" alt="">
+              {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
+                  <img src="/static/img/noise_high.jpg" class="card-img-top cover activator" alt="">
+              {% endif %}
+          </div>
+
+
+          <!--Card content-->
+          <div class="card-reveal">
+            <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
+            <p>Here is some more information about this product that is only revealed once clicked on.</p>
+
+
+          <div class="card-body white-text"
+               {% if result.complaint_level <= 2 %}
+               style="background-color:green"
+               {% else %}
+               style="background-color:#ff0b00db"
+              {% endif %}
+          >
+
+          <!--Title-->
+          <h4 class="card-title text-center">{{ result.complaint_type }} Complaints</h4>
+
+
+{#  <div class="card">#}
+{#    <div class="card-image waves-effect waves-block waves-light">#}
+{#      <img class="activator" src="images/office.jpg">#}
+{#    </div>#}
+{#    <div class="card-content">#}
+{#      <span class="card-title activator grey-text text-darken-4">Card Title<i class="material-icons right">more_vert</i></span>#}
+{#      <p><a href="#">This is a link</a></p>#}
+{#    </div>#}
+{#    <div class="card-reveal">#}
+{#      <span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>#}
+{#      <p>Here is some more information about this product that is only revealed once clicked on.</p>#}
+{#    </div>#}
+{#  </div>#}
+
+
+
+
+
+          <!--Text-->
+          <p class="card-text">
+
+              <div class="text-center">
+                <h3 class="h3 mb-0">{{ result.complaint_level }}</h3>
+                <p>Complaint Level (0-5)</p>
+              </div>
+              <hr>
+
+              <div class="text-center">
+                <h3 class="h3 mb-0">{{ result.percentage_complaints_closed }} %</h3>
+                <p>Complaints Closed</p>
+              </div>
+              <hr>
+
+              <div class="text-center">
+                <h3 class="h3 mb-0">{{ result.total_complaints_query_zip }}</h3>
+                <p>Total Complaints</p>
+              </div>
+              <hr>
+
+              <div class="text-center">
+                <h3 class="h3 mb-0">{{ result.closed_complaints_query_zip }}</h3>
+                <p>Closed Complaints</p>
+              </div>
+              <hr>
+
+          </p>
+
+          </div>
+          <!-- Card -->
+
+
+          </div>
+          </div>
+
+            <hr>
+        {% endfor %}
+      </div>
 
     </div>
     <!--Grid row-->
