@@ -36,7 +36,7 @@ class Location(models.Model):
         return f"https://www.google.com/maps/search/?api=1&query={self.url_encoded_full_address}"
 
     @property
-<<<<<<< HEAD
+
     def representative_image(self):
         return self.apartment_set.exclude(image=None).first().picture_url
 
@@ -45,7 +45,6 @@ class Location(models.Model):
         image = self.representative_image
         return image if image is not None else "/static/img/no_img.png"
 
-=======
     def number_of_bed_for_display(self):
         count = self.apartment_set.count()
         if count == 0:
@@ -60,7 +59,6 @@ class Location(models.Model):
                 f"{self.apartment_set.order_by('-number_of_bed')[0].number_of_bed:.0f}"
             )
             return f"${minimum} - {maximum}"
->>>>>>> black .
 
     def avg_rate(self):
         review_sum = 0
