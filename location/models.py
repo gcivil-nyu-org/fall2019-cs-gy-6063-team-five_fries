@@ -36,7 +36,6 @@ class Location(models.Model):
         return f"https://www.google.com/maps/search/?api=1&query={self.url_encoded_full_address}"
 
     @property
-
     def representative_image(self):
         return self.apartment_set.exclude(image=None).first().picture_url
 
