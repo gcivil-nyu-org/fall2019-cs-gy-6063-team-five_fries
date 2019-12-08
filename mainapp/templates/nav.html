@@ -77,7 +77,7 @@
     </header>
     {% if messages %}
     {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} col-sm-6 alert-top">{{ message }}<button
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %} col-sm-6 alert-top" style="z-index: 1000">{{ message }}<button
                 type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                     aria-hidden="true">&times;</span></button></div>
     {% endfor %}
