@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Button, ButtonHolder, Div
 
 from localflavor.us import forms as us_forms
-from .models import Location, Apartment, ClaimRequest
+from .models import Location, Apartment, ClaimRequest, OtherImages
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
 
@@ -104,6 +104,14 @@ class ApartmentUploadForm(forms.Form):
                 "address",
                 f"The input value of {address} did not contain the resolved value {g_address[1]}",
             )
+
+
+class ImageForm(forms.ModelForm):
+    image = forms.ImageField(label='Image')
+
+    class Meta:
+        model = OtherImages
+        fields = ('image', )
 
 
 class ClaimForm(forms.ModelForm):

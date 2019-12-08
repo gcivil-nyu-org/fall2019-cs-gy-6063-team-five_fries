@@ -142,6 +142,11 @@ class Apartment(models.Model):
             return self.image
 
 
+class OtherImages(models.Model):
+    apartment = models.ForeignKey(Apartment, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(null=True, blank=True, verbose_name='Image')
+
+
 class ClaimRequest(models.Model):
     user = models.ForeignKey("mainapp.SiteUser", null=True, on_delete=models.CASCADE)
     apartment = models.ForeignKey(
