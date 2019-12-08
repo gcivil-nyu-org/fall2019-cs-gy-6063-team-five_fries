@@ -1,9 +1,40 @@
 {% extends 'base.html' %}
+{% load custom_tags %}
 
 {% block content %}
-    <p>Here's a list of your favorite apartments:</p>
-    {% for apt in favorited_apartments %}
-        <a href="{% url 'location' apt.id %}"><h5>{{apt.address}}, {{apt.city}}, {{apt.state}}, {{apt.zipcode}}</h5></a>
-        <hr class="mt-0 mb-2 mt-2">
+    <h1>Favorites</h1>
+    <!--Section: Cards-->
+    {% if favorited_apartments %}
+    <section class="text-center" >
+    {% for loc in favorited_apartments %}
+        {% if forloop.counter|get_modulo:3 == 1 %}
+        <!--Grid row-->
+        <div class="row mb-4 wow fadeIn">
+        {% endif %}
+
+        <!--Grid column-->
+        <div class="col-md-4 mb-4">
+        <!--Card-->
+        <a href="{% url 'location' loc.id %}" style="text-decoration: none;">
+            <div class="card h-100 shadow" style="border-radius: 10px;">
+                <img src="{{ loc.representative_image_or_placeholder }}"" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+                <hr style="margin: 0;">
+                <div class="card-body" style="text-align: left; color: black;">
+                    <h5 class="card-title">{{ loc.rent_price_for_display }}</h5>
+                    <p class="card-text">{{ loc.full_address }}</p>
+                </div>
+            </div>
+        </a>
+        <!--/.Card-->
+        </div>
+        <!--Grid column-->
+        {% if forloop.counter|get_modulo:3 == 0 %}
+        </div>
+        {% endif %}
     {% endfor %}
+    </section>
+    <!--Section: Cards-->
+    {% else %}
+    <span>You don't have any favorite yet</span>
+    {% endif %}
 {% endblock %}

@@ -21,7 +21,7 @@
     const locations = [
     {% for item in search_data.locations_page %}
 
-        [ {{ item.latitude }}, {{ item.longitude }}, "{% url 'location' item.id %}", "{{ search_data.thumbnails|get_item:item.id }}" ],
+        [ {{ item.latitude }}, {{ item.longitude }}, "{% url 'location' item.id %}", "{{ item.representative_image_or_placeholder }}" ],
 
     {% endfor %}
     ];
@@ -204,23 +204,19 @@
                 <!--Grid column-->
                 <div class="col-md-4 mb-4">
                 <!--Card-->
-                <div class="card shadow">
-                    <!--Card image-->
-                    <div class="view overlay">
-                    <a href="{% url 'location' loc.id %}">
-                        <img src={{ search_data.thumbnails|get_item:loc.id }} class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
-                    </a>
+                <a href="{% url 'location' loc.id %}" style="text-decoration: none;">
+                    <div class="card h-100 shadow" style="border-radius: 10px;">
+                        <img src="{{ loc.representative_image_or_placeholder }}"" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+                        <hr style="margin: 0;">
+                        <div class="card-body" style="text-align: left; color: black;">
+                            <h5 class="card-title">{{ loc.rent_price_for_display }}</h5>
+                            <p class="card-text">{{ loc.full_address }}</p>
+                            <div>
+                                <span class="badge green mr-1" style="color: white;">{{ search_data.matching_apartments|get_item:loc.id }} Apartment(s)</span>
+                            </div>
+                        </div>
                     </div>
-                    <!--Card content-->
-                    <div class="card-body">
-                    <!--Title-->
-                    <h4 class="card-title">{{ loc.full_address }}</h4>
-                    <!--Text-->
-                    <div class="mb-3">
-                        <span class="badge green mr-1 black-text">Matching Apartments: {{ search_data.matching_apartments|get_item:loc.id }}</span>
-                    </div>
-                    </div>
-                </div>
+                </a>
                 <!--/.Card-->
                 </div>
                 <!--Grid column-->
@@ -235,7 +231,7 @@
 
         <!-- Pagination -->
         {% if search_data.locations_page.has_other_pages %}
-          <ul class="pagination pg-gray">
+          <ul class="pagination pg-gray" style="justify-content: center;">
             {% if search_data.locations_page.has_previous %}
                 <li class="page-item"><a class="page-link" href="?{% query_transform page=search_data.locations_page.previous_page_number %}">&laquo;</a></li>
             {% else %}

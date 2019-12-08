@@ -137,9 +137,9 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.normalize_us_address")
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    def test_search_page_matching_apartments(self, mock_norm):
+    def test_search_page_apartments(self, mock_norm):
         """
-        tests to make sure that "matching apartments" is displayed for each location
+        tests to make sure that "Apartment(s)" is displayed for each location
         in the search results
         """
         mock_norm.return_value = Address(
@@ -153,7 +153,7 @@ class SearchIndexViewTests(TestCase):
         loc, apa = create_location_and_apartment()
         response = self.client.get("/search/?query=Brooklyn%2C+New+York+11218")
 
-        self.assertContains(response, "Matching Apartments:")
+        self.assertContains(response, "Apartment(s)")
 
     @mock.patch("search.views.normalize_us_address")
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
