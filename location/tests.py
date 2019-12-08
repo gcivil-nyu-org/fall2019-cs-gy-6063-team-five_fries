@@ -242,27 +242,18 @@ class LocationViewTests(TestCase):
         is associated with the correct location even if the location
         capitalization differs slightly
         """
-        print("starting test_location_upload_location_capitalization")
         self.client.force_login(SiteUser.objects.create(username="testuser"))
 
         loc, apa = create_location_and_apartment(
             address="28-15 34th Street",
             city="Long Island City",
             locality="Queens",
-            state="New York",
+            state="NY",
             zipcode="11103",
             suite_num="1C",
             number_of_bed=1,
             rent_price=3000,
         )
-        locs_count = Location.objects.filter(
-            city="Long Island City", locality="Queens", zipcode=11103
-        ).count()
-        locs_init = Location.objects.filter(
-            city="Long Island City", locality="Queens", zipcode=11103
-        )
-        print(f"locs_count: {locs_count}")
-        print(f"locs_init_list: {locs_init}")
 
         # Create a fake image
         im = Image.new(mode="RGB", size=(200, 200))
@@ -295,10 +286,6 @@ class LocationViewTests(TestCase):
         locs_count = Location.objects.filter(
             city__iexact="Long Island City", locality="Queens", zipcode=11103
         ).count()
-        locs_after = Location.objects.filter(
-            city__iexact="Long Island City", locality="Queens", zipcode=11103
-        )
-        print(f"locs_after: {locs_after}")
         self.assertEqual(
             locs_count, 1, msg="Duplicate location should not have been created"
         )

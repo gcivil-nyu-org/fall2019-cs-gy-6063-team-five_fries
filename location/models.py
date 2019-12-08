@@ -22,10 +22,6 @@ class Location(models.Model):
     )
     last_fetched_zillow = models.DateTimeField(blank=True, null=True)
 
-    def __str__(self):
-        addr_components = map(str, [self.address, self.city, self.state, self.zipcode])
-        return ", ".join(addr_components)
-
     @property
     def full_address(self):
         addr_components = map(

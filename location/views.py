@@ -398,18 +398,7 @@ def apartment_upload(request):
             lat_lng = g_utils.parse_lat_lng(g_data[0])
 
             g_city, g_locality = g_utils.get_city(g_data[0])
-            # g_state = g_utils.get_state(g_data[0])
             street_num, street = g_utils.get_address(g_data[0])
-            # g_zipcode = g_utils.get_zipcode(g_data[0])
-
-            exists = Location.objects.filter(
-                city=g_city,
-                state=state,
-                address=address,
-                zipcode=zipcode,
-                locality=g_locality,
-            ).exists()
-            print(f"exists: {exists}")
 
             # create or retrieve an existing location
             loc, created = Location.objects.get_or_create(
@@ -421,7 +410,6 @@ def apartment_upload(request):
             )  # using get_or_create avoids race condition
 
             if created:
-                print("created")
                 # we add the location here instead of in the get_or_create method
                 # due to multiple locations being created from the same address
                 # this was happening due to the lat/lng returned from the API sometimes
@@ -430,7 +418,6 @@ def apartment_upload(request):
                 loc.longitude = lat_lng[1]
                 loc.save()
             elif loc.latitude is None and loc.longitude is None:
-                print("retrieved")
                 # if the location exists but doesn't have lat/lng values
                 # add them
                 loc.latitude = lat_lng[0]
@@ -447,7 +434,6 @@ def apartment_upload(request):
                 description=description,
                 landlord=request.user,
             )
-
             apt.save()
 
             messages.success(
