@@ -1,16 +1,17 @@
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.conf import settings
+from django.shortcuts import render, get_object_or_404
+from django.core.mail import send_mail
+from django.core.exceptions import PermissionDenied
+from django.template.loader import get_template
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
-from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import PermissionDenied
-from django.core.mail import send_mail
-from django.conf import settings
-from django.template.loader import get_template
 
+from .models import Location, Apartment, ClaimRequest
 from review.models import Review
 from review.form import ReviewForm
 from .forms import (
@@ -19,7 +20,6 @@ from .forms import (
     ContactLandlordForm,
     ApartmentUpdateForm,
 )
-from .models import Location, Apartment, ClaimRequest
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
