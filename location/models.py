@@ -108,3 +108,10 @@ class Apartment(models.Model):
     @property
     def rent_price_for_display(self):
         return f"${self.rent_price}"
+
+    @property
+    def picture_url(self):
+        if "http" not in self.image.url:
+            return self.image.url
+        else:
+            return self.image

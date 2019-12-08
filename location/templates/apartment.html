@@ -28,7 +28,7 @@
       <div class="col-md-6 mb-4">
 
       {% if apt.image %}
-          <img src="{{ apt.image }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+          <img src="{{ apt.picture_url }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
       {% else %}
           <img src="/static/img/no_img.png" class="card-img-top contain" alt="apartment image">
       {% endif %}
@@ -87,7 +87,10 @@
 
           <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id apk=apt.id %}">
               {% csrf_token %}
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Interested?</button>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="display: inline; margin-right: 10px">Interested?</button>
+              <a target="_blank" href={{apt.location.google_map_url}} >
+                  <img width=90 src="/static/img/icon-google-maps.jpg">
+              </a>
               <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
                    aria-hidden="true">
                   <div class="modal-dialog" role="document">
