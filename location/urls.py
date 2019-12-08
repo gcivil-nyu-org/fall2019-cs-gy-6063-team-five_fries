@@ -7,6 +7,16 @@ urlpatterns = [
     path("<int:pk>/apartment/<int:apk>", views.apartment_detail_view, name="apartment"),
     path("<int:pk>/apartment/<int:apk>/claim", views.claim_view, name="claim"),
     path(
+        "<int:pk>/apartment/<int:apk>/grant/<int:id>/<uuid:token>",
+        views.grant_claim,
+        name="grant_claim",
+    ),
+    path(
+        "<int:pk>/apartment/<int:apk>/deny/<int:id>/<uuid:token>",
+        views.deny_claim,
+        name="deny_claim",
+    ),
+    path(
         "<int:pk>/apartment/<int:apk>/contact_landlord",
         views.contact_landlord,
         name="contact_landlord",
