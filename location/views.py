@@ -3,9 +3,9 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.conf import settings
@@ -112,11 +112,13 @@ def claim_view(request, pk, apk):
             claim_request = form.save()
 
             sender_email = settings.EMAIL_HOST_USER
+            site = get_current_site(request)
 
             request_type = form.cleaned_data["request_type"]
             base_uri = request.build_absolute_uri().replace("/claim", "")
 
             context = {
+                "current_site": site,
                 "apt": apt,
                 "user": claim_request.user,
                 "user_name": claim_request.user.full_name,
@@ -178,7 +180,9 @@ def grant_claim(request, pk, apk, id, token):
     claim = get_object_or_404(ClaimRequest, pk=id, apartment=apt, allow_token=token)
 
     sender_email = settings.EMAIL_HOST_USER
+    site = get_current_site(request)
     context = {
+        "current_site": site,
         "user_name": claim.user.full_name,
         "apt": apt,
         "location_address": apt.location.full_address,
@@ -253,7 +257,9 @@ def deny_claim(request, pk, apk, id, token):
     apt = get_object_or_404(Apartment, pk=apk)
     claim = get_object_or_404(ClaimRequest, pk=id, apartment=apt, deny_token=token)
     sender_email = settings.EMAIL_HOST_USER
+    site = get_current_site(request)
     context = {
+        "current_site": site,
         "user_name": claim.user.full_name,
         "apt": apt,
         "location_address": apt.location.full_address,
