@@ -130,7 +130,7 @@
             <h4>Apartments</h4>
             <div class="location-results">
                 {% if zillow_list %}
-                <ul class="list-group">
+                <ul class="list-group shadow">
                     {% for apt in zillow_list %}
                     <li class="list-group-item list-group-item-action">
                         <div class="row d-flex justify-content-between">
@@ -205,7 +205,7 @@
 
             <div class="mb-3 text-center location-results">
                 {% for review in object.review_set.all %}
-                <div class="card mb-4 shadow-sm " style="max-width: 27rem;">
+                <div class="card mb-4 shadow-sm shadow rounded-corner" style="max-width: 27rem;">
                     <div class="card-header">
                         <ul class="list-unstyled">
                             <li>{{ review.user }}</li>
