@@ -1,9 +1,15 @@
 {% extends 'base.html' %}
 
+{% load leaflet_tags %}
+{% load crispy_forms_tags %}
+
 {% block breadcrumbs %}
 <a href="{% url 'search' %}">Search</a>
 <span>{{ location.full_address }}</span>
+{% endblock %}
 
+{% block styles %}
+{% leaflet_css %}
 {% endblock %}
 
 {% block script %}
@@ -14,15 +20,6 @@
 -->
 <!-- font awesome account is needed to create the font awesome kit below -->
 <script src="https://kit.fontawesome.com/29da671985.js" crossorigin="anonymous"></script>
-{% endblock %}
-{% block header %}
-{% load leaflet_tags %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% leaflet_js %}
-{% leaflet_css %}
-
-
 <script type="text/javascript">
     $(document).ready(function () {
         $("#check_user").click(function () {
@@ -40,6 +37,10 @@
             .openPopup();
     });
 </script>
+{% leaflet_js %}
+{% endblock %}
+
+{% block header %}
 {% endblock%}
 
 {% block content %}
