@@ -107,7 +107,7 @@ class ApartmentUploadForm(forms.Form):
 
 
 class ImageForm(forms.ModelForm):
-    image = forms.ImageField(label='Image')
+    image = forms.ImageField(label='Extra Image')
 
     class Meta:
         model = OtherImages

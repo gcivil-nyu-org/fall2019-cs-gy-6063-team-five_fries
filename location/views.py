@@ -10,8 +10,9 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
+from django.forms import modelformset_factory
 
-from .models import Location, Apartment, ClaimRequest
+from .models import Location, Apartment, ClaimRequest, OtherImages
 from review.models import Review
 from review.form import ReviewForm
 from .forms import (
@@ -19,7 +20,7 @@ from .forms import (
     ClaimForm,
     ContactLandlordForm,
     ApartmentUpdateForm,
-)
+    ImageForm)
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
@@ -373,12 +374,16 @@ def review(request, pk):
 
 @login_required
 def apartment_upload(request):
+    imageFormSet = modelformset_factory(OtherImages, form=ImageForm, extra=3)
+
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
         form = ApartmentUploadForm(request.POST, request.FILES)
+        formset = imageFormSet(request.POST, request.FILES, queryset=OtherImages.objects.none())
+
         # check whether it's valid:
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid():
 
             # process the data in form.cleaned_data as required
             city = form.cleaned_data["city"]
@@ -435,6 +440,12 @@ def apartment_upload(request):
             )
             apt.save()
 
+            # process the data in imgages_form
+            for image_form in formset.cleaned_data:
+                image = image_form['image']
+                photo = OtherImages(apartment=apt, image=image)
+                photo.save()
+
             messages.success(
                 request, message="Successfully created Apartment!", extra_tags="success"
             )
@@ -446,5 +457,6 @@ def apartment_upload(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ApartmentUploadForm()
+        formset = imageFormSet(queryset=OtherImages.objects.none())
 
-    return render(request, "apartment_upload.html", {"form": form})
+    return render(request, "apartment_upload.html", {"form": form, 'formset': formset})

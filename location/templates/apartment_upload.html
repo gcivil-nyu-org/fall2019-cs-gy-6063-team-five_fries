@@ -8,6 +8,7 @@
     <form action="{% url 'apartment_upload' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form|crispy }}
+        {{ formset|crispy }}
         <input type="submit" value="Upload!" class="btn btn-primary">
     </form>
 {% endblock %}
