@@ -250,7 +250,7 @@ class LocationViewTests(TestCase):
             city="Long Island City",
             locality="Queens",
             state="New York",
-            zipcode=11103,
+            zipcode="11103",
             suite_num="1C",
             number_of_bed=1,
             rent_price=3000,
@@ -276,7 +276,7 @@ class LocationViewTests(TestCase):
         post_data = {
             "city": "long Island city",
             "state": "NY",
-            "address": "28-15 34th street",
+            "address": "28-15 34th Street",
             "zipcode": "11103",
             "suite_num": "1",
             "rent_price": 2500,
