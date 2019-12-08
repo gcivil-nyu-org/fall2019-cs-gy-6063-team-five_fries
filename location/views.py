@@ -108,7 +108,6 @@ def claim_view(request, pk, apk):
 
     if request.method == "POST":
         form = ClaimForm(request.POST)
-        print(f"request.post: {request.POST}")
         if form.is_valid():
             claim_request = form.save()
 
@@ -131,7 +130,6 @@ def claim_view(request, pk, apk):
             }
 
             if request_type == "tenant":
-                print("tenant")
                 subject = "Tenant Verification Request"
                 to = apt.landlord.email
                 plaintext = get_template("location/email/tenant_claim_request.txt")
@@ -147,7 +145,6 @@ def claim_view(request, pk, apk):
                 )
 
             elif request_type == "landlord":
-                print("landlord")
                 subject = "Apartment Ownership Verification Request"
                 user_model = get_user_model()
                 admin_list = user_model.objects.filter(is_superuser=True)
@@ -162,12 +159,6 @@ def claim_view(request, pk, apk):
                     request,
                     message="Your ownership request has been submitted.",
                     extra_tags="success",
-                )
-            else:
-                messages.warning(
-                    request,
-                    "Did not recognize the Claim request type, please try resubmitting.",
-                    extra_tags="warning",
                 )
 
             return HttpResponseRedirect(

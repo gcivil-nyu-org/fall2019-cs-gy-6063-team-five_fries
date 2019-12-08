@@ -120,7 +120,7 @@ class ClaimForm(forms.ModelForm):
         super(ClaimForm, self).clean()
         request_type = self.cleaned_data.get("request_type")
         apartment = self.cleaned_data.get("apartment")
-        if request_type == "tenant" and not apartment.landlord:
+        if request_type == "tenant" and apartment and not apartment.landlord:
             raise forms.ValidationError(
                 "This Apartment does not currently have a Landlord registered with the site"
             )
