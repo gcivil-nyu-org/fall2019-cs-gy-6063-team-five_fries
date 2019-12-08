@@ -442,9 +442,10 @@ def apartment_upload(request):
 
             # process the data in imgages_form
             for image_form in formset.cleaned_data:
-                image = image_form['image']
-                photo = OtherImages(apartment=apt, image=image)
-                photo.save()
+                if 'image' in image_form:
+                    image = image_form['image']
+                    photo = OtherImages(apartment=apt, image=image)
+                    photo.save()
 
             messages.success(
                 request, message="Successfully created Apartment!", extra_tags="success"
