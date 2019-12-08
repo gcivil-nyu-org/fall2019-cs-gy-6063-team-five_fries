@@ -146,6 +146,15 @@ class OtherImages(models.Model):
     apartment = models.ForeignKey(Apartment, default=None, on_delete=models.CASCADE)
     image = models.ImageField(null=True, blank=True, verbose_name='Image')
 
+    @property
+    def picture_url(self):
+        if not self.image:
+            return None
+        elif "http" not in self.image.url:
+            return self.image.url
+        else:
+            return self.image
+
 
 class ClaimRequest(models.Model):
     user = models.ForeignKey("mainapp.SiteUser", null=True, on_delete=models.CASCADE)
