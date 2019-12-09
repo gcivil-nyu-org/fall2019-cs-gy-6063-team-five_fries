@@ -80,8 +80,21 @@ class AutoFetchTests(TestCase):
         url = (
             "./sample-response/craigslist-url-normal.html"
         )  # this url doesn't matter, could be whatever you like
-        img_url, description = get_img_url_and_description(url)
+        other_images, img_url, description = get_img_url_and_description(url)
+        expected_images_list = [
+            "https://images.craigslist.org/00t0t_kLnDTCuX0n3_600x450.jpg",
+            "https://images.craigslist.org/01111_6cBvpsChesd_600x450.jpg",
+            "https://images.craigslist.org/00m0m_kwC30PtSw8A_600x450.jpg",
+            "https://images.craigslist.org/01515_hQyjtD6axnH_600x450.jpg",
+            "https://images.craigslist.org/00t0t_kLnDTCuX0n3_600x450.jpg",
+            "https://images.craigslist.org/00o0o_2csoBB7ipC2_600x450.jpg",
+            "https://images.craigslist.org/00D0D_NSNZLRfqMP_600x450.jpg",
+            "https://images.craigslist.org/00s0s_eJaKO7kUClc_600x450.jpg",
+            "https://images.craigslist.org/00p0p_9Mk6G5ftRQl_600x450.jpg",
+            "https://images.craigslist.org/01414_7DX6qw3liZd_600x450.jpg",
+        ]
 
+        self.assertEqual(other_images, expected_images_list)
         self.assertEqual(
             img_url, "https://images.craigslist.org/00H0H_2JxY7yF7CiN_600x450.jpg"
         )
@@ -98,8 +111,9 @@ class AutoFetchTests(TestCase):
         mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
 
         url = "whatever.html"
-        img_url, description = get_img_url_and_description(url)
+        other_images, img_url, description = get_img_url_and_description(url)
 
+        self.assertEqual(other_images, [])
         self.assertEqual(img_url, "/static/img/no_img.png")
         self.assertNotEqual(description, "DEFAULT DESCRIPTION")
 
@@ -114,8 +128,21 @@ class AutoFetchTests(TestCase):
         mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
 
         url = "whatever.html"
-        img_url, description = get_img_url_and_description(url)
+        other_images, img_url, description = get_img_url_and_description(url)
+        expected_images_list = [
+            "https://images.craigslist.org/00t0t_kLnDTCuX0n3_600x450.jpg",
+            "https://images.craigslist.org/01111_6cBvpsChesd_600x450.jpg",
+            "https://images.craigslist.org/00m0m_kwC30PtSw8A_600x450.jpg",
+            "https://images.craigslist.org/01515_hQyjtD6axnH_600x450.jpg",
+            "https://images.craigslist.org/00t0t_kLnDTCuX0n3_600x450.jpg",
+            "https://images.craigslist.org/00o0o_2csoBB7ipC2_600x450.jpg",
+            "https://images.craigslist.org/00D0D_NSNZLRfqMP_600x450.jpg",
+            "https://images.craigslist.org/00s0s_eJaKO7kUClc_600x450.jpg",
+            "https://images.craigslist.org/00p0p_9Mk6G5ftRQl_600x450.jpg",
+            "https://images.craigslist.org/01414_7DX6qw3liZd_600x450.jpg",
+        ]
 
+        self.assertEqual(other_images, expected_images_list)
         self.assertEqual(
             img_url, "https://images.craigslist.org/00H0H_2JxY7yF7CiN_600x450.jpg"
         )
@@ -132,8 +159,9 @@ class AutoFetchTests(TestCase):
         mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
 
         url = "whatever.html"
-        img_url, description = get_img_url_and_description(url)
+        other_images, img_url, description = get_img_url_and_description(url)
 
+        self.assertEqual(other_images, [])
         self.assertEqual(img_url, "/static/img/no_img.png")
         self.assertEqual(description, "DEFAULT DESCRIPTION")
 
@@ -148,7 +176,8 @@ class AutoFetchTests(TestCase):
         mock_requests.get = mock.MagicMock(return_value=mock_resp_obj)
 
         url = "whatever.html"
-        img_url, description = get_img_url_and_description(url)
+        other_images, img_url, description = get_img_url_and_description(url)
 
+        self.assertEqual(other_images, [])
         self.assertEqual(img_url, "/static/img/no_img.png")
         self.assertEqual(description, "DEFAULT DESCRIPTION")

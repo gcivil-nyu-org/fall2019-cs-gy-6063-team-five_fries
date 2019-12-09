@@ -203,7 +203,8 @@ def get_img_url_and_description(url):
         img_tag = soup.find_all("a", {"class": "thumb"})
         other_images = []
         for other_image in img_tag[1:]:
-            other_images.append(other_image.get("href"))
+            if other_image.get("href"):
+                other_images.append(other_image.get("href"))
 
         body = soup.find("section", id="postingbody")
         body_text = (
