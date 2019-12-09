@@ -398,7 +398,6 @@ def apartment_upload(request):
             lat_lng = g_utils.parse_lat_lng(g_data[0])
             street_num, street = g_utils.get_address(g_data[0])
             g_city, g_locality = g_utils.get_city(g_data[0])
-            street_num, street = g_utils.get_address(g_data[0])
 
             # create or retrieve an existing location
             loc, created = Location.objects.get_or_create(
