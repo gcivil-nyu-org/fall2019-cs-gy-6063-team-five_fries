@@ -262,6 +262,8 @@ class LocationViewTests(TestCase):
             "number_of_bed": 1,
             "description": "This is a test",
             "image": mem_image,
+            "form-TOTAL_FORMS": 3,
+            "form-INITIAL_FORMS": 0,
         }
 
         self.client.post(reverse("apartment_upload"), post_data)
