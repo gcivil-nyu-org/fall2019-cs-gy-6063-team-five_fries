@@ -84,6 +84,46 @@ def apartment_detail_view(request, pk, apk):
         },
     )
 
+def apartment_complaints(request, pk, apk):
+    apt = Apartment.objects.get(location__id=pk, id=apk)
+    zip_code = None
+    if apt:
+        zip_code = apt.location.zipcode
+
+    # TODO use no_matches for zipcodes that have no data in 311 but apartments available
+
+    results_311 = {}
+    timeout = False
+    if zip_code:
+        # Get 311 raw complaints
+        try:
+            results_311["complaints"] = get_311_data(str(zip_code))
+        except TimeoutError:
+            timeout = True
+
+    # paginate the search location results
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(results_311["complaints"], 6)
+    try:
+        complaints_page = paginator.page(page)
+    except PageNotAnInteger:
+        complaints_page = paginator.page(1)
+    except EmptyPage:
+        complaints_page = paginator.page(paginator.num_pages)
+
+    results_311["complaints_page"] = complaints_page
+
+    return render(
+        request,
+        "complaints.html",
+        {
+            "results_311": results_311,
+            "timeout": timeout,
+            "zip_code": zip_code,
+        },
+    )
+
 
 @login_required
 def apartment_edit(request, pk, apk):
