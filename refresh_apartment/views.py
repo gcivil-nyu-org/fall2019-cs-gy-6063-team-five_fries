@@ -148,7 +148,7 @@ def bckgrndfetch(city_list, limit):
                     continue
 
                 # match the not null constraint of postgre
-                if state is None or address is None or city is None or zipcode is None:
+                if not state or not address or not city or not zipcode or not locality:
                     print(
                         f"city={city_name}:c_id={c_id}: state, address, city or zipcode is None"
                     )
