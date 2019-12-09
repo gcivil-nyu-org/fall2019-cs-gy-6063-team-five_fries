@@ -140,22 +140,21 @@
         <div class="col-12">
             <div class="row">
                 <div class="col search-form">
-                    <h2>Search All Locations</h2>
 
                     {% crispy search_form %}
-
+                    <hr>
                 </div>
 
             </div>
         </div>
     </div>
-    <br>
     <div>
-        <h3>Search results</h3>
+        <h2>New York Apartments For Rent</h2>
         <p>{{ search_title }}</p>
 
     </div>
 
+<<<<<<< HEAD
     {% if search_data.stats %}
     <p>
         <hr class="mt-0 mb-2 mt-2">
@@ -176,8 +175,10 @@
     </p>
     {% endif %}
 
+=======
+>>>>>>> Created New pull request for styling search page
     <div>
-        <h5 style="display: inline; margin-right:10px">Locations</h5>
+
 
         {% if search_data.locations %}
 
@@ -200,6 +201,28 @@
             </div>
           </div>
         </div>
+
+
+            {% if search_data.stats %}
+    <p>
+        <hr class="mt-0 mb-2 mt-2">
+        <div class="horizontal-list">
+        <h5>Complaints Level:</h5>
+        <span style="margin-left: 0.5rem; color: {{search_data.css_color_for_complaint_level}};">
+            {{ search_data.description_for_complaint_level }}
+        </span>
+        <ul id="stats-list" class="horizontal-list" stype="display: inline-block">
+            {% for key, percentage in search_data.stats %}
+            <li>
+                <span>{{ key }} </span><div class="meter"><span style="width: {{ percentage }}%"></span></div>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'data_311'%}?zip_code={{zipcode}}">See more</a>
+        </div>
+    </p>
+    {% endif %}
+
 
         <hr class="mt-0 mb-2 mt-2">
 
