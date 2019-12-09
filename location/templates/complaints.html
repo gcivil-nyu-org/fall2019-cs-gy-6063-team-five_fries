@@ -87,7 +87,29 @@ $(document).ready(function(){
 
             </div>
 
+        <!-- Pagination -->
+        {% if results_311.complaints_page.has_other_pages %}
+          <ul class="pagination pg-gray">
+            {% if results_311.complaints_page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=results_311.complaints_page.previous_page_number %}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+            {% for i in results_311.complaints_page.paginator.page_range %}
+              {% if results_311.complaints_page.number == i %}
+                  <li class="active page-item"><a class="page-link">{{ i }}</a></li>
+              {% elif i > results_311.complaints_page.number|add:-3 and i < results_311.complaints_page.number|add:3 %}
+                  <li class="page-item"><a class="page-link" href="?{% query_transform page=i %}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
 
+            {% if results_311.complaints_page.has_next %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=results_311.complaints_page.next_page_number %}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
         {% endif %}
     {% endif %}
 {% endblock %}
