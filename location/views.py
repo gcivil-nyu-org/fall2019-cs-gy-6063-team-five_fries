@@ -20,7 +20,8 @@ from .forms import (
     ClaimForm,
     ContactLandlordForm,
     ApartmentUpdateForm,
-    ImageForm)
+    ImageForm,
+)
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
@@ -374,13 +375,15 @@ def review(request, pk):
 
 @login_required
 def apartment_upload(request):
-    imageFormSet = modelformset_factory(OtherImages, form=ImageForm, extra=3)
+    image_form_set = modelformset_factory(OtherImages, form=ImageForm, extra=3)
 
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
         form = ApartmentUploadForm(request.POST, request.FILES)
-        formset = imageFormSet(request.POST, request.FILES, queryset=OtherImages.objects.none())
+        formset = image_form_set(
+            request.POST, request.FILES, queryset=OtherImages.objects.none()
+        )
 
         # check whether it's valid:
         if form.is_valid() and formset.is_valid():
@@ -442,8 +445,8 @@ def apartment_upload(request):
 
             # process the data in imgages_form
             for image_form in formset.cleaned_data:
-                if 'image' in image_form:
-                    image = image_form['image']
+                if "image" in image_form:
+                    image = image_form["image"]
                     photo = OtherImages(apartment=apt, image=image)
                     photo.save()
 
@@ -458,6 +461,6 @@ def apartment_upload(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = ApartmentUploadForm()
-        formset = imageFormSet(queryset=OtherImages.objects.none())
+        formset = image_form_set(queryset=OtherImages.objects.none())
 
-    return render(request, "apartment_upload.html", {"form": form, 'formset': formset})
+    return render(request, "apartment_upload.html", {"form": form, "formset": formset})

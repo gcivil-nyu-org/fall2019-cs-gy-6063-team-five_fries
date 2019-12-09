@@ -72,9 +72,15 @@ def bckgrndfetch(city_list, limit):
             last_updated = r["last_updated"]
             bedrooms = r["bedrooms"]
 
-            other_images, image_url, description = [], DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
+            other_images, image_url, description = (
+                [],
+                DEFAULT_IMG_URL,
+                DEFAULT_DESCRIPTION,
+            )
             try:
-                other_images, image_url, description = get_img_url_and_description(r["url"])
+                other_images, image_url, description = get_img_url_and_description(
+                    r["url"]
+                )
             except requests.exceptions.ConnectionError:
                 pass
 

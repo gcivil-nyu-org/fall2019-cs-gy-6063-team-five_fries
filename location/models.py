@@ -144,7 +144,7 @@ class Apartment(models.Model):
 
 class OtherImages(models.Model):
     apartment = models.ForeignKey(Apartment, default=None, on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True, verbose_name='Image')
+    image = models.ImageField(null=True, blank=True, verbose_name="Image")
 
     @property
     def picture_url(self):
