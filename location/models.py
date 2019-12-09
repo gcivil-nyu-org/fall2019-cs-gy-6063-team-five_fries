@@ -24,9 +24,7 @@ class Location(models.Model):
 
     @property
     def full_address(self):
-        addr_components = map(
-            str, [self.address, self.city, self.state, self.zipcode, self.id]
-        )
+        addr_components = map(str, [self.address, self.city, self.state, self.zipcode])
         return ", ".join(addr_components)
 
     @property

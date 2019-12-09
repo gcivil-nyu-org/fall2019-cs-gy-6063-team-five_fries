@@ -31,21 +31,13 @@ def create_location_and_apartment(
     image="Images/System_Data_Flow_Diagram.png",
     rent_price=3000,
 ):
-    # city = ("Bushwick",)
-    # locality = "Brooklyn"
-    # state = "New York"
-    # address = "1234 Coney Island Avenue"
-    # zipcode = 11218
+
     # using get_or_create avoids race condition
     loc = Location.objects.get_or_create(
         city=city, state=state, address=address, zipcode=zipcode, locality=locality
     )[0]
 
     # create an apartment and link it to that location
-    # suite_num = "18C"
-    # number_of_bed = 3
-    # image = "Images/System_Data_Flow_Diagram.png"
-    # rent_price = 3000
     apt = Apartment.objects.create(
         suite_num=suite_num,
         number_of_bed=number_of_bed,
@@ -64,12 +56,6 @@ def create_second_apartment(
     image="Images/System_Data_Flow_Diagram.png",
     rent_price=2500,
 ):
-
-    # create a second apartment
-    # suite_num = "19C"
-    # number_of_bed = 2
-    # image = "Images/System_Data_Flow_Diagram.png"
-    # rent_price = 2500
     apt2 = Apartment.objects.create(
         suite_num=suite_num,
         number_of_bed=number_of_bed,
