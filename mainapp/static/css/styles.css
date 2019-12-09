@@ -68,6 +68,10 @@ footer {
     overflow-y: scroll;
 }
 
+.rounded-corner {
+    border-radius: 10px;
+}
+
 .italic {
     font-style: italic;
 }
