@@ -84,7 +84,14 @@
     const locations = [
     {% for item in search_data.locations_page %}
 
-        [ {{ item.latitude }}, {{ item.longitude }}, "{% url 'location' item.id %}", "{{ item.representative_image_or_placeholder }}" ],
+        [
+
+            {{ item.latitude }}, {{ item.longitude }},
+            "{% url 'location' item.id %}",
+            "{{ item.representative_image_or_placeholder }}",
+            "{{ item.rent_price_for_display }}"
+
+         ],
 
     {% endfor %}
     ];
@@ -107,7 +114,8 @@
         for (var i=0; i < markerList.length; i++){
             var location_url = markerList[i][2];
             var image_url = markerList[i][3];
-            content = `<img width="100" src="${image_url}"/><br><a target="_blank" href="${location_url}">View Location</a>`;
+            var price = markerList[i][4]
+            content = `<img width="100" src="${image_url}"/><br><h6 style="color: green" > ${price} </h6><a target="_blank" href="${location_url}" >View Location</a>`;
 
             marker = new L.marker([markerList[i][0], markerList[i][1]])
             .addTo(map)
@@ -208,7 +216,7 @@
                 <!--Card-->
                 <a href="{% url 'location' loc.id %}" style="text-decoration: none;">
                     <div class="card h-100 shadow" style="border-radius: 10px;">
-                        <img src="{{ loc.representative_image_or_placeholder }}"" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+                        <img src="{{ loc.representative_image_or_placeholder }}" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
                         <hr style="margin: 0;">
                         <div class="card-body" style="text-align: left; color: black;">
                             <h5 class="card-title">{{ loc.rent_price_for_display }}</h5>
