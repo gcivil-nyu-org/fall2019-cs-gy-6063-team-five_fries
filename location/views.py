@@ -396,7 +396,7 @@ def apartment_upload(request):
 
             # parse out the latitude and longitude from the response
             lat_lng = g_utils.parse_lat_lng(g_data[0])
-
+            street_num, street = g_utils.get_address(g_data[0])
             g_city, g_locality = g_utils.get_city(g_data[0])
             street_num, street = g_utils.get_address(g_data[0])
 
@@ -404,7 +404,7 @@ def apartment_upload(request):
             loc, created = Location.objects.get_or_create(
                 city=g_city,
                 state=state,
-                address=address,
+                address=f"{street_num} {street}",
                 zipcode=zipcode,
                 locality=g_locality,
             )  # using get_or_create avoids race condition

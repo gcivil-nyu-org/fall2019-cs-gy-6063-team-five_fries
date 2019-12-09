@@ -253,7 +253,7 @@ class LocationViewTests(TestCase):
         post_data = {
             "city": "long Island city",
             "state": "NY",
-            "address": "28-15 34th Street",
+            "address": "28-15 34TH Street",
             "zipcode": "11103",
             "suite_num": "1",
             "rent_price": 2500,
