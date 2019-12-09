@@ -49,6 +49,7 @@
                 {% endif%}
                 <li class="list-group-item">Current location: {{ user.current_location }}</li>
                 <li class="list-group-item">Work location: {{ user.work_location }}</li>
+                <li class="list-group-item"><a href="{% url 'account_logout' %}">Logout</a></li>
             </ul>
         </div>
         <div class="col col-5">
@@ -226,11 +227,5 @@
         </div> <!--end accordion card-->
     </div> <!--./accordion-->
 
-
-    <div class="row">
-        <div class="col">
-            <a href="{% url 'account_logout' %}">Logout</a>
-        </div>
-    </div>
 </div>
 {% endblock %}
