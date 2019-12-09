@@ -20,22 +20,24 @@ from external.zillow.stub import fetch_zillow_housing
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 
 
-def create_location_and_apartment():
-    city = ("Bushwick",)
-    locality = "Brooklyn"
-    state = "New York"
-    address = "1234 Coney Island Avenue"
-    zipcode = 11218
+def create_location_and_apartment(
+    address="1234 Coney Island Avenue",
+    city="Bushwick",
+    locality="Brooklyn",
+    state="New York",
+    zipcode=11218,
+    suite_num="18C",
+    number_of_bed=3,
+    image="Images/System_Data_Flow_Diagram.png",
+    rent_price=3000,
+):
+
     # using get_or_create avoids race condition
     loc = Location.objects.get_or_create(
         city=city, state=state, address=address, zipcode=zipcode, locality=locality
     )[0]
 
     # create an apartment and link it to that location
-    suite_num = "18C"
-    number_of_bed = 3
-    image = "Images/System_Data_Flow_Diagram.png"
-    rent_price = 3000
     apt = Apartment.objects.create(
         suite_num=suite_num,
         number_of_bed=number_of_bed,
@@ -47,13 +49,13 @@ def create_location_and_apartment():
     return loc, apt
 
 
-def create_second_apartment(location):
-
-    # create a second apartment
-    suite_num = "19C"
-    number_of_bed = 2
-    image = "Images/System_Data_Flow_Diagram.png"
-    rent_price = 2500
+def create_second_apartment(
+    location,
+    suite_num="19C",
+    number_of_bed=2,
+    image="Images/System_Data_Flow_Diagram.png",
+    rent_price=2500,
+):
     apt2 = Apartment.objects.create(
         suite_num=suite_num,
         number_of_bed=number_of_bed,
@@ -217,6 +219,62 @@ class LocationViewTests(TestCase):
 
         response = self.client.post(reverse("apartment_upload"), post_data)
         self.assertRedirects(response, reverse("apartment", kwargs={"pk": 7, "apk": 8}))
+
+    @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
+    @mock.patch("location.views.fetch_geocode", fetch_geocode_stub)
+    def test_location_upload_location_capitalization(self):
+        """
+        Tests to make sure when uploading apartments, an apartment
+        is associated with the correct location even if the location
+        capitalization differs slightly
+        """
+        self.client.force_login(SiteUser.objects.create(username="testuser"))
+
+        loc, apa = create_location_and_apartment(
+            address="28-15 34th Street",
+            city="Long Island City",
+            locality="Queens",
+            state="NY",
+            zipcode="11103",
+            suite_num="1C",
+            number_of_bed=1,
+            rent_price=3000,
+        )
+
+        # Create a fake image
+        im = Image.new(mode="RGB", size=(200, 200))
+        im_io = BytesIO()
+        im.save(im_io, "JPEG")
+        im_io.seek(0)
+        mem_image = InMemoryUploadedFile(
+            im_io, None, "image.jpg", "image/jpeg", len(im_io.getvalue()), None
+        )
+
+        post_data = {
+            "city": "long Island city",
+            "state": "NY",
+            "address": "28-15 34TH Street",
+            "zipcode": "11103",
+            "suite_num": "1",
+            "rent_price": 2500,
+            "number_of_bed": 1,
+            "description": "This is a test",
+            "image": mem_image,
+        }
+
+        self.client.post(reverse("apartment_upload"), post_data)
+
+        apa_created = Apartment.objects.filter(
+            suite_num=post_data["suite_num"], rent_price=post_data["rent_price"]
+        ).exists()
+        self.assertTrue(apa_created, msg="Apartment was not created successfully")
+
+        locs_count = Location.objects.filter(
+            city__iexact="Long Island City", locality="Queens", zipcode=11103
+        ).count()
+        self.assertEqual(
+            locs_count, 1, msg="Duplicate location should not have been created"
+        )
 
     @mock.patch("location.views.fetch_geocode", fetch_geocode_stub)
     @mock.patch("location.forms.fetch_geocode", fetch_geocode_stub)
