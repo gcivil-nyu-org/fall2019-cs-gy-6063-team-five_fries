@@ -11,6 +11,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.forms import modelformset_factory
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Location, Apartment, ClaimRequest, OtherImages
 from review.models import Review
@@ -67,12 +68,6 @@ def apartment_detail_view(request, pk, apk):
         try:
             refresh_nyc311_statistics_if_needed(zip_code)
             results_311["stats"] = NYC311Statistics.objects.filter(zipcode=zip_code)
-        except TimeoutError:
-            timeout = True
-
-        # Get 311 raw complaints
-        try:
-            results_311["complaints"] = get_311_data(str(zip_code))
         except TimeoutError:
             timeout = True
 
