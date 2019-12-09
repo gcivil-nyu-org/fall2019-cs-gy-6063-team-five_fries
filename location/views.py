@@ -84,6 +84,7 @@ def apartment_detail_view(request, pk, apk):
         },
     )
 
+
 def apartment_complaints(request, pk, apk):
     apt = Apartment.objects.get(location__id=pk, id=apk)
     zip_code = None
@@ -117,11 +118,7 @@ def apartment_complaints(request, pk, apk):
     return render(
         request,
         "complaints.html",
-        {
-            "results_311": results_311,
-            "timeout": timeout,
-            "zip_code": zip_code,
-        },
+        {"results_311": results_311, "timeout": timeout, "zip_code": zip_code},
     )
 
 
