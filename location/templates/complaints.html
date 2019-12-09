@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% load custom_tags %}
+{% endblock %}
+
+{%  block script %}
+<script>
+$(document).ready(function(){
+  $("#complaints_button").click(function(){
+    $("#complaints").toggle();
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h2 class="text-center">311 Data Complaints for Zip Code: {{ zip_code }}</h2>
+<hr>
+    {% if timeout %}
+        <p style="color:red">Timeout occurred.</p>
+    {% elif no_matches %}
+        <p style="color:red">No matches were found.</p>
+    {% else %}
+        {% if results_311.complaints %}
+            <div>
+                <!--Section: Cards-->
+                <section class="text-center">
+                {% for result in results_311.complaints_page %}
+                    {% if forloop.counter|get_modulo:3 == 1 %}
+                    <!--Grid row-->
+                    <div class="row mb-4 wow fadeIn">
+                    {% endif %}
+
+                    <!--Grid column-->
+                    <div class="col-md-4 mb-4">
+                    <!--Card-->
+                    <div class="card shadow">
+                        <!--Card content-->
+                        {% if result.status == "Closed" %}
+                            <div class="card-body white-text bg-success">
+                        {% else %}
+                            <div class="card-body white-text bg-danger">
+                        {% endif %}
+                        <!--Title-->
+                        <h4 class="card-title">{{ result.complaint_type }}</h4>
+                        <span class="badge blue mr-1 black-text">{{ result.status }}</span><hr>
+
+                        <!--Text-->
+
+                        <div class="text-center">
+                            <h5>{{ result.created_date|slice:":10" }}</h5>
+                        <p>Date Created</p>
+                        </div>
+                        <hr>
+
+                        <div class="text-center">
+                            <h5>{{ result.city }}</h5>
+                        <p>City</p>
+                        </div>
+                        <hr>
+
+                        <div class="text-center">
+                            <h5>{{ result.incident_address }}</h5>
+                        <p>Address</p>
+                        </div>
+                        <hr>
+
+                        <div class="text-center">
+                            <h5>{{ result.descriptor }}</h5>
+                        <p>Descriptor</p>
+                        </div>
+                        <hr>
+
+                        </div>
+                    </div>
+                    <!--/.Card-->
+                    </div>
+                    <!--Grid column-->
+                    {% if forloop.counter|get_modulo:3 == 0 %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                </section>
+                <!--Section: Cards-->
+
+            </div>
+
+
+        {% endif %}
+    {% endif %}
+{% endblock %}
