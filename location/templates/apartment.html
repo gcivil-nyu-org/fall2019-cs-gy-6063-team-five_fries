@@ -250,7 +250,6 @@
               </div>
           </form>
         <br>
-        <a href="{% url 'complaints' pk=apt.location.id apk=apt.id %}" class="btn btn-primary">311 Complaints</a>
 
         {% if messages %}
           {% for message in messages %}
@@ -275,8 +274,10 @@
       <div class="col mb-4">
         {% for result in results_311.stats %}
 
+          <a style="text-decoration: None" href="{% url 'complaints' pk=apt.location.id apk=apt.id %}">
           <!--Card-->
           <div class="card shadow" style="height: 30rem; overflow: auto">
+
           <!--Card image-->
           <div class="view overlay">
               {% if result.complaint_type == "Parking" %}
@@ -329,6 +330,7 @@
 
           </div>
           <!-- Card -->
+          </a>
           </div>
 
             <hr>
