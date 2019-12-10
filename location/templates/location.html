@@ -6,6 +6,51 @@
 
 {% block styles %}
 {% leaflet_css %}
+<style>
+.fivefries-container {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0 3rem;
+}
+.fivefries-container h4 {
+    margin-top: 1rem;
+}
+.fivefries-list-item {
+    border: 1px solid rgba(0,0,0,.125);
+    margin-bottom: -1px;
+    display: block;
+    position: relative;
+}
+.fivefries-list-item a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 0;
+}
+.fivefries-list-item .rent-price {
+    width: 7rem;
+    text-align: center;
+}
+.fivefries-list-item .fivefries-badge {
+    vertical-align: text-bottom;
+    margin-left: 0.5rem;
+}
+.fivefries-list-item .fivefries-apt-info:not(:first-child) {
+    margin-left: 0.2rem;
+}
+
+.fivefries-indent {
+    margin: 0 1rem;
+}
+.vertical-centered {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+}
+</style>
 {% endblock %}
 
 {% block script %}
@@ -36,52 +81,6 @@
     });
 </script>
 
-<style>
-    .fivefries-container {
-        display: flex;
-        flex-flow: row;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        padding: 0 3rem;
-    }
-    .fivefries-container h4 {
-        margin-top: 1rem;
-    }
-    .fivefries-list-item {
-        border: 1px solid rgba(0,0,0,.125);
-        margin-bottom: -1px;
-        display: block;
-        position: relative;
-    }
-    .fivefries-list-item a {
-        display: block;
-        text-decoration: none;
-        color: black;
-        padding: 0.5rem 0;
-    }
-    .fivefries-list-item .rent-price {
-        width: 7rem;
-        text-align: center;
-    }
-    .fivefries-list-item .fivefries-badge {
-        vertical-align: text-bottom;
-        margin-left: 0.5rem;
-    }
-    .fivefries-list-item .fivefries-apt-info:not(:first-child) {
-        margin-left: 0.2rem;
-    }
-
-    .fivefries-indent {
-        margin: 0 1rem;
-    }
-    .vertical-centered {
-        display: flex;
-        align-items: center;
-        flex-flow: column;
-    }
-
-</style>
 {% leaflet_js %}
 {% endblock %}
 
