@@ -32,9 +32,8 @@
     <!--Grid row-->
     <div class="row wow fadeIn">
 
-
       <!--Grid column-->
-      <div class="col mb-4">
+      <div class="col-sm-6">
 
       {% if apt.image %}
           <img src="{{ apt.picture_url }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'" data-toggle="modal" data-target=".carouselModalControls">
@@ -115,13 +114,6 @@
                 </div>
               </div>
         </div>
-
-      </div>
-      <!--Grid column-->
-
-      <!--Grid column-->
-      <div class="col mb-4">
-
 
         <!--Content-->
         <div class="p-4">
@@ -268,78 +260,139 @@
       <!--Grid column-->
 
 
-
-
       <!--Grid column-->
-      <div class="col mb-4">
+      <div class="col-sm-3">
+
         {% for result in results_311.stats %}
+            {% if result.complaint_type == "Noise" %}
 
-          <a style="text-decoration: None" href="{% url 'complaints' pk=apt.location.id apk=apt.id %}">
-          <!--Card-->
-          <div class="card shadow" style="height: 30rem; overflow: auto">
+                <a style="text-decoration: None" href="{% url 'complaints' pk=apt.location.id apk=apt.id %}">
+                <!--Card-->
+                <div class="card shadow">
 
-          <!--Card image-->
-          <div class="view overlay">
-              {% if result.complaint_type == "Parking" %}
-                  <img src="/static/img/parking2.jpg" class="img-fluid" alt="">
-              {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
-                  <img src="/static/img/noise_low.jpg" class="img-fluid" alt="">
-              {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
-                  <img src="/static/img/noise_high.jpg" class="img-fluid" alt="">
-              {% endif %}
-          </div>
-          <!--Card content-->
-          <div class="card-body white-text"
-               {% if result.complaint_level <= 2 %}
-               style="background-color:green"
-               {% else %}
-               style="background-color:#ff0b00db"
-              {% endif %}
-          >
+                <!--Card image-->
+                <div class="view overlay">
+                  {% if result.complaint_type == "Parking" %}
+                      <img src="/static/img/parking2.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
+                      <img src="/static/img/noise_low.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
+                      <img src="/static/img/noise_high.jpg" class="img-fluid cover2" alt="">
+                  {% endif %}
+                </div>
 
-          <!--Title-->
-          <h5 class="card-title text-center">{{ result.complaint_type }} Complaints</h5>
-          <!--Text-->
-          <p class="card-text">
+                {% if result.complaint_level <= 2 %}
+                <div class="card-body white-text" style="background-color:green">
+                {% else %}
+                <div class="card-body white-text" style="background-color:#ff0b00db">
+                {% endif %}
 
-              <div class="text-center">
-                <h5>{{ result.complaint_level }}</h5>
-                <p>Complaint Level (0-5)</p>
-              </div>
-              <hr>
+                <!--Title-->
+                <h5 class="card-title text-center">{{ result.complaint_type }} Complaints</h5>
+                <!--Text-->
+                <p class="mb-0 card-text">
 
-              <div class="text-center">
-                <h5>{{ result.percentage_complaints_closed }} %</h5>
-                <p>Complaints Closed</p>
-              </div>
-              <hr>
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.complaint_level }}</h5>
+                    <p class="mb-0">Complaint Level (0-5)</p>
+                  </div>
+                  <hr>
 
-              <div class="text-center">
-                <h5>{{ result.total_complaints_query_zip }}</h5>
-                <p>Total Complaints</p>
-              </div>
-              <hr>
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.percentage_complaints_closed }} %</h5>
+                    <p class="mb-0">Complaints Closed</p>
+                  </div>
+                  <hr>
 
-              <div class="text-center">
-                <h5>{{ result.closed_complaints_query_zip }}</h5>
-                <p>Closed Complaints</p>
-              </div>
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.total_complaints_query_zip }}</h5>
+                    <p class="mb-0">Total Complaints</p>
+                  </div>
+                  <hr>
 
-          </p>
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.closed_complaints_query_zip }}</h5>
+                    <p class="mb-0">Closed Complaints</p>
+                  </div>
 
-          </div>
-          <!-- Card -->
-          </a>
-          </div>
+                </p>
 
-            <hr>
+                </div>
+                <!-- Card -->
+                </a>
+            {% endif %}
+
         {% endfor %}
+
       </div>
 
     </div>
-    <!--Grid row-->
 
-    <hr>
+      <!--Grid column-->
+      <div class="col-sm-3">
+
+        {% for result in results_311.stats %}
+            {% if result.complaint_type == "Parking" %}
+
+                <a style="text-decoration: None" href="{% url 'complaints' pk=apt.location.id apk=apt.id %}">
+                <!--Card-->
+                <div class="card shadow">
+
+                <!--Card image-->
+                <div class="view overlay">
+                  {% if result.complaint_type == "Parking" %}
+                      <img src="/static/img/parking2.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
+                      <img src="/static/img/noise_low.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
+                      <img src="/static/img/noise_high.jpg" class="img-fluid cover2" alt="">
+                  {% endif %}
+                </div>
+
+                {% if result.complaint_level <= 2 %}
+                <div class="card-body white-text" style="background-color:green">
+                {% else %}
+                <div class="card-body white-text" style="background-color:#ff0b00db">
+                {% endif %}
+
+                <!--Title-->
+                <h5 class="card-title text-center">{{ result.complaint_type }} Complaints</h5>
+                <!--Text-->
+                <p class="mb-0 card-text">
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.complaint_level }}</h5>
+                    <p class="mb-0">Complaint Level (0-5)</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.percentage_complaints_closed }} %</h5>
+                    <p class="mb-0">Complaints Closed</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.total_complaints_query_zip }}</h5>
+                    <p class="mb-0">Total Complaints</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.closed_complaints_query_zip }}</h5>
+                    <p class="mb-0">Closed Complaints</p>
+                  </div>
+
+                </p>
+
+                </div>
+                <!-- Card -->
+                </a>
+            {% endif %}
+
+        {% endfor %}
+
+      </div>
   </div>
 </main>
 {% endblock %}
