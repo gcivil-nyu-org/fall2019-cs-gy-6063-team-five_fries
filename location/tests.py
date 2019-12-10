@@ -727,33 +727,6 @@ class LocationViewTests(TestCase):
         content = soup.get_text()
         self.assertIn("Interested?", content)
 
-    #
-    # @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
-    # def test_get_311_data(self):
-    #     results = get_311_data("11201")
-    #     for complaint in results:
-    #         self.assertTrue(isinstance(complaint, NYC311Complaint))
-
-    # @mock.patch("search.views.normalize_us_address")
-    # @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    # def test_search_page_matching_apartments(self, mock_norm):
-    #     """
-    #     tests to make sure that "matching apartments" is displayed for each location
-    #     in the search results
-    #     """
-    #     mock_norm.return_value = Address(
-    #         street="",
-    #         city="Brooklyn",
-    #         state="New York",
-    #         zipcode=11218,
-    #         latitude=0.0,
-    #         longitude=0.0,
-    #     )
-    #     loc, apa = create_location_and_apartment()
-    #     response = self.client.get("/search/?query=Brooklyn%2C+New+York+11218")
-    #
-    #     self.assertContains(response, "Matching Apartments:")
-
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
     def test_apartment_complaints(self):
         """
