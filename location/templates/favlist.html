@@ -17,7 +17,7 @@
         <!--Card-->
         <a href="{% url 'location' loc.id %}" style="text-decoration: none;">
             <div class="card h-100 shadow rounded-corner">
-                <img src="{{ loc.representative_image_or_placeholder }}"" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+                <img src="{{ loc.representative_image_or_placeholder }}" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
                 <hr style="margin: 0;">
                 <div class="card-body" style="text-align: left; color: black;">
                     <h5 class="card-title">{{ loc.rent_price_for_display }}</h5>
