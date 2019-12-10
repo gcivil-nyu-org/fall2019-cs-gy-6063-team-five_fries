@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block script %}
+{% block styles %}
 <!-- Font Awesome Icon Library -->
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
@@ -79,7 +79,7 @@
                 <div class="view overlay">
                 <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
                 {% if apt.image %}
-                    <img src="{{ apt.image.url }} " class="card-img-top cover" alt="apartment image">
+                    <img src="{{ apt.picture_url }} " class="card-img-top cover" alt="apartment image">
                 {% else %}
                     <img src="/static/img/no_apa_pic.jpg" class="card-img-top cover" alt="apartment image">
                 {% endif %}

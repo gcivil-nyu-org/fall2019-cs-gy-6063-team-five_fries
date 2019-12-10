@@ -1,22 +1,14 @@
 from django.shortcuts import render
-from django.views import generic
-from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import CraigslistLocation, LastRetrievedData
+
 from .forms import SearchForm
 from location.models import Location
 
 from external.nyc311 import get_311_data
-from external.craigslist import fetch_craigslist_housing
 from external.googleapi import normalize_us_address
 from external.res import get_res_data
 from external.models import NYC311Statistics
 from external.cache.nyc311 import refresh_nyc311_statistics_if_needed
-
-
-class CraigslistIndexView(generic.ListView):
-    template_name = "search/clist_results.html"
-    context_object_name = "cl_results"
 
 
 def search(request):
@@ -86,25 +78,16 @@ def search(request):
 
             # calculate the number of matching apartments at each location
             matching_apartments = {}
-            thumbnails = {}  # thumbnail for each location
             for loc in search_data["locations"]:
                 matching_apartments[loc.id] = 0
-                thumbnails[
-                    loc.id
-                ] = "/static/img/no_img.png"  # default image if no image exists
 
             # number of apartments at each location satisfying the given criteria
             for loc in search_data["locations"]:
                 matches = loc.apartment_set.filter(**query_params_apartment)
                 num_matches = matches.count()
                 matching_apartments[loc.id] = num_matches
-                for apt in matches:
-                    if apt.image:
-                        thumbnails[loc.id] = apt.image
-                        break
 
             search_data["matching_apartments"] = matching_apartments
-            search_data["thumbnails"] = thumbnails
 
             # paginate the search location results
             page = request.GET.get("page", 1)
@@ -191,52 +174,6 @@ def data_311(request):
         return render(request, "search/data_311.html", {})
 
 
-def clist_results(request):
-    do_update = False
-    last, created = LastRetrievedData.objects.get_or_create(model="CraigslistLocation")
-
-    if created:
-        do_update = True
-    elif last.should_retrieve():
-        do_update = True
-        last.time = timezone.now()
-        last.save()
-
-    results = []
-    if do_update is True:
-        results = fetch_craigslist_housing(
-            limit=100,  # FIXME: temporarily limit the results up to 100 for the fast response
-            site="newyork",
-            category="apa",
-            area="brk",
-            filters={"max_price": 2000},
-        )
-
-    for r in results:
-        if not CraigslistLocation.objects.filter(c_id=r["id"]).exists():
-            lat = None
-            lon = None
-            if r["geotag"] is not None:
-                lat = r["geotag"][0]
-                lon = r["geotag"][1]
-
-            q = CraigslistLocation(
-                c_id=r["id"],
-                name=r["name"],
-                url=r["url"],
-                date_time=r["datetime"],
-                price=r["price"],
-                where=(r["where"] if r["where"] is not None else ""),
-                has_image=r["has_image"],
-                lat=lat,
-                lon=lon,
-            )
-            q.save()
-    result_list = CraigslistLocation.objects.all()
-    context = {"clist_results": result_list}
-    return render(request, "search/clist_results.html", context)
-
-
 def description_for_complaint_level(level):
     """
     Return an emoji for given complaint_level in the range [0, 5]
@@ -264,7 +201,11 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
     query_params_location = {}
     query_params_apartment = {}
 
-    if address:
+    # if the original query, exactly matches the zipcode, we want to only search
+    # on the zip code
+    if address and address.zipcode and address.zipcode == orig_query:
+        query_params_location["zipcode"] = address.zipcode
+    elif address:
         # filter based on existence of locations with the specified address
         if address.street:
             query_params_location["address__iexact"] = address.street
@@ -275,10 +216,14 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
                 and address.locality.lower() in orig_query.lower()
             ):
                 query_params_location["locality__iexact"] = address.locality
+                # if the locality AND the zip code are in the orig_query
+                # search on locality, not city
+            elif address.city.lower() not in orig_query.lower():
+                query_params_location["locality__iexact"] = address.locality
             else:  # default to city
                 # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
                 query_params_location["city__iexact"] = address.city
-        if address.state or address.locality:
+        if address.state:
             query_params_location["state__iexact"] = address.state
         if address.zipcode:
             query_params_location["zipcode"] = address.zipcode

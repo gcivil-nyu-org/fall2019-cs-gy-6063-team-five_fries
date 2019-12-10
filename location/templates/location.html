@@ -1,9 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'nav.html' %}
 
-{% block breadcrumbs %}
-<a href="{% url 'search' %}">Search</a>
-<span>{{ location.full_address }}</span>
+{% load leaflet_tags %}
+{% load crispy_forms_tags %}
 
+
+{% block styles %}
+{% leaflet_css %}
+<style>
+.fivefries-container {
+    display: flex;
+    flex-flow: row;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    padding: 0 3rem;
+}
+.fivefries-container h4 {
+    margin-top: 1rem;
+}
+.fivefries-list-item {
+    border: 1px solid rgba(0,0,0,.125);
+    margin-bottom: -1px;
+    display: block;
+    position: relative;
+}
+.fivefries-list-item a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    padding: 0.5rem 0;
+}
+.fivefries-list-item .rent-price {
+    width: 7rem;
+    text-align: center;
+}
+.fivefries-list-item .fivefries-badge {
+    vertical-align: text-bottom;
+    margin-left: 0.5rem;
+}
+.fivefries-list-item .fivefries-apt-info:not(:first-child) {
+    margin-left: 0.2rem;
+}
+
+.fivefries-indent {
+    margin: 0 1rem;
+}
+.vertical-centered {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+}
+</style>
 {% endblock %}
 
 {% block script %}
@@ -14,16 +61,7 @@
 -->
 <!-- font awesome account is needed to create the font awesome kit below -->
 <script src="https://kit.fontawesome.com/29da671985.js" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-{% endblock %}
-{% block header %}
-{% load leaflet_tags %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% leaflet_js %}
-{% leaflet_css %}
-
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -42,205 +80,212 @@
             .openPopup();
     });
 </script>
-{% endblock%}
 
-{% block content %}
-<div class="row">
-<div class="col col-sm-9">
-    <h3>{{object.address}}, {{object.city}}, {{object.state}}, {{object.zipcode}}</h3>
+{% leaflet_js %}
+{% endblock %}
+
+{% block body %}
+<div class="breadcrumbs">
+    <a href="{% url 'search' %}">Search</a>
+    <span>{{ location.full_address }}</span>
 </div>
-<div class="col col-sm-1">
-<form action="{% url 'favorite' object.id %}" method="POST">
-    {% csrf_token %}
-    {% if object in request.user.favorites.all %}
-    <button type="submit" class="unstyled-button"><i class="fas fa-heart" style="color:red; font-size:2.5rem"></i></button>
-    {% else %}
-    <button type="submit" class="unstyled-button"><i class="fas fa-heart" style="color:black; font-size:2.5rem"></i></button>
-    {% endif %}
-</form>
-</div>
-<div class="col col-sm-2">
-<form action="{% url 'review' object.id %}" method="POST">
-    {% csrf_token %}
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Review</button>
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            {% if not request.user.is_authenticated %}
-                <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Log In</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                    <p>You need to be <a href="/accounts/login?next={{request.path}}">logged in</a> before you can write reviews!</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
 
-            {% elif not can_leave_a_review %}
-                <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Not a Tenant?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+<div class ="fivefries-container">
+    <div style="width: 100%; overflow: auto;">
+        <div>
+            <form action="{% url 'favorite' object.id %}" method="POST">
+            {% csrf_token %}
+            <h3>
+                {{object.full_address}}&nbsp;
+                {% if object in request.user.favorites.all %}
+                <button type="submit" class="unstyled-button" style="vertical-align: middle; cursor: pointer;">
+                    <i class="material-icons" style="color: red;">favorite</i>
                 </button>
-                </div>
-                <div class="modal-body">
-                    <p>It appears that you are not a tenant for any apartments at this location. If this is not
-                        the case, you can claim that you are a tenant by going to the apartment view and clicking
-                        <b><i>"Are you a tenant or a landlord of this apartment?"</i></b></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-
-
-            {% else %}
-                <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Review this location</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                {% else %}
+                <button type="submit" class="unstyled-button" style="vertical-align: middle; cursor: pointer;">
+                    <i class="material-icons" style="color: black;">favorite_border</i>
                 </button>
-                </div>
-                <div class="modal-body">
-                    {{ form|crispy }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" name="form_submit">Review!</button>
-                </div>
-            {% endif %}
+                {% endif %}
+            </h3>
+
+            </form>
         </div>
-      </div>
-    </div>
-</form>
+        <div class="fivefries-indent">
+            {% leaflet_map "leaflet_map_main" %}
+        </div>
 
-</div>
-
-</div>
-
-{% leaflet_map "leaflet_map_main" %}
-
-<hr>
-<div class="container">
-    <div class="row">
-        <div class="col">
+        {% if object.apartment_set.all %}
+        <div>
             <h4>Apartments</h4>
-            <div class="location-results">
-                {% if zillow_list %}
+            <!-- Apt list -->
+            <div class="fivefries-indent">
+                {% if object.apartment_set.all %}
                 <ul class="list-group">
-                    {% for apt in zillow_list %}
-                    <li class="list-group-item list-group-item-action">
-                        <div class="row d-flex justify-content-between">
-                            <div class="col">
-                                {{apt.rent_price_for_display}}
+                    {% for apt in object.apartment_set.all %}
+                    <li class="fivefries-list-item list-group-item-action">
+                        <a href="{% url 'apartment' pk=object.id apk=apt.id %}">
+                        <div class="d-flex">
+                            <div class="rent-price">
+                                <b>{{apt.rent_price_for_display}}</b>
                             </div>
-                            <div class="col">
-                                {% if apt %}
-                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
-                                        class="badge badge-secondary">{{ apt.location.address }}
-                                    {% if apt.suite_num %}
-                                        #{{apt.suite_num}}
-                                    {% endif %}</span></a>
+                            {% if apt %}
+                            <div class="fivefries-apt-info">
+                                <span>
+                                    {{ apt.location.address }}
+                                </span>
+                                {% if apt.suite_num %}
+                                <span class="badge blue mr-1 white-text fivefries-badge">Suite: {{ apt.suite_num }}</span>
+                                {% endif %}
+                                {% if apt.number_of_bed %}
+                                <span class="badge blue mr-1 white-text fivefries-badge">Bedrooms: {{ apt.number_of_bed }}</span>
                                 {% endif %}
                             </div>
-                            <div class="col text-center">
-                                <a href="{{ apt.zillow_url }}"><span class="badge badge-secondary">Zillow</span></a>
-                            </div>
+                            {% endif %}
                         </div>
+                        </a>
                     </li>
                     {% endfor %}
                 </ul>
-                {% endif %}
-                {% if landlord_list %}
-                <ul class="list-group">
-                    {% for apt in landlord_list %}
-                    <li class="list-group-item list-group-item-action">
-                        <div class="row d-flex justify-content-between">
-                            <div class="col">
-                                {{apt.rent_price_for_display}}
-                            </div>
-                            <div class="col">
-                                {% if apt %}
-                                <a href="{% url 'apartment' pk=object.id apk=apt.id %}"><span
-                                        class="badge badge-secondary">{{ apt.location.address }}
-                                    {% if apt.suite_num %}
-                                        #{{apt.suite_num}}
-                                    {% endif %}</span></a>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-
-                {% if not zillow_list and not landlord_list %}
+                {% else %}
                 <p>No apartments</p>
                 {% endif %}
             </div>
-            <i>Last update from Zillow: {{object.last_fetched_zillow}}</i>
+            <!-- End of Apt list -->
+            <i class="fivefries-indent" style="display: block; color: darkslategray; padding: 0.5rem;">Last update from Zillow: {{object.last_fetched_zillow}}</i>
         </div>
+        {% endif %}
+    </div>
 
-        <div class="col">
-            {% if object.review_set %}
-                <div class="row">
-                <div class="col col-sm-6">
-                    <h4>Reviews</h4>
-                </div>
-                <div class="col col-sm-6">
-                <div class="text-right">Average:
-                    {% for idx in '12345' %}
-                        {% if forloop.counter <= object.avg_rate %}
-                            <span class="fa fa-star checked"></span>
-                        {% else %}
-                            <span class="fa fa-star"></span>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                </div>
-                </div>
+    <!-- Review -->
+    <div style="width: 40rem;">
+        <!-- Scrollable area -->
+        <div style="overflow: auto; height: 88%;">
+            <form action="{% url 'review' object.id %}" method="POST">
+            {% csrf_token %}
+            <h3 style="display: flex; justify-content: space-between;">Reviews
+            <!-- Review Button -->
+                <button type="button" id="review-button" class="btn btn-primary rounded-corner" data-toggle="modal" data-target="#exampleModal">
+                    <i class="material-icons" style="vertical-align: bottom;">post_add</i>
+                    Write a review
+                </button>
+            <!-- End of Review Button -->
+            </h4>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    {% if not request.user.is_authenticated %}
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Log In</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>You need to be <a href="/accounts/login?next={{request.path}}">logged in</a> before you can write reviews!</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
 
-            <div class="mb-3 text-center location-results">
-                {% for review in object.review_set.all %}
-                <div class="card mb-4 shadow-sm " style="max-width: 27rem;">
-                    <div class="card-header">
-                        <ul class="list-unstyled">
-                            <li>{{ review.user }}</li>
-                            <li>
-                                {% for idx in '12345' %}
-                                {% if forloop.counter <= review.rating %}
-                                <span class="fa fa-star checked"></span>
-                                {% else %}
-                                <span class="fa fa-star"></span>
-                                {% endif %}
-                                {% endfor %}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title pricing-card-title">
-                        </h5>
+                    {% elif not can_leave_a_review %}
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Not a Tenant?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>It appears that you are not a tenant for any apartments at this location. If this is not
+                                the case, you can claim that you are a tenant by going to the apartment view and clicking
+                                <b><i>"Are you a tenant or a landlord of this apartment?"</i></b></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
 
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>{{ review.content }}</li>
-                        </ul>
-
-                        <h4 class=" mb-0">
-                            <small class="blockquote-footer"
-                                style="font-size: x-small"><cite>{{ review.time }}</cite></small>
-                        </h4>
-                    </div>
+                    {% else %}
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Review this location</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            {{ form|crispy }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" name="form_submit">Review!</button>
+                        </div>
+                    {% endif %}
                 </div>
+                </div>
+            </div>
+            <!-- End of Modal -->
+            </form>
+            {% if object.review_set.all %}
+            <div class="fivefries-indent">
+                Average:
+                {% for idx in '12345' %}
+                    {% if forloop.counter <= object.avg_rate %}
+                        <span class="fa fa-star checked"></span>
+                    {% else %}
+                        <span class="fa fa-star"></span>
+                    {% endif %}
                 {% endfor %}
             </div>
-            {% endif %}
+            <div>
+
+            <!-- Card list -->
+            <div style="margin: 1rem 0">
+            {% for review in object.review_set.all %}
+            <div class="card mb-4 shadow-sm shadow rounded-corner" style="max-width: 27rem;">
+                <div class="card-header vertical-centered">
+                    <div>{{ review.user }}</div>
+                    <div>
+                        {% for idx in '12345' %}
+                        {% if forloop.counter <= review.rating %}
+                        <span class="fa fa-star checked"></span>
+                        {% else %}
+                        <span class="fa fa-star"></span>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-body vertical-centered">
+                    <h5 class="card-title pricing-card-title">
+                    </h5>
+
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>{{ review.content }}</li>
+                    </ul>
+
+                    <h4 class=" mb-0">
+                        <small class="blockquote-footer"
+                            style="font-size: x-small"><cite>{{ review.time }}</cite></small>
+                    </h4>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="vertical-centered" style="display: flex; height: 10rem; justify-content: center;">
+            <i>No review yet</i>
+            </div>
+            {% endif%}
+            </div>
+            <!-- End of Card list -->
+
+            </div>
+        </div>
+        <!-- End of Scrollable area -->
+
+
 
         </div>
     </div>
+    <!-- End of Review -->
 </div>
 
 

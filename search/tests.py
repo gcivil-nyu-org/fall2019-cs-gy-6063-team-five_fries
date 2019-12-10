@@ -1,57 +1,14 @@
 from django.test import TestCase
-from django.utils import timezone
 from django.urls import reverse
 from unittest import mock
 
-import datetime
-from .models import CraigslistLocation, LastRetrievedData
 from external.models import Address
 from location.models import Location, Apartment
-from external.craigslist.stub import fetch_craigslist_housing
 from external.nyc311.stub import fetch_311_data
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
 from external.res.stub import fetch_res_data
 from .templatetags.custom_tags import get_item, get_modulo
-
-
-def create_c_location(
-    id,
-    name="A cool place to live",
-    url="http://a-url.com",
-    days=0,
-    price="$3.50",
-    where="Sunnyside Heights",
-    has_image=False,
-    has_map=False,
-    lat=40.772480,
-    lon=-73.972580,
-):
-    """
-    Creates a CraigslistLocation with the given values
-    and datetime the given number of 'days' offset to now
-    (negative for times in the past, positive for times in
-    the future)
-    """
-    time = timezone.now() + datetime.timedelta(days=days)
-    # Used ternary so it's not necessary to fill in every field
-    # each time a location is created.
-    return CraigslistLocation.objects.create(
-        c_id=id,
-        name=name,
-        url=url,
-        date_time=time,
-        price=price,
-        where=where,
-        has_image=has_image,
-        has_map=has_map,
-        lat=lat,
-        lon=lon,
-    )
-
-
-def create_last_pulled(days, model):
-    time = timezone.now() + datetime.timedelta(days=days)
-    return LastRetrievedData.objects.create(time=time, model=model)
+from .views import build_search_query
 
 
 def create_location_and_apartment():
@@ -80,52 +37,6 @@ def create_location_and_apartment():
     return loc, apt
 
 
-class LastRetrieveDataModelTests(TestCase):
-    def test_str_method(self):
-        """
-        tests the __str__ method to insure it returns the correct value
-        """
-        q = create_last_pulled(days=0, model="TestModel")
-        self.assertEqual(str(q), q.model)
-
-    def test_future_date(self):
-        """
-        was_retrieved_recently() returns False for Retrieval
-        whose time was in the future
-        """
-        time = timezone.now() + datetime.timedelta(days=1, seconds=1)
-        future_retrieval = LastRetrievedData(time=time)
-        self.assertIs(future_retrieval.should_retrieve(), False)
-
-    def test_with_current(self):
-        """
-        was_retrieved_recently() should return False for Retrievals
-        within the past day
-        """
-        time = timezone.now() - datetime.timedelta(hours=23, minutes=59, seconds=59)
-        old_retrieval = LastRetrievedData(time=time)
-        self.assertIs(old_retrieval.should_retrieve(), False)
-
-    def test_with_past(self):
-        """
-        was_retrieved_recently() should return True for Retrievals
-        older than 1 day
-        """
-        time = timezone.now() - datetime.timedelta(days=1, seconds=1)
-        old_retrieval = LastRetrievedData(time=time)
-        self.assertIs(old_retrieval.should_retrieve(), True)
-
-
-class CraigslistLocationTests(TestCase):
-    def test_loc_name(self):
-        """
-        tests the name of a craigslistLocation to insure that the __self__
-        method is returning correctly
-        """
-        q = create_c_location(id="123", name="Test_Loc")
-        self.assertEqual(str(q), "123 - Test_Loc")
-
-
 @mock.patch("external.googleapi.g_utils.fetch_geocode", fetch_geocode_stub)
 class SearchIndexViewTests(TestCase):
     def test_search_index(self):
@@ -139,7 +50,6 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Address")
         self.assertContains(response, "Go")
 
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_index_with_query(self):
@@ -161,7 +71,6 @@ class SearchIndexViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "Address:")
 
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_query_only(self):
@@ -173,7 +82,6 @@ class SearchIndexViewTests(TestCase):
         self.assertNotContains(response, "Max Price:")
         self.assertNotContains(response, "Min Price:")
 
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_min_price(self):
@@ -185,7 +93,6 @@ class SearchIndexViewTests(TestCase):
         self.assertNotContains(response, "Max Price:")
         self.assertContains(response, "Min Price: 500")
 
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_max_price(self):
@@ -197,7 +104,6 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Max Price: 2000")
         self.assertNotContains(response, "Min Price:")
 
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_bed_num(self):
@@ -210,7 +116,6 @@ class SearchIndexViewTests(TestCase):
         self.assertNotContains(response, "Max Price:")
         self.assertNotContains(response, "Min Price:")
 
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_all_params(self):
@@ -232,9 +137,9 @@ class SearchIndexViewTests(TestCase):
 
     @mock.patch("search.views.normalize_us_address")
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
-    def test_search_page_matching_apartments(self, mock_norm):
+    def test_search_page_apartments(self, mock_norm):
         """
-        tests to make sure that "matching apartments" is displayed for each location
+        tests to make sure that "Apartment(s)" is displayed for each location
         in the search results
         """
         mock_norm.return_value = Address(
@@ -248,7 +153,7 @@ class SearchIndexViewTests(TestCase):
         loc, apa = create_location_and_apartment()
         response = self.client.get("/search/?query=Brooklyn%2C+New+York+11218")
 
-        self.assertContains(response, "Matching Apartments:")
+        self.assertContains(response, "Apartment(s)")
 
     @mock.patch("search.views.normalize_us_address")
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
@@ -284,7 +189,6 @@ class SearchIndexViewTests(TestCase):
             msg="Returned results when it shouldn't have",
         )
 
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
     @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
     def test_search_page_session(self):
@@ -302,17 +206,6 @@ class SearchIndexViewTests(TestCase):
         self.assertContains(response, "Max Price: 2000")
         self.assertContains(response, "Min Price: 500")
         self.assertContains(response, "Number of Bedroom: 4")
-
-
-class SearchCraigsTests(TestCase):
-    @mock.patch("search.views.fetch_craigslist_housing", fetch_craigslist_housing)
-    def test_search_clist_results(self):
-        """
-        Tests the craigslist result page
-        """
-        pass
-        response = self.client.get(reverse("clist_results"))
-        self.assertEqual(response.status_code, 200)
 
 
 @mock.patch("external.res.fetch.fetch_res_data", fetch_res_data)
@@ -342,3 +235,327 @@ class CustomTemplatesTestCases(TestCase):
         key = 3
         result = get_modulo(value, key)
         self.assertEqual(result, 2)
+
+
+class SearchQueryBuilderTests(TestCase):
+    def test_build_query_zip_only(self):
+        """
+        Tests the return value of the search query when
+        the original zip code is the exact query
+        """
+
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "11204",
+                "city": "Brooklyn",
+                "state": "NY",
+                "latitude": 40.6195067,
+                "longitude": -73.9859414,
+                "locality": "Brooklyn",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr, orig_query="11204", min_price="", max_price="", bed_num=""
+        )
+        query_result_dict = {"zipcode": "11204"}
+        query_result_apa_dict = {}
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_locality(self):
+        """
+        Tests the return value of build_search_query when
+        the address locality is in the original query
+        """
+
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "",
+                "city": "Brooklyn",
+                "state": "NY",
+                "latitude": 40.6195067,
+                "longitude": -73.9859414,
+                "locality": "Brooklyn",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="Brooklyn, NY",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "locality__iexact": "Brooklyn",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_if_address(self):
+        """
+        test building the address string
+        """
+        addr = Address.from_dict(
+            {
+                "street": "28-15 34th street",
+                "zipcode": "11103",
+                "city": "Long Island City",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Queens",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="28-15 34th st, Long Island City, NY 11103",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "address__iexact": "28-15 34th street",
+            "city__iexact": "Long Island City",
+            "state__iexact": "NY",
+            "zipcode": "11103",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_if_address_not_city(self):
+        """
+        test building the address string
+        """
+        addr = Address.from_dict(
+            {
+                "street": "28-15 34th street",
+                "zipcode": "11103",
+                "city": "Long Island City",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Queens",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="Queens, NY 11103",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "address__iexact": "28-15 34th street",
+            "locality__iexact": "Queens",
+            "state__iexact": "NY",
+            "zipcode": "11103",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_if_address_and_min_price(self):
+        """
+        test building the address string and minimum price
+        """
+        addr = Address.from_dict(
+            {
+                "street": "28-15 34th street",
+                "zipcode": "11103",
+                "city": "Long Island City",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Queens",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="28-15 34th st, Long Island City, NY 11103",
+            min_price="500",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "address__iexact": "28-15 34th street",
+            "city__iexact": "Long Island City",
+            "state__iexact": "NY",
+            "zipcode": "11103",
+            "apartment_set__is_rented": False,
+            "apartment_set__rent_price__gte": "500",
+        }
+        query_result_apa_dict = {"is_rented": False, "rent_price__gte": "500"}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_if_address_and_max_price(self):
+        """
+        test building the address string and max price
+        """
+        addr = Address.from_dict(
+            {
+                "street": "28-15 34th street",
+                "zipcode": "11103",
+                "city": "Long Island City",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Queens",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="28-15 34th st, Long Island City, NY 11103",
+            min_price="",
+            max_price="2000",
+            bed_num="",
+        )
+        query_result_dict = {
+            "address__iexact": "28-15 34th street",
+            "city__iexact": "Long Island City",
+            "state__iexact": "NY",
+            "zipcode": "11103",
+            "apartment_set__is_rented": False,
+            "apartment_set__rent_price__lte": "2000",
+        }
+        query_result_apa_dict = {"is_rented": False, "rent_price__lte": "2000"}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_if_address_and_price(self):
+        """
+        test building the address string and min/max price
+        """
+        addr = Address.from_dict(
+            {
+                "street": "28-15 34th street",
+                "zipcode": "11103",
+                "city": "Long Island City",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Queens",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="28-15 34th st, Long Island City, NY 11103",
+            min_price="500",
+            max_price="2000",
+            bed_num="",
+        )
+        query_result_dict = {
+            "address__iexact": "28-15 34th street",
+            "city__iexact": "Long Island City",
+            "state__iexact": "NY",
+            "zipcode": "11103",
+            "apartment_set__is_rented": False,
+            "apartment_set__rent_price__lte": "2000",
+            "apartment_set__rent_price__gte": "500",
+        }
+        query_result_apa_dict = {
+            "is_rented": False,
+            "rent_price__lte": "2000",
+            "rent_price__gte": "500",
+        }
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_if_address_and_bed(self):
+        """
+        test building the address string, with number of beds and
+        min/max price
+        """
+        addr = Address.from_dict(
+            {
+                "street": "28-15 34th street",
+                "zipcode": "11103",
+                "city": "Long Island City",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Queens",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="28-15 34th st, Long Island City, NY 11103",
+            min_price="500",
+            max_price="2000",
+            bed_num="1",
+        )
+        query_result_dict = {
+            "address__iexact": "28-15 34th street",
+            "city__iexact": "Long Island City",
+            "state__iexact": "NY",
+            "zipcode": "11103",
+            "apartment_set__is_rented": False,
+            "apartment_set__rent_price__lte": "2000",
+            "apartment_set__rent_price__gte": "500",
+            "apartment_set__number_of_bed": "1",
+        }
+        query_result_apa_dict = {
+            "is_rented": False,
+            "number_of_bed": "1",
+            "rent_price__lte": "2000",
+            "rent_price__gte": "500",
+        }
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_if_bed(self):
+        """
+        test building the address string with number of beds
+        """
+        addr = Address.from_dict(
+            {
+                "street": "28-15 34th street",
+                "zipcode": "11103",
+                "city": "Long Island City",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Queens",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="28-15 34th st, Long Island City, NY 11103",
+            min_price="",
+            max_price="",
+            bed_num="1",
+        )
+        query_result_dict = {
+            "address__iexact": "28-15 34th street",
+            "city__iexact": "Long Island City",
+            "state__iexact": "NY",
+            "zipcode": "11103",
+            "apartment_set__is_rented": False,
+            "apartment_set__number_of_bed": "1",
+        }
+        query_result_apa_dict = {"is_rented": False, "number_of_bed": "1"}
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)

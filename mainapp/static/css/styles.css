@@ -68,6 +68,10 @@ footer {
     overflow-y: scroll;
 }
 
+.rounded-corner {
+    border-radius: 10px;
+}
+
 .italic {
     font-style: italic;
 }
@@ -122,7 +126,7 @@ div.custom-file {
 }
 
 .shadow {
-  box-shadow: 0.4rem 0.4rem #EAE6E6;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.1)
 }
 
 .search-form input[type="text"], .search-form input[type="number"] {
@@ -133,4 +137,11 @@ div.custom-file {
   border: none;
   padding: 0;
   background: none;
+}
+
+.alert-top {
+    position: fixed;
+    top: 65px;
+    left: 34%;
+    width: 33%
 }

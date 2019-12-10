@@ -4,7 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Submit, Button, ButtonHolder, Div
 
 from localflavor.us import forms as us_forms
-from .models import Location, Apartment
+from .models import Location, Apartment, ClaimRequest
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
 
@@ -79,7 +79,7 @@ class ApartmentUploadForm(forms.Form):
         g_state = g_utils.get_state(g_data)
         g_zip = g_utils.get_zipcode(g_data)
 
-        if g_city != city:
+        if g_city.lower() != city.lower():
             self.add_error(
                 "city",
                 f"The input value of {city} did not match the resolved value of {g_city}",
@@ -106,17 +106,24 @@ class ApartmentUploadForm(forms.Form):
             )
 
 
-class ClaimForm(forms.Form):
-    claim_type = forms.ChoiceField(
-        choices=[
-            ("tenant", "I am a tenant of this apartment"),
-            ("landlord", "I am a landlord of this apartment"),
-        ],
-        widget=forms.RadioSelect(attrs={"required": True}),
-        label="Are you a tenant or a landlord?",
-        required=True,
-    )
-    note = forms.CharField(widget=forms.Textarea, required=False)
+class ClaimForm(forms.ModelForm):
+    class Meta:
+        model = ClaimRequest
+        exclude = ["allow_token", "deny_token", "access_granted"]
+
+    def __init__(self, *args, **kwargs):
+        super(ClaimForm, self).__init__(*args, **kwargs)
+        self.fields["user"].widget = forms.HiddenInput()
+        self.fields["apartment"].widget = forms.HiddenInput()
+
+    def clean(self):
+        super(ClaimForm, self).clean()
+        request_type = self.cleaned_data.get("request_type")
+        apartment = self.cleaned_data.get("apartment")
+        if request_type == "tenant" and apartment and not apartment.landlord:
+            raise forms.ValidationError(
+                "This Apartment does not currently have a Landlord registered with the site"
+            )
 
 
 class ContactLandlordForm(forms.Form):
@@ -181,7 +188,7 @@ class ApartmentUpdateForm(forms.ModelForm):
         # access the passed in instance of the Apartment model to get its location
         location = self.instance.location
 
-        if suite_num.strip()[0] == "-":
+        if suite_num and suite_num.strip()[0] == "-":
             raise forms.ValidationError(
                 "You cannot submit an apartment with a negative Suite Number"
             )

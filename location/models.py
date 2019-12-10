@@ -3,6 +3,8 @@ from localflavor.us import models as us_models
 from urllib.parse import quote
 from django.core.validators import MinValueValidator, MaxValueValidator
 
+import uuid
+
 
 class Location(models.Model):
     city = models.CharField(max_length=100)
@@ -32,6 +34,27 @@ class Location(models.Model):
     @property
     def google_map_url(self):
         return f"https://www.google.com/maps/search/?api=1&query={self.url_encoded_full_address}"
+
+    @property
+    def representative_image(self):
+        return self.apartment_set.exclude(image=None).first().picture_url
+
+    @property
+    def representative_image_or_placeholder(self):
+        image = self.representative_image
+        return image if image is not None else "/static/img/no_img.png"
+
+    @property
+    def rent_price_for_display(self):
+        count = self.apartment_set.count()
+        if count == 0:
+            return None
+        elif count == 1:
+            return self.apartment_set.first().rent_price_for_display
+        else:
+            minimum = f"{self.apartment_set.order_by('rent_price')[0].rent_price:.0f}"
+            maximum = f"{self.apartment_set.order_by('-rent_price')[0].rent_price:.0f}"
+            return f"${minimum} - {maximum}"
 
     def avg_rate(self):
         review_sum = 0
@@ -108,3 +131,26 @@ class Apartment(models.Model):
     @property
     def rent_price_for_display(self):
         return f"${self.rent_price}"
+
+    @property
+    def picture_url(self):
+        if not self.image:
+            return None
+        elif "http" not in self.image.url:
+            return self.image.url
+        else:
+            return self.image
+
+
+class ClaimRequest(models.Model):
+    user = models.ForeignKey("mainapp.SiteUser", null=True, on_delete=models.CASCADE)
+    apartment = models.ForeignKey(
+        Apartment, null=True, on_delete=models.CASCADE, related_name="claim_set"
+    )
+    request_type = models.CharField(
+        max_length=100, choices=[("tenant", "Tenant"), ("landlord", "Landlord")]
+    )
+    note = models.TextField()
+    access_granted = models.BooleanField(default=False)
+    allow_token = models.UUIDField(default=uuid.uuid4, editable=False)
+    deny_token = models.UUIDField(default=uuid.uuid4, editable=False)

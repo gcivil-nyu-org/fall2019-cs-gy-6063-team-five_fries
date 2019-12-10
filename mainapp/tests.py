@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
 
-# from django.contrib.auth.models import User
 from location.models import Location, Apartment
 from review.models import Review
 from .models import SiteUser

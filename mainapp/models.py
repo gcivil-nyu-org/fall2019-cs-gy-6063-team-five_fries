@@ -15,13 +15,5 @@ class SiteUser(AbstractUser):
 
     favorites = models.ManyToManyField(Location, related_name="favorited_by")
 
-    # @property
-    # def is_tenant(self):
-    #     return self.tenant_apartment_set.count() > 0
-
-    # @property
-    # def is_landlord(self, apt):
-    #     return apt.landlord.id == self.id
-
     def __str__(self):
         return self.username
