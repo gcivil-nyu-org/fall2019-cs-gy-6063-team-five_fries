@@ -218,7 +218,10 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
                 query_params_location["locality__iexact"] = address.locality
                 # if the locality AND the zip code are in the orig_query
                 # search on locality, not city
-            elif address.city.lower() not in orig_query.lower():
+            elif (
+                address.city.replace(" ", "").lower()
+                not in orig_query.replace(" ", "").lower()
+            ):
                 query_params_location["locality__iexact"] = address.locality
             else:  # default to city
                 # to include "brooklyn", "Brooklyn" etc. (case-insensitive)

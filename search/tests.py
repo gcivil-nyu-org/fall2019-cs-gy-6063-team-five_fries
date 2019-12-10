@@ -559,3 +559,32 @@ class SearchQueryBuilderTests(TestCase):
         query_result_apa_dict = {"is_rented": False, "number_of_bed": "1"}
         self.assertDictEqual(q_loc, query_result_dict)
         self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_city_mismatch(self):
+        """
+        test building the address string with a mispelled city name
+        """
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "",
+                "city": "Bay Ridge",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Brooklyn",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr, orig_query="bayridge", min_price="", max_price="", bed_num=""
+        )
+        query_result_dict = {
+            "city__iexact": "Bay Ridge",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
