@@ -12,7 +12,7 @@ from unittest import mock
 
 import string
 
-from .models import Location, Apartment, ClaimRequest
+from .models import Location, Apartment, ClaimRequest, OtherImages
 from .forms import ClaimForm
 from mainapp.models import SiteUser
 from review.models import Review
@@ -1219,3 +1219,36 @@ class ClaimFormTests(TestCase):
             form.is_valid(),
             msg="ClaimForm should not be valid for tenant requests without a landlord",
         )
+
+    def test_picture_url_without_http(self):
+
+        loc, apt = create_location_and_apartment()
+
+        # Create a fake image
+        im = Image.new(mode="RGB", size=(200, 200))
+        im_io = BytesIO()
+        im.save(im_io, "JPEG")
+        im_io.seek(0)
+        mem_image = InMemoryUploadedFile(
+            im_io, None, "image.jpg", "image/jpeg", len(im_io.getvalue()), None
+        )
+
+        img = OtherImages.objects.create(apartment=apt, image=mem_image)
+
+        self.assertRegexpMatches(img.picture_url, r"/media/.+\.jpg")
+
+    def test_picture_url_with_http(self):
+        loc, apt = create_location_and_apartment()
+
+        http_image = "http://craigslist.org/example.jpg"
+
+        img = OtherImages.objects.create(apartment=apt, image=http_image)
+
+        self.assertEqual(img.picture_url, "http://craigslist.org/example.jpg")
+
+    def test_picture_url_without_img(self):
+        loc, apt = create_location_and_apartment()
+
+        img = OtherImages.objects.create(apartment=apt)
+
+        self.assertEqual(img.picture_url, None)
