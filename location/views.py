@@ -59,8 +59,6 @@ def apartment_detail_view(request, pk, apk):
     if apt:
         zip_code = apt.location.zipcode
 
-    # TODO use no_matches for zipcodes that have no data in 311 but apartments available
-
     results_311 = {}
     timeout = False
     if zip_code:
@@ -90,8 +88,6 @@ def apartment_complaints(request, pk, apk):
     zip_code = None
     if apt:
         zip_code = apt.location.zipcode
-
-    # TODO use no_matches for zipcodes that have no data in 311 but apartments available
 
     results_311 = {}
     timeout = False

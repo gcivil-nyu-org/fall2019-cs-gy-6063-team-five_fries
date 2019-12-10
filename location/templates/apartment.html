@@ -33,7 +33,7 @@
     <div class="row wow fadeIn">
 
       <!--Grid column-->
-      <div class="col-sm-6">
+      <div class="col-sm-6 mb-4">
 
       {% if apt.image %}
           <img src="{{ apt.picture_url }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'" data-toggle="modal" data-target=".carouselModalControls">
@@ -261,7 +261,7 @@
 
 
       <!--Grid column-->
-      <div class="col-sm-3">
+      <div class="col-sm-3 mb-4">
 
         {% for result in results_311.stats %}
             {% if result.complaint_type == "Noise" %}
@@ -329,7 +329,7 @@
     </div>
 
       <!--Grid column-->
-      <div class="col-sm-3">
+      <div class="col-sm-3 mb-4">
 
         {% for result in results_311.stats %}
             {% if result.complaint_type == "Parking" %}
