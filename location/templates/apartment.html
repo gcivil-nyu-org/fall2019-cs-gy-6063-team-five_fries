@@ -32,6 +32,22 @@
       {% else %}
           <img src="/static/img/no_img.png" class="card-img-top contain" alt="apartment image" data-toggle="modal" data-target=".carouselModalControls">
       {% endif %}
+          <div> <br><br> </div>
+          <div class="carousel slide carousel-fade carousel-thumbnails">
+              <ol class="carousel-indicators">
+                  {% if apt.otherimages_set %}
+                  {% for image in apt.otherimages_set.all %}
+                  <li>
+                      <img class="d-block w-100" src="{{ image.picture_url }}" alt="..." data-toggle="modal" data-target=".carouselModalControls">
+                  </li>
+                  {% endfor %}
+                  {% else %}
+                  <li>
+                      <img class="d-block w-100" src="/static/img/no_apa_pic.jpg" alt="..." data-toggle="modal" data-target=".carouselModalControls">
+                  </li>
+                  {% endif %}
+              </ol>
+          </div>
 
           <div class="modal fade carouselModalControls" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-lg">
