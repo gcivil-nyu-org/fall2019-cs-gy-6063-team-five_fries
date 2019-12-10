@@ -37,37 +37,65 @@ $(document).ready(function(){
                     <!--Card-->
                     <div class="card shadow">
                         <!--Card content-->
-                        {% if result.status == "Closed" %}
+                        {% if result.status|lower == "closed" %}
                             <div class="card-body white-text bg-success">
                         {% else %}
                             <div class="card-body white-text bg-danger">
                         {% endif %}
                         <!--Title-->
-                        <h4 class="card-title">{{ result.complaint_type }}</h4>
-                        <span class="badge blue mr-1 black-text">{{ result.status }}</span><hr>
+                        <h4 class="card-title">
+                            {% if result.complaint_type|lower == "nan"  %}
+                                N/A
+                            {% else %}
+                                {{ result.complaint_type }}
+                            {% endif %}
+                        </h4>
+                        <span class="badge blue mr-1 black-text">
+                            {% if result.status|lower == "nan"  %}
+                                N/A
+                            {% else %}
+                                {{ result.status }}
+                            {% endif %}
+                        </span><hr>
 
                         <!--Text-->
 
                         <div class="text-center">
-                            <h5>{{ result.created_date|slice:":10" }}</h5>
+                            {% if result.created_date|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.created_date|slice:":10" }}</h5>
+                            {% endif %}
                         <p>Date Created</p>
                         </div>
                         <hr>
 
                         <div class="text-center">
-                            <h5>{{ result.city }}</h5>
+                            {% if result.city|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.city }}</h5>
+                            {% endif %}
                         <p>City</p>
                         </div>
                         <hr>
 
                         <div class="text-center">
-                            <h5>{{ result.incident_address }}</h5>
+                            {% if result.incident_address|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.incident_address }}</h5>
+                            {% endif %}
                         <p>Address</p>
                         </div>
                         <hr>
 
                         <div class="text-center">
-                            <h5>{{ result.descriptor }}</h5>
+                            {% if result.descriptor|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.descriptor }}</h5>
+                            {% endif %}
                         <p>Descriptor</p>
                         </div>
                         <hr>
