@@ -27,13 +27,19 @@
     border: 1px solid rgba(0,0,0,.125);
 }
 
+.vertical-centered {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+}
 </style>
 {% endblock %}
 {% block content %}
 <br>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col col-7 " style="max-width:40%">
+        <!--<div class="col col-7 " style="max-width:40%">-->
+        <div class="col col-7 ">
             <h1>Account</h1>
             <ul class="list-group location-results">
                 <li class="list-group-item">Username: {{ user.username }}</li>
@@ -46,13 +52,42 @@
                 <li class="list-group-item">Work location: {{ user.work_location }}</li>
             </ul>
         </div>
-        <div class="col">
+        <div class="col col-5">
         {% if user.review_set %}
             <h1>Submitted Reviews</h1>
 
             <div class="mb-3 text-center location-results">
                 {% for review in user.review_set.all %}
-                <div class="card mb-4 shadow-sm "style="max-width: 35rem;">
+
+                <div class="card mb-4 shadow-sm shadow rounded-corner mr-2" style="max-width: 27rem;">
+                    <div class="card-header vertical-centered">
+                        <div>{{ review.user }}</div>
+                        <div>
+                            {% for idx in '12345' %}
+                            {% if forloop.counter <= review.rating %}
+                            <span class="fa fa-star checked"></span>
+                            {% else %}
+                            <span class="fa fa-star"></span>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-body vertical-centered">
+                        <h5 class="card-title price-card-title"></h5>
+
+                        <ul cclass="list-unstyled mt-3 mb-4">
+                            <li>{{ review.content }}</li>
+                        </ul>
+
+                        <h4 class="mb-0">
+                            <small class="blockquote-footer" style="font-size: x-small">
+                                <cite>{{ review.time }}</cite>
+                            </small>
+                        </h4>
+                    </div>
+                </div>
+
+                {% comment %} <div class="card mb-4 shadow-sm "style="max-width: 35rem;">
                     <div class="card-header">
                         <ul class="list-unstyled">
                             <a href="{% url 'location' review.location.id %}">{{ review.location.address }}</a>
@@ -77,7 +112,7 @@
                             <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
                         </h4>
                     </div>
-                </div>
+                </div> {% endcomment %}
                 {% endfor %}
             </div>
         {% endif %}

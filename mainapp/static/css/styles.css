@@ -65,7 +65,7 @@ footer {
 
 .location-results{
     height: 50vh;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .rounded-corner {
