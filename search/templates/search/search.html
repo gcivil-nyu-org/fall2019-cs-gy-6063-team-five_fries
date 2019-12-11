@@ -154,29 +154,6 @@
 
     </div>
 
-<<<<<<< HEAD
-    {% if search_data.stats %}
-    <p>
-        <hr class="mt-0 mb-2 mt-2">
-        <div class="horizontal-list">
-        <h5>Complaints Level:</h5>
-        <span style="margin-left: 0.5rem; color: {{search_data.css_color_for_complaint_level}};">
-            {{ search_data.description_for_complaint_level }}
-        </span>
-        <ul id="stats-list" class="horizontal-list">
-            {% for key, percentage in search_data.stats %}
-            <li>
-                <span>{{ key }} </span><div class="meter"><span style="width: {{ percentage }}%"></span></div>
-            </li>
-            {% endfor %}
-        </ul>
-        <a href="{% url 'data_311'%}?zip_code={{zipcode}}">See more</a>
-        </div>
-    </p>
-    {% endif %}
-
-=======
->>>>>>> Created New pull request for styling search page
     <div>
 
 
