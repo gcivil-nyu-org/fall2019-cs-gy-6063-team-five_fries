@@ -208,7 +208,7 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
     elif address:
         # filter based on existence of locations with the specified address
         if address.street:
-            query_params_location["address__iexact"] = address.street
+            query_params_location["address__icontains"] = address.street
         if address.city or address.locality:
             if (
                 address.city
@@ -216,14 +216,11 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
                 and address.locality.lower() in orig_query.lower()
             ):
                 query_params_location["locality__iexact"] = address.locality
-                # if the locality AND the zip code are in the orig_query
-                # search on locality, not city
             elif (
-                address.city.replace(" ", "").lower()
-                not in orig_query.replace(" ", "").lower()
-            ):
-                query_params_location["locality__iexact"] = address.locality
-            else:  # default to city
+                address.city
+                and address.city.replace(" ", "").lower()
+                in orig_query.replace(" ", "").lower()
+            ):  # default to city
                 # to include "brooklyn", "Brooklyn" etc. (case-insensitive)
                 query_params_location["city__iexact"] = address.city
         if address.state:
