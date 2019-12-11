@@ -5,6 +5,11 @@ from . import views
 urlpatterns = [
     path("<int:pk>/", views.LocationView.as_view(), name="location"),
     path("<int:pk>/apartment/<int:apk>", views.apartment_detail_view, name="apartment"),
+    path(
+        "<int:pk>/apartment/<int:apk>/complaints",
+        views.apartment_complaints,
+        name="complaints",
+    ),
     path("<int:pk>/apartment/<int:apk>/claim", views.claim_view, name="claim"),
     path(
         "<int:pk>/apartment/<int:apk>/grant/<int:id>/<uuid:token>",

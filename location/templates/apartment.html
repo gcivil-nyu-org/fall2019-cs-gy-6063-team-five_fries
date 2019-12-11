@@ -14,18 +14,26 @@
 
 {% load crispy_forms_tags %}
 
+{% block script %}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+  integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+{% endblock %}
+
 {% block content %}
+
 
 <!--Main layout-->
 <main class="mt-5 pt-4">
 
+
   <div class="container dark-grey-text mt-5">
+
 
     <!--Grid row-->
     <div class="row wow fadeIn">
 
       <!--Grid column-->
-      <div class="col-md-6 mb-4">
+      <div class="col-sm-6 mb-4">
 
       {% if apt.image %}
           <img src="{{ apt.picture_url }}" class="card-img-top contain" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'" data-toggle="modal" data-target=".carouselModalControls">
@@ -107,12 +115,6 @@
               </div>
         </div>
 
-      </div>
-      <!--Grid column-->
-
-      <!--Grid column-->
-      <div class="col-md-6 mb-4">
-
         <!--Content-->
         <div class="p-4">
           <p class="lead font-weight-bold">
@@ -158,6 +160,7 @@
             </a>
           </p>
           {% endif %}-->
+
 
           <form method="POST" action="{% url 'contact_landlord' pk=apt.location.id apk=apt.id %}">
               {% csrf_token %}
@@ -238,6 +241,7 @@
                   </div>
               </div>
           </form>
+        <br>
 
         {% if messages %}
           {% for message in messages %}
@@ -255,10 +259,140 @@
       </div>
       <!--Grid column-->
 
-    </div>
-    <!--Grid row-->
 
-    <hr>
+      <!--Grid column-->
+      <div class="col-sm-3 mb-4">
+
+        {% for result in results_311.stats %}
+            {% if result.complaint_type == "Noise" %}
+
+                <a style="text-decoration: None" href="{% url 'complaints' pk=apt.location.id apk=apt.id %}">
+                <!--Card-->
+                <div class="card shadow">
+
+                <!--Card image-->
+                <div class="view overlay">
+                  {% if result.complaint_type == "Parking" %}
+                      <img src="/static/img/parking2.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
+                      <img src="/static/img/noise_low.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
+                      <img src="/static/img/noise_high.jpg" class="img-fluid cover2" alt="">
+                  {% endif %}
+                </div>
+
+                {% if result.complaint_level <= 2 %}
+                <div class="card-body white-text" style="background-color:green">
+                {% else %}
+                <div class="card-body white-text" style="background-color:#ff0b00db">
+                {% endif %}
+
+                <!--Title-->
+                <h5 class="card-title text-center">{{ result.complaint_type }} Complaints</h5>
+                <!--Text-->
+                <p class="mb-0 card-text">
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.complaint_level }}</h5>
+                    <p class="mb-0">Complaint Level (0-5)</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.percentage_complaints_closed }} %</h5>
+                    <p class="mb-0">Complaints Closed</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.total_complaints_query_zip }}</h5>
+                    <p class="mb-0">Total Complaints</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.closed_complaints_query_zip }}</h5>
+                    <p class="mb-0">Closed Complaints</p>
+                  </div>
+
+                </p>
+
+                </div>
+                <!-- Card -->
+                </a>
+            {% endif %}
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+      <!--Grid column-->
+      <div class="col-sm-3 mb-4">
+
+        {% for result in results_311.stats %}
+            {% if result.complaint_type == "Parking" %}
+
+                <a style="text-decoration: None" href="{% url 'complaints' pk=apt.location.id apk=apt.id %}">
+                <!--Card-->
+                <div class="card shadow">
+
+                <!--Card image-->
+                <div class="view overlay">
+                  {% if result.complaint_type == "Parking" %}
+                      <img src="/static/img/parking2.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level <= 2 %}
+                      <img src="/static/img/noise_low.jpg" class="img-fluid cover2" alt="">
+                  {% elif result.complaint_type == "Noise" and result.complaint_level > 2 %}
+                      <img src="/static/img/noise_high.jpg" class="img-fluid cover2" alt="">
+                  {% endif %}
+                </div>
+
+                {% if result.complaint_level <= 2 %}
+                <div class="card-body white-text" style="background-color:green">
+                {% else %}
+                <div class="card-body white-text" style="background-color:#ff0b00db">
+                {% endif %}
+
+                <!--Title-->
+                <h5 class="card-title text-center">{{ result.complaint_type }} Complaints</h5>
+                <!--Text-->
+                <p class="mb-0 card-text">
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.complaint_level }}</h5>
+                    <p class="mb-0">Complaint Level (0-5)</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.percentage_complaints_closed }} %</h5>
+                    <p class="mb-0">Complaints Closed</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.total_complaints_query_zip }}</h5>
+                    <p class="mb-0">Total Complaints</p>
+                  </div>
+                  <hr>
+
+                  <div class="mb-0 text-center">
+                    <h5 class="mb-0">{{ result.closed_complaints_query_zip }}</h5>
+                    <p class="mb-0">Closed Complaints</p>
+                  </div>
+
+                </p>
+
+                </div>
+                <!-- Card -->
+                </a>
+            {% endif %}
+
+        {% endfor %}
+
+      </div>
   </div>
 </main>
 {% endblock %}

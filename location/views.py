@@ -1,9 +1,7 @@
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.conf import settings
 from django.shortcuts import render, get_object_or_404
-from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
 from django.template.loader import get_template
 from django.contrib import messages
@@ -11,6 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.shortcuts import get_current_site
 from django.forms import modelformset_factory
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .models import Location, Apartment, ClaimRequest, OtherImages
 from review.models import Review
@@ -25,6 +24,11 @@ from .forms import (
 from external.cache.zillow import refresh_zillow_housing_if_needed
 from external.googleapi.fetch import fetch_geocode
 from external.googleapi import g_utils
+from external.cache.nyc311 import refresh_nyc311_statistics_if_needed
+from external.models import NYC311Statistics
+from external.nyc311 import get_311_data
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class LocationView(generic.DetailView):
@@ -50,6 +54,20 @@ def apartment_detail_view(request, pk, apk):
     apt = Apartment.objects.get(location__id=pk, id=apk)
     contact_landlord_form = ContactLandlordForm()
 
+    zip_code = None
+    if apt:
+        zip_code = apt.location.zipcode
+
+    results_311 = {}
+    timeout = False
+    if zip_code:
+        # Get 311 statistics
+        try:
+            refresh_nyc311_statistics_if_needed(zip_code)
+            results_311["stats"] = NYC311Statistics.objects.filter(zipcode=zip_code)
+        except TimeoutError:
+            timeout = True
+
     show_claim_button = not apt.tenant or not apt.landlord
     return render(
         request,
@@ -58,7 +76,44 @@ def apartment_detail_view(request, pk, apk):
             "apt": apt,
             "show_claim_button": show_claim_button,
             "contact_landlord_form": contact_landlord_form,
+            "results_311": results_311,
+            "timeout": timeout,
         },
+    )
+
+
+def apartment_complaints(request, pk, apk):
+    apt = Apartment.objects.get(location__id=pk, id=apk)
+    zip_code = None
+    if apt:
+        zip_code = apt.location.zipcode
+
+    results_311 = {}
+    timeout = False
+    if zip_code:
+        # Get 311 raw complaints
+        try:
+            results_311["complaints"] = get_311_data(str(zip_code))
+        except TimeoutError:
+            timeout = True
+
+    # paginate the search location results
+    page = request.GET.get("page", 1)
+
+    paginator = Paginator(results_311["complaints"], 6)
+    try:
+        complaints_page = paginator.page(page)
+    except PageNotAnInteger:
+        complaints_page = paginator.page(1)
+    except EmptyPage:
+        complaints_page = paginator.page(paginator.num_pages)
+
+    results_311["complaints_page"] = complaints_page
+
+    return render(
+        request,
+        "complaints.html",
+        {"results_311": results_311, "timeout": timeout, "zip_code": zip_code},
     )
 
 

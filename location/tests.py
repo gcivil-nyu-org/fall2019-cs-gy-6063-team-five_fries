@@ -18,6 +18,7 @@ from mainapp.models import SiteUser
 from review.models import Review
 from external.zillow.stub import fetch_zillow_housing
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
+from external.nyc311.stub import fetch_311_data as fetch_311_data_stub
 
 
 def create_location_and_apartment(
@@ -722,6 +723,17 @@ class LocationViewTests(TestCase):
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
         self.assertIn("Interested?", content)
+
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
+    def test_apartment_complaints(self):
+        """
+        Tests the apartment complaints page
+        """
+        loc, apa = create_location_and_apartment()
+        response = self.client.post(
+            reverse("complaints", kwargs={"pk": loc.id, "apk": apa.id}), {}
+        )
+        self.assertContains(response, "311 Data Complaints")
 
 
 @mock.patch("location.views.settings", mock.MagicMock(return_value="site@mail.com"))

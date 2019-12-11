@@ -164,7 +164,7 @@
         <span style="margin-left: 0.5rem; color: {{search_data.css_color_for_complaint_level}};">
             {{ search_data.description_for_complaint_level }}
         </span>
-        <ul id="stats-list" class="horizontal-list" stype="display: inline-block">
+        <ul id="stats-list" class="horizontal-list">
             {% for key, percentage in search_data.stats %}
             <li>
                 <span>{{ key }} </span><div class="meter"><span style="width: {{ percentage }}%"></span></div>
