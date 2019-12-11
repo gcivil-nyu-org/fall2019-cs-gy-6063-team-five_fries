@@ -46,7 +46,6 @@ class SearchIndexViewTests(TestCase):
         """
         response = self.client.get(reverse("search"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Search All Locations")
         self.assertContains(response, "Address")
         self.assertContains(response, "Go")
 
@@ -58,7 +57,6 @@ class SearchIndexViewTests(TestCase):
         """
         response = self.client.get("/search/?query=10000")
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Search results")
         self.assertContains(response, "Address:")
 
     @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data)
