@@ -1,5 +1,19 @@
 {% extends 'base.html' %}
 
+{% block breadcrumbs %}
+<a href="{% url 'search' %}">Search</a>
+<a href="{% url 'location' pk=apt.location.id %}">{{ apt.location.full_address }}</a>
+<a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
+  {% if apt.suite_num %}
+  {{ apt.suite_num }}
+  {% else %}
+  #
+  {% endif %}
+</a>
+<span>Complaints</span>
+
+{% endblock %}
+
 {% block header %}
 {% load custom_tags %}
 {% endblock %}
