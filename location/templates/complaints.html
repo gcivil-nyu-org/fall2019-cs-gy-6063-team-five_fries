@@ -4,14 +4,14 @@
 <a href="{% url 'search' %}">Search</a>
 <a href="{% url 'location' pk=apt.location.id %}">{{ apt.location.full_address }}</a>
 <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
-<span>
   {% if apt.suite_num %}
   {{ apt.suite_num }}
   {% else %}
   #
   {% endif %}
-</span>
 </a>
+<span>Complaints</span>
+
 {% endblock %}
 
 {% block header %}
