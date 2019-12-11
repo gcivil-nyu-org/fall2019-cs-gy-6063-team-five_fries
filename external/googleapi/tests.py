@@ -557,6 +557,7 @@ class GUtilsTests(TestCase):
         """
         search_string = "123 USA Street, Anytown, Anystate 00000"
         search_string_norm = " ".join(search_string.split()).lower()
+        search_string_norm += " ny"
         mock_fetch.return_value = None
 
         input = normalize_us_address(search_string)

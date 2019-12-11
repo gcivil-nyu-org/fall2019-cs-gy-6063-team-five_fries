@@ -40,6 +40,13 @@ def normalize_us_address(address) -> Optional[Address]:
             longitude=cache.longitude,
         )
 
+    if (
+        "ny" not in address.lower()
+        or "new york" not in address.lower()
+        or "newyork" not in address.lower()
+    ):
+        address += " ny"
+
     response_list = fetch_geocode(address, region="us")
 
     if not response_list:

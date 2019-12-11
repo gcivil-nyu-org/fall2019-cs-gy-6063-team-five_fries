@@ -299,6 +299,78 @@ class SearchQueryBuilderTests(TestCase):
         self.assertDictEqual(q_loc, query_result_dict)
         self.assertDictEqual(q_apa, query_result_apa_dict)
 
+    def test_build_query_locality_mismatch(self):
+        """
+        Tests the return value of build_search_query when
+        the address locality is in the original query but
+        the locality has spacing issues
+        """
+
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "",
+                "city": "Staten Island",
+                "state": "NY",
+                "latitude": 40.6195067,
+                "longitude": -73.9859414,
+                "locality": "Staten Island",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="StatenIsland, NY",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "locality__iexact": "Staten Island",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_locality_mismatch_no_state(self):
+        """
+        Tests the return value of build_search_query when
+        the address locality is in the original query but
+        the locality has spacing issues and there is no state
+        """
+
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "",
+                "city": "Staten Island",
+                "state": "NY",
+                "latitude": 40.6195067,
+                "longitude": -73.9859414,
+                "locality": "Staten Island",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="StatenIsland",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "locality__iexact": "Staten Island",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
     def test_build_query_if_address(self):
         """
         test building the address string
@@ -323,7 +395,7 @@ class SearchQueryBuilderTests(TestCase):
             bed_num="",
         )
         query_result_dict = {
-            "address__iexact": "28-15 34th street",
+            "address__icontains": "28-15 34th street",
             "city__iexact": "Long Island City",
             "state__iexact": "NY",
             "zipcode": "11103",
@@ -358,7 +430,7 @@ class SearchQueryBuilderTests(TestCase):
             bed_num="",
         )
         query_result_dict = {
-            "address__iexact": "28-15 34th street",
+            "address__icontains": "28-15 34th street",
             "locality__iexact": "Queens",
             "state__iexact": "NY",
             "zipcode": "11103",
@@ -393,7 +465,7 @@ class SearchQueryBuilderTests(TestCase):
             bed_num="",
         )
         query_result_dict = {
-            "address__iexact": "28-15 34th street",
+            "address__icontains": "28-15 34th street",
             "city__iexact": "Long Island City",
             "state__iexact": "NY",
             "zipcode": "11103",
@@ -429,7 +501,7 @@ class SearchQueryBuilderTests(TestCase):
             bed_num="",
         )
         query_result_dict = {
-            "address__iexact": "28-15 34th street",
+            "address__icontains": "28-15 34th street",
             "city__iexact": "Long Island City",
             "state__iexact": "NY",
             "zipcode": "11103",
@@ -465,7 +537,7 @@ class SearchQueryBuilderTests(TestCase):
             bed_num="",
         )
         query_result_dict = {
-            "address__iexact": "28-15 34th street",
+            "address__icontains": "28-15 34th street",
             "city__iexact": "Long Island City",
             "state__iexact": "NY",
             "zipcode": "11103",
@@ -507,7 +579,7 @@ class SearchQueryBuilderTests(TestCase):
             bed_num="1",
         )
         query_result_dict = {
-            "address__iexact": "28-15 34th street",
+            "address__icontains": "28-15 34th street",
             "city__iexact": "Long Island City",
             "state__iexact": "NY",
             "zipcode": "11103",
@@ -549,7 +621,7 @@ class SearchQueryBuilderTests(TestCase):
             bed_num="1",
         )
         query_result_dict = {
-            "address__iexact": "28-15 34th street",
+            "address__icontains": "28-15 34th street",
             "city__iexact": "Long Island City",
             "state__iexact": "NY",
             "zipcode": "11103",
@@ -557,5 +629,101 @@ class SearchQueryBuilderTests(TestCase):
             "apartment_set__number_of_bed": "1",
         }
         query_result_apa_dict = {"is_rented": False, "number_of_bed": "1"}
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_city_mismatch(self):
+        """
+        test building the address string with a mispelled city name
+        """
+        addr = Address.from_dict(
+            {
+                "street": "",
+                "zipcode": "",
+                "city": "Bay Ridge",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Brooklyn",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr, orig_query="bayridge", min_price="", max_price="", bed_num=""
+        )
+        query_result_dict = {
+            "city__iexact": "Bay Ridge",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_street_state(self):
+        """
+        test building the location query with only the street name
+        and state
+        """
+        addr = Address.from_dict(
+            {
+                "street": "Herkimer Street",
+                "zipcode": "",
+                "city": "Brooklyn",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Brooklyn",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="Herkimer Street, NY",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "address__icontains": "Herkimer Street",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
+        self.assertDictEqual(q_loc, query_result_dict)
+        self.assertDictEqual(q_apa, query_result_apa_dict)
+
+    def test_build_query_street_only(self):
+        """
+        test building the location query with only the street name
+        """
+        addr = Address.from_dict(
+            {
+                "street": "Herkimer Street",
+                "zipcode": "",
+                "city": "Brooklyn",
+                "state": "NY",
+                "latitude": 0.0,
+                "longitude": 0.0,
+                "locality": "Brooklyn",
+            }
+        )
+
+        q_loc, q_apa = build_search_query(
+            address=addr,
+            orig_query="Herkimer Street",
+            min_price="",
+            max_price="",
+            bed_num="",
+        )
+        query_result_dict = {
+            "address__icontains": "Herkimer Street",
+            "state__iexact": "NY",
+            "apartment_set__is_rented": False,
+        }
+        query_result_apa_dict = {"is_rented": False}
+
         self.assertDictEqual(q_loc, query_result_dict)
         self.assertDictEqual(q_apa, query_result_apa_dict)

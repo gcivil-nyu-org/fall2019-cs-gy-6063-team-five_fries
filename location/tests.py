@@ -12,12 +12,13 @@ from unittest import mock
 
 import string
 
-from .models import Location, Apartment, ClaimRequest
+from .models import Location, Apartment, ClaimRequest, OtherImages
 from .forms import ClaimForm
 from mainapp.models import SiteUser
 from review.models import Review
 from external.zillow.stub import fetch_zillow_housing
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
+from external.nyc311.stub import fetch_311_data as fetch_311_data_stub
 
 
 def create_location_and_apartment(
@@ -215,6 +216,8 @@ class LocationViewTests(TestCase):
             "number_of_bed": 1,
             "description": "This is a test",
             "image": mem_image,
+            "form-TOTAL_FORMS": 3,
+            "form-INITIAL_FORMS": 0,
         }
 
         response = self.client.post(reverse("apartment_upload"), post_data)
@@ -260,6 +263,8 @@ class LocationViewTests(TestCase):
             "number_of_bed": 1,
             "description": "This is a test",
             "image": mem_image,
+            "form-TOTAL_FORMS": 3,
+            "form-INITIAL_FORMS": 0,
         }
 
         self.client.post(reverse("apartment_upload"), post_data)
@@ -303,6 +308,8 @@ class LocationViewTests(TestCase):
             "number_of_bed": 1,
             "description": "This is a test",
             "image": mem_image,
+            "form-TOTAL_FORMS": 3,
+            "form-INITIAL_FORMS": 0,
         }
 
         response = self.client.post(reverse("apartment_upload"), post_data)
@@ -339,6 +346,8 @@ class LocationViewTests(TestCase):
             "number_of_bed": 1,
             "description": "This is a test",
             "image": mem_image,
+            "form-TOTAL_FORMS": 3,
+            "form-INITIAL_FORMS": 0,
         }
         response = self.client.post(reverse("apartment_upload"), post_data)
         self.assertEqual(response.status_code, 200)
@@ -374,6 +383,8 @@ class LocationViewTests(TestCase):
             "number_of_bed": 1,
             "description": "This is a test",
             "image": mem_image,
+            "form-TOTAL_FORMS": 3,
+            "form-INITIAL_FORMS": 0,
         }
         response = self.client.post(reverse("apartment_upload"), post_data)
         self.assertEqual(response.status_code, 200)
@@ -712,6 +723,17 @@ class LocationViewTests(TestCase):
         soup = BeautifulSoup(response.content, "html.parser")
         content = soup.get_text()
         self.assertIn("Interested?", content)
+
+    @mock.patch("external.nyc311.fetch.fetch_311_data", fetch_311_data_stub)
+    def test_apartment_complaints(self):
+        """
+        Tests the apartment complaints page
+        """
+        loc, apa = create_location_and_apartment()
+        response = self.client.post(
+            reverse("complaints", kwargs={"pk": loc.id, "apk": apa.id}), {}
+        )
+        self.assertContains(response, "311 Data Complaints")
 
 
 @mock.patch("location.views.settings", mock.MagicMock(return_value="site@mail.com"))
@@ -1209,3 +1231,36 @@ class ClaimFormTests(TestCase):
             form.is_valid(),
             msg="ClaimForm should not be valid for tenant requests without a landlord",
         )
+
+    def test_picture_url_without_http(self):
+
+        loc, apt = create_location_and_apartment()
+
+        # Create a fake image
+        im = Image.new(mode="RGB", size=(200, 200))
+        im_io = BytesIO()
+        im.save(im_io, "JPEG")
+        im_io.seek(0)
+        mem_image = InMemoryUploadedFile(
+            im_io, None, "image.jpg", "image/jpeg", len(im_io.getvalue()), None
+        )
+
+        img = OtherImages.objects.create(apartment=apt, image=mem_image)
+
+        self.assertRegexpMatches(img.picture_url, r"/media/.+\.jpg")
+
+    def test_picture_url_with_http(self):
+        loc, apt = create_location_and_apartment()
+
+        http_image = "http://craigslist.org/example.jpg"
+
+        img = OtherImages.objects.create(apartment=apt, image=http_image)
+
+        self.assertEqual(img.picture_url, "http://craigslist.org/example.jpg")
+
+    def test_picture_url_without_img(self):
+        loc, apt = create_location_and_apartment()
+
+        img = OtherImages.objects.create(apartment=apt)
+
+        self.assertEqual(img.picture_url, None)

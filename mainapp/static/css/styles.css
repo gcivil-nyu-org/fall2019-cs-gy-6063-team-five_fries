@@ -65,7 +65,7 @@ footer {
 
 .location-results{
     height: 50vh;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .rounded-corner {
@@ -100,10 +100,20 @@ div.custom-file {
     color:#000!important;
 }
 
+.white-text{
+    color:white;
+}
+
 .cover {
     object-fit: cover;
     width: 100%;
     height: 20rem;
+}
+
+.cover2 {
+    object-fit: cover;
+    width: 100%;
+    height: 10rem;
 }
 
 .contain {

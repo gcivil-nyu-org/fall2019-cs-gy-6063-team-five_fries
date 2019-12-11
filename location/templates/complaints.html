@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% load custom_tags %}
+{% endblock %}
+
+{%  block script %}
+<script>
+$(document).ready(function(){
+  $("#complaints_button").click(function(){
+    $("#complaints").toggle();
+  });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<h2 class="text-center">311 Data Complaints for Zip Code: {{ zip_code }}</h2>
+<hr>
+    {% if timeout %}
+        <p style="color:red">Timeout occurred.</p>
+    {% elif no_matches %}
+        <p style="color:red">No matches were found.</p>
+    {% else %}
+        {% if results_311.complaints %}
+            <div>
+                <!--Section: Cards-->
+                <section class="text-center">
+                {% for result in results_311.complaints_page %}
+                    {% if forloop.counter|get_modulo:3 == 1 %}
+                    <!--Grid row-->
+                    <div class="row mb-4 wow fadeIn">
+                    {% endif %}
+
+                    <!--Grid column-->
+                    <div class="col-md-4 mb-4">
+                    <!--Card-->
+                    <div class="card shadow">
+                        <!--Card content-->
+                        {% if result.status|lower == "closed" %}
+                            <div class="card-body white-text bg-success">
+                        {% else %}
+                            <div class="card-body white-text bg-danger">
+                        {% endif %}
+                        <!--Title-->
+                        <h4 class="card-title">
+                            {% if result.complaint_type|lower == "nan"  %}
+                                N/A
+                            {% else %}
+                                {{ result.complaint_type }}
+                            {% endif %}
+                        </h4>
+                        <span class="badge blue mr-1 black-text">
+                            {% if result.status|lower == "nan"  %}
+                                N/A
+                            {% else %}
+                                {{ result.status }}
+                            {% endif %}
+                        </span><hr>
+
+                        <!--Text-->
+
+                        <div class="text-center">
+                            {% if result.created_date|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.created_date|slice:":10" }}</h5>
+                            {% endif %}
+                        <p>Date Created</p>
+                        </div>
+                        <hr>
+
+                        <div class="text-center">
+                            {% if result.city|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.city }}</h5>
+                            {% endif %}
+                        <p>City</p>
+                        </div>
+                        <hr>
+
+                        <div class="text-center">
+                            {% if result.incident_address|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.incident_address }}</h5>
+                            {% endif %}
+                        <p>Address</p>
+                        </div>
+                        <hr>
+
+                        <div class="text-center">
+                            {% if result.descriptor|lower == "nan"  %}
+                                <h5>N/A</h5>
+                            {% else %}
+                                <h5>{{ result.descriptor }}</h5>
+                            {% endif %}
+                        <p>Descriptor</p>
+                        </div>
+                        <hr>
+
+                        </div>
+                    </div>
+                    <!--/.Card-->
+                    </div>
+                    <!--Grid column-->
+                    {% if forloop.counter|get_modulo:3 == 0 %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+
+                </section>
+                <!--Section: Cards-->
+
+            </div>
+
+        <!-- Pagination -->
+        {% if results_311.complaints_page.has_other_pages %}
+          <ul class="pagination pg-gray">
+            {% if results_311.complaints_page.has_previous %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=results_311.complaints_page.previous_page_number %}">&laquo;</a></li>
+            {% else %}
+              <li class="disabled page-item"><span class="page-link">&laquo;</span></li>
+            {% endif %}
+            {% for i in results_311.complaints_page.paginator.page_range %}
+              {% if results_311.complaints_page.number == i %}
+                  <li class="active page-item"><a class="page-link">{{ i }}</a></li>
+              {% elif i > results_311.complaints_page.number|add:-3 and i < results_311.complaints_page.number|add:3 %}
+                  <li class="page-item"><a class="page-link" href="?{% query_transform page=i %}">{{ i }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            {% if results_311.complaints_page.has_next %}
+                <li class="page-item"><a class="page-link" href="?{% query_transform page=results_311.complaints_page.next_page_number %}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled page-item"><span class="page-link">&raquo;</span></li>
+            {% endif %}
+          </ul>
+        {% endif %}
+        {% endif %}
+    {% endif %}
+{% endblock %}
