@@ -729,7 +729,7 @@ class LocationViewTests(TestCase):
         """
         Tests the apartment complaints page
         """
-        loc, apa = self.create_location_and_apartment()
+        loc, apa = create_location_and_apartment()
         response = self.client.post(
             reverse("complaints", kwargs={"pk": loc.id, "apk": apa.id}), {}
         )
