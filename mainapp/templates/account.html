@@ -38,7 +38,6 @@
 <br>
 <div class="container">
     <div class="row justify-content-center">
-        <!--<div class="col col-7 " style="max-width:40%">-->
         <div class="col col-7 ">
             <h1>Account</h1>
             <ul class="list-group location-results">
@@ -86,33 +85,6 @@
                         </h4>
                     </div>
                 </div>
-
-                {% comment %} <div class="card mb-4 shadow-sm "style="max-width: 35rem;">
-                    <div class="card-header">
-                        <ul class="list-unstyled">
-                            <a href="{% url 'location' review.location.id %}">{{ review.location.address }}</a>
-                            <li>
-                            {% for idx in '12345' %}
-                                {% if forloop.counter <= review.rating %}
-                                    <span class="fa fa-star checked"></span>
-                                {% else %}
-                                    <span class="fa fa-star"></span>
-                                {% endif %}
-                            {% endfor %}
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title pricing-card-title">
-                        </h5>
-                        <ul class="list-unstyled mt-3 mb-4">
-                            <li>{{ review.content }}</li>
-                        </ul>
-                        <h4 class=" mb-0">
-                            <small class="blockquote-footer" style="font-size: x-small"><cite>{{ review.time }}</cite></small>
-                        </h4>
-                    </div>
-                </div> {% endcomment %}
                 {% endfor %}
             </div>
         {% endif %}
@@ -120,92 +92,51 @@
     </div>
 
     <!-- Tenant Apartments -->
-    <!--{% if user.tenant_apartment_set.count > 0 %}-->
         <!--<hr>-->
     <div class="accordion">
         <div class="card">
-        <div class="card-header" id="places-lived-header" data-toggle="collapse" data-target="#collapseLived" aria-expanded="false" aria-controls="collapseLived">
-            <h3 >
-                Places I live
-            </h3>
-        </div> <!--./card-header-->
-        <!--Section: Cards-->
-        <section class="text-center collapse" id="collapseLived" class="collapse" aria-labelledby="places-lived-header" data-parent="#accordion">
-        {% for apt in user.tenant_apartment_set.all %}
-            {% comment %} {% cycle 'odd' 'even' as odd_even silent %} {% endcomment %}
+            <div class="card-header" id="places-lived-header" data-toggle="collapse" data-target="#collapseLived" aria-expanded="false" aria-controls="collapseLived">
+                <h3 >
+                    Places I live
+                </h3>
+            </div> <!--./card-header-->
+            <!--Section: Cards-->
+            <section class="text-center collapse" id="collapseLived" class="collapse" aria-labelledby="places-lived-header" data-parent="#accordion">
+            {% for apt in user.tenant_apartment_set.all %}
             {% if forloop.counter|get_modulo:3 == 1 %}
-            <!--Grid row-->
-            <div class="row mb-4 wow fadeIn">
+                <!--Grid row-->
+                <div class="row mb-4 wow fadeIn">
             {% endif %}
-            <!--Grid column-->
-            <div class="col-md-4 mb-4">
-            <!--Card-->
-
-            <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}" style="text-decoration: none;">
-                <div class="card h-100 shadow rounded-corner">
-                    <img src="{{ apt.picture_url }}" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
-                    <hr style="margin: 0;">
-                    <div class="card-body" style="text-align: left; color: black;">
-                        {% comment %} <h5 class="card-title">{{ apt.rent_price_for_display }}</h5>
-                        <p class="card-text">{{ apt.location.full_address}}</p> {% endcomment %}
-                        <h5 class="card-title">{{ apt.location.full_address }}</h5>
-                        
+                <!--Grid column-->
+                <div class="col-md-4 mb-4">
+                <!--Card-->
+                <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}" style="text-decoration: none;">
+                    <div class="card h-100 shadow rounded-corner">
+                        <img src="{{ apt.picture_url }}" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
+                        <hr style="margin: 0;">
+                        <div class="card-body" style="text-align: left; color: black;">
+                            <h5 class="card-title">{{ apt.location.full_address }}</h5>
+                            
                         {% if apt.suite_num %}
-                        <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
+                            <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
                         {% endif %}
-                        <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
+                            <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
+                        </div>
                     </div>
-                </div>
-            </a>
-
-            <!--./Card-->
-            </div>
-            <!-- Grid Column -->
-            {% if forloop.counter|get_modulo:3 == 0 %}
-            </div>
-            {% endif %}
-
-            {% comment %} <div class="card">
-                <!--Card image-->
-                <div class="view overlay">
-                <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
-                {% if apt.image %}
-                    <img src="{{ apt.picture_url }} " class="card-img-top cover" alt="apartment image">
-                {% else %}
-                    <img src="/static/img/no_apa_pic.jpg" class="card-img-top cover" alt="apartment image">
-                {% endif %}
                 </a>
+
+                <!--./Card-->
                 </div>
-                <!--Card content-->
-                <div class="card-body">
-                <!--Title-->
-                <h4 class="card-title">{{ apt.location.full_address }}</h4>
-                <!--Text-->
-                <div class="mb-3">
-                    {%if apt.suite_num %} 
-                    <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
-                    {% endif %}
-                    <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
-                    <span class="badge green mr-1 black-text">Rent ($): {{ apt.rent_price }}</span>
-                </div>
-                </div>
+                <!-- Grid Column -->
+        {% if forloop.counter|get_modulo:3 == 0 %}
             </div>
-            <!--/.Card-->
-            </div>
-            <!--Grid column-->
-            {% if odd_even == "even" %}
-            </div>
-            {% endif %} {% endcomment %}
+        {% endif %}
         {% endfor %}
         </section>
-        </div> <!--end accordion card-->
+    </div> <!--end accordion card-->
         <!--Section: Cards-->
-   <!-- {% endif %} -->
-
-
 
     <!-- Landlord Apartments -->
-   <!-- {% if user.landlord_apartment_set.count > 0 %} -->
         <!--<hr>-->
     <div class="accordion">
         <div class="card">
@@ -231,10 +162,8 @@
                     <img src="{{ apt.picture_url }}" class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
                     <hr style="margin: 0;">
                     <div class="card-body" style="text-align: left; color: black;">
-                        {% comment %} <h5 class="card-title">{{ apt.rent_price_for_display }}</h5> {% endcomment %}
                         <h5 class="card-title">{{ apt.location.full_address }}</h5>
-                        <!--<p class="card-text">{{ apt.location.full_address}}</p>-->
-                        
+
                         {% if apt.suite_num %}
                         <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
                         {% endif %}
@@ -250,46 +179,6 @@
             {% if forloop.counter|get_modulo:3 == 0 %}
             </div>
             {% endif %}
-
-            {% comment %} {% cycle 'odd' 'even' as odd_even silent %}
-            {% if odd_even == "odd" %}
-            <!--Grid row-->
-            <div class="row mb-4 wow fadeIn">
-            {% endif %}
-            <!--Grid column-->
-            <div class="col-md-6 mb-4">
-            <!--Card-->
-            <div class="card">
-                <!--Card image-->
-                <div class="view overlay">
-                <a href="{% url 'apartment' pk=apt.location.id apk=apt.id %}">
-                {% if apt.image %}
-                    <img src="{{ apt.image.url }} " class="card-img-top cover" alt="apartment image" onerror="this.onerror=null; this.src='/static/img/no_img.png'">
-                {% else %}
-                    <img src="/static/img/no_img.png" class="card-img-top cover" alt="apartment image">
-                {% endif %}
-                </a>
-                </div>
-                <!--Card content-->
-                <div class="card-body">
-                <!--Title-->
-                <h4 class="card-title">{{ apt.location.full_address }}</h4>
-                <!--Text-->
-                <div class="mb-3">
-                    {% if apt.suite_num %}
-                    <span class="badge red mr-1 black-text">Suite: {{ apt.suite_num }}</span>
-                    {% endif %}
-                    <span class="badge blue mr-1 black-text">Bedrooms: {{ apt.number_of_bed }}</span>
-                    <span class="badge green mr-1 black-text">Rent ($): {{ apt.rent_price }}</span>
-                </div>
-                </div>
-            </div>
-            <!--/.Card-->
-            </div>
-            <!--Grid column-->
-            {% if odd_even == "even" %}
-            </div>
-            {% endif %} {% endcomment %}
         {% endfor %}
 
       <!-- Uncomment the following if you want to include pagination; could be useful on the search page as well
@@ -335,7 +224,6 @@
         </section>
         <!--Section: Cards-->
         </div> <!--end accordion card-->
-    <!--{% endif %}-->
     </div> <!--./accordion-->
 
 
