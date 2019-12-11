@@ -18,6 +18,7 @@ from mainapp.models import SiteUser
 from review.models import Review
 from external.zillow.stub import fetch_zillow_housing
 from external.googleapi.stub import fetch_geocode as fetch_geocode_stub
+from external.nyc311.stub import fetch_311_data as fetch_311_data_stub
 
 
 def create_location_and_apartment(
@@ -70,10 +71,6 @@ def create_claim_request(user, apartment, request_type="tenant"):
     return ClaimRequest.objects.create(
         user=user, apartment=apartment, request_type=request_type, note="Note"
     )
-
-from bs4 import BeautifulSoup
-from django.conf import settings
-from external.nyc311.stub import fetch_311_data as fetch_311_data_stub
 
 
 class LocationModelTests(TestCase):
