@@ -3,7 +3,7 @@ import requests
 from django.shortcuts import render
 from external.craigslist import fetch_craigslist_housing
 from external.googleapi.fetch import fetch_reverse_geocode
-from location.models import Location
+from location.models import Location, OtherImages
 from location.models import Apartment
 from datetime import datetime
 from celery import shared_task
@@ -72,9 +72,15 @@ def bckgrndfetch(city_list, limit):
             last_updated = r["last_updated"]
             bedrooms = r["bedrooms"]
 
-            image_url, description = DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
+            other_images, image_url, description = (
+                [],
+                DEFAULT_IMG_URL,
+                DEFAULT_DESCRIPTION,
+            )
             try:
-                image_url, description = get_img_url_and_description(r["url"])
+                other_images, image_url, description = get_img_url_and_description(
+                    r["url"]
+                )
             except requests.exceptions.ConnectionError:
                 pass
 
@@ -89,6 +95,9 @@ def bckgrndfetch(city_list, limit):
 
                     apartment.image = image_url
                     apartment.description = description
+                    for other_image in other_images:
+                        photo = OtherImages(apartment=apartment, image=other_image)
+                        photo.save()
 
                     apartment.rent_price = price
                     apartment.number_of_bed = bedrooms
@@ -171,6 +180,10 @@ def bckgrndfetch(city_list, limit):
                     c_id=c_id, location=loc
                 )
 
+                for other_image in other_images:
+                    photo = OtherImages(apartment=apartment, image=other_image)
+                    photo.save()
+
                 apartment.rent_price = price
                 apartment.image = image_url
                 apartment.description = description
@@ -188,6 +201,10 @@ def get_img_url_and_description(url):
     if result.status_code == 200:
         soup = BeautifulSoup(result.content, "html.parser")
         img_tag = soup.find_all("a", {"class": "thumb"})
+        other_images = []
+        for other_image in img_tag[1:]:
+            if other_image.get("href"):
+                other_images.append(other_image.get("href"))
 
         body = soup.find("section", id="postingbody")
         body_text = (
@@ -198,12 +215,12 @@ def get_img_url_and_description(url):
         description = "".join(body_text).strip()
 
         if len(img_tag) == 0 and description == "":
-            return DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
+            return [], DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
         elif len(img_tag) == 0:
-            return DEFAULT_IMG_URL, description
+            return [], DEFAULT_IMG_URL, description
         elif description == "":
-            return img_tag[0].get("href"), DEFAULT_DESCRIPTION
+            return other_images, img_tag[0].get("href"), DEFAULT_DESCRIPTION
         else:
-            return img_tag[0].get("href"), description
+            return other_images, img_tag[0].get("href"), description
     else:
-        return DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
+        return [], DEFAULT_IMG_URL, DEFAULT_DESCRIPTION
