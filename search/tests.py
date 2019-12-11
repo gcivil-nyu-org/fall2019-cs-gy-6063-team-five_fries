@@ -302,7 +302,8 @@ class SearchQueryBuilderTests(TestCase):
     def test_build_query_locality_mismatch(self):
         """
         Tests the return value of build_search_query when
-        the address locality is in the original query
+        the address locality is in the original query but
+        the locality has spacing issues
         """
 
         addr = Address.from_dict(
@@ -337,7 +338,8 @@ class SearchQueryBuilderTests(TestCase):
     def test_build_query_locality_mismatch_no_state(self):
         """
         Tests the return value of build_search_query when
-        the address locality is in the original query
+        the address locality is in the original query but
+        the locality has spacing issues and there is no state
         """
 
         addr = Address.from_dict(
