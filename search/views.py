@@ -201,6 +201,10 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
     query_params_location = {}
     query_params_apartment = {}
 
+    # Useful for Debugging
+    # print(f"address: {address}"
+    # f"query: {orig_query}")
+
     # if the original query, exactly matches the zipcode, we want to only search
     # on the zip code
     if address and address.zipcode and address.zipcode == orig_query:
@@ -213,7 +217,8 @@ def build_search_query(address, min_price, max_price, bed_num, orig_query):
             if (
                 address.city
                 and address.locality
-                and address.locality.lower() in orig_query.lower()
+                and address.locality.replace(" ", "").lower()
+                in orig_query.replace(" ", "").lower()
             ):
                 query_params_location["locality__iexact"] = address.locality
             elif (
