@@ -17,7 +17,7 @@ python-craigslist>=1.0.3
 markdown
 django-filter
 pandas
-django-leaflet
+django-leaflet>=0.25.0
 django-geojson
 jsonfield
 Pillow
@@ -31,3 +31,4 @@ street-address
 celery
 redis
 pytest
+WhiteNoise
