@@ -2,7 +2,7 @@ black==19.3b0
 coverage
 coveralls
 dj-database-url
-Django==2.2.8
+Django==2.2.18
 flake8
 gunicorn
 django-heroku
